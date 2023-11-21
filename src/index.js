@@ -72,9 +72,10 @@ app.on("ready", () => {
   ipcMain.handle("search-songs", searchSongs);
 });
 
+let mainWindow;
 const createMainWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1000,
     height: 600,
     webPreferences: {
@@ -90,14 +91,10 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
-    // Close all windows when the mainWindow is closed
-    if (songWindow) {
-      songWindow.close();
-    }
+    app.quit();
   });
 };
 
@@ -106,38 +103,60 @@ let songWindow;
 
 const createSongWindow = () => {
   const displays = screen.getAllDisplays();
-  const secondScreen = displays[1];
-  // Create the browser window.
-  songWindow = new BrowserWindow({
-    width: secondScreen.size.width,
-    height: secondScreen.size.height,
-    x: secondScreen.bounds.x,
-    y: secondScreen.bounds.y,
-    // alwaysOnTop: true,
-    webPreferences: {
-      nodeIntegration: true,
-      // contextIsolation: false,
-      preload: path.join(__dirname, "songPreload.js"),
-    },
-  });
+  if (displays.length > 1) {
+    const secondScreen = displays[1];
+    songWindow = new BrowserWindow({
+      width: secondScreen.size.width,
+      height: secondScreen.size.height,
+      x: secondScreen.bounds.x,
+      y: secondScreen.bounds.y,
+      frame: false,
+      alwaysOnTop: true,
+      webPreferences: {
+        nodeIntegration: true,
+        // contextIsolation: false,
+        preload: path.join(__dirname, "songPreload.js"),
+      },
+    });
+    songWindow.setFullScreen(true);
+  } else {
+    songWindow = new BrowserWindow({
+      width: 500,
+      height: 400,
+      webPreferences: {
+        nodeIntegration: true,
+        // contextIsolation: false,
+        preload: path.join(__dirname, "songPreload.js"),
+      },
+    });
+  }
 
+  songWindow.removeMenu();
   // and load the index.html of the app.
   songWindow.loadFile(path.join(__dirname, "song.html"));
-  songWindow.webContents.openDevTools();
-  songWindow.setFullScreen(true);
 
   // remove menu
-  songWindow.removeMenu();
+  songWindow.on("closed", () => {
+    app.quit();
+  });
 
-  // Open the DevTools.
   songWindow.webContents.openDevTools();
 };
 
 app.on("ready", createMainWindow);
 app.on("ready", createSongWindow);
-ipcMain.on("update-song-window", (event, content) => {
-  songWindow.webContents.send("load-content", content);
-});
+app.on("ready", addIPCs);
+function addIPCs() {
+  ipcMain.on("update-song-window", (event, content) => {
+    console.log("update song window");
+    songWindow.webContents.send("load-content", content);
+  });
+  ipcMain.on("update-font-size", (event, fontSize) => {
+    console.log("update font");
+    songWindow.webContents.send("load-content", fontSize);
+    songWindow.webContents.send("update-font", fontSize);
+  });
+}
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

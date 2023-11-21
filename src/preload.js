@@ -10,8 +10,15 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   searchTerm: (term) => ipcRenderer.invoke("search-songs", term),
   updateSongWindow: (content) =>
     ipcRenderer.send("update-song-window", content),
+  updateFont: (content) => ipcRenderer.send("update-font-size", content),
 });
 
 contextBridge.exposeInMainWorld("modTitleto", (title) =>
   ipcRenderer.send("set-title", title)
 );
+
+ipcRenderer.on("load-content", (event, content) => {
+  // Handle the 'load-content' event
+  // ...
+  console.log("new");
+});

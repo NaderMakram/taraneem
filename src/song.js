@@ -1,14 +1,15 @@
-console.log("in song js script");
-
 window.addEventListener("message", (event) => {
+  console.log("event");
   // Check the message type
   if (event.data && event.data.type === "load-content") {
     const content = event.data.content;
-    console.log(event.data.content);
     // Update your UI with the received content
     // For example, you can update the innerHTML of an element
     // document.getElementById("content").innerHTML = content;
     updateContent(content);
+  }
+  if (event.data && event.data.type === "update-font") {
+    console.log("font ++");
   }
 });
 

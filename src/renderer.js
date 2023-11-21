@@ -1,11 +1,18 @@
-console.log(window.firstname);
-window.ringTheBell();
-
 const myBtn = document.querySelector("#btn");
 const h1 = document.querySelector("h1");
-const input = document.querySelector("input");
+const input = document.querySelector("input#title-input");
 const search_output = document.querySelector("#search_output");
 const preview_output = document.querySelector("#preview_output");
+const whiteButton = document.querySelector("#white");
+const blackButton = document.querySelector("#black");
+
+whiteButton.addEventListener("click", () => {
+  window.myCustomAPI.updateSongWindow("");
+});
+
+blackButton.addEventListener("click", () => {
+  window.myCustomAPI.updateFont("33");
+});
 
 let res;
 // input.addEventListener("input", async (e) => {
@@ -23,10 +30,11 @@ async function searchAndDisplayResults(term) {
 }
 
 // Use debounce to delay the search function
-const debouncedSearch = debounce(searchAndDisplayResults, 300);
+const debouncedSearch = debounce(searchAndDisplayResults, 350);
 
+// for testing
 setTimeout(() => {
-  input.value = "ان رب المجد";
+  input.value = "الرب قريب ";
 
   // Create a new event
   const inputEvent = new Event("input", {
@@ -34,9 +42,9 @@ setTimeout(() => {
     cancelable: true,
   });
 
-  // Dispatch the event on the input element
   input.dispatchEvent(inputEvent);
-}, 500); // Wait for 1000 milliseconds (1 second)
+}, 500);
+// end testing
 
 // Attach the debouncedSearch function to the input event
 input.addEventListener("input", function (e) {
@@ -44,19 +52,26 @@ input.addEventListener("input", function (e) {
   debouncedSearch(term);
 });
 
-input.addEventListener("input", (e) => {
-  //   console.log(e.target.value);
-  search_output.textContent = e.target.value;
-});
+// input.addEventListener("keydown", function (e) {
+//   if (e.key === "Enter") {
+//     const term = e.target.value;
+//     searchAndDisplayResults(term);
+//   }
+// });
+
+// input.addEventListener("input", (e) => {
+//   //   console.log(e.target.value);
+//   search_output.textContent = e.target.value;
+// });
 
 search_output.addEventListener("click", (e) => {
   let song = e.target.closest(".song");
   if (!song) return;
-  console.log(song);
+  // console.log(song);
   let ref = song.getAttribute("data-ref");
   const targetedSong = res.find((song) => song.refIndex == ref);
   // console.log(res[1].refIndex);
-  console.log(targetedSong.item);
+  // console.log(targetedSong.item);
   preview_output.innerHTML = previewSelectedSong(targetedSong.item);
 });
 
@@ -197,20 +212,24 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }) {
   const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
 
   if (chorusFirst && chorus && chorus.length > 0) {
-    html += `<div class="chorus">${replaceLineBreaks(chorus.join("\n"))}</div>`;
+    chorus.forEach((line) => {
+      html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
+    });
   }
 
   if (verses && verses.length > 0) {
     verses.forEach((verse) => {
+      // console.log(verse);
       // Display each line in a separate div
       verse.forEach((line) => {
         html += `<div class="verse">${replaceLineBreaks(line)}</div>`;
       });
 
       if (chorus && chorus.length > 0) {
-        html += `<div class="chorus">${replaceLineBreaks(
-          chorus.join("\n")
-        )}</div>`;
+        // console.log(chorus);
+        chorus.forEach((line) => {
+          html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
+        });
       }
     });
   }
@@ -236,5 +255,32 @@ function debounce(func, delay) {
     timeoutId = setTimeout(() => {
       func.apply(this, args);
     }, delay);
+  };
+}
+
+function countLineBreaks(text) {
+  const lineBreakRegex = /\n/g;
+  const matches = text.match(lineBreakRegex);
+  return matches ? matches.length : 0;
+}
+
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
+
+function throttle(func, delay) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = new Date().getTime();
+    if (now - lastCall >= delay) {
+      func(...args);
+      lastCall = now;
+    }
   };
 }

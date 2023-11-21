@@ -2,10 +2,13 @@
   font-size: 6vw;
   text-align: center;
   padding: 2rem;
+  line-height: 1.25em;
 }
 
 html {
   height: 100%;
+  direction: rtl !important;
+  font-family: calibri;
 }
 body {
   min-height: 100%;
