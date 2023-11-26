@@ -4,6 +4,7 @@ body {
   margin: auto;
   /* max-width: 38rem; */
   padding: 2rem;
+  scroll-behavior: smooth;
 }
 
 #main-wrapper {
@@ -61,7 +62,7 @@ body {
   text-align: right;
 }
 
-button#white {
+button#white, button#bold, input#fontSize{
   padding: 10px 15px;
   font-size: 16px;
   background-color: #ffffff;
@@ -72,7 +73,17 @@ button#white {
   transition: all 0.2s ease;
 }
 
-button#white:hover {
+input#fontSize{
+  padding: 10px;
+}
+
+button#white:hover, button#bold:hover {
   background-color: tomato;
   color: white;
+}
+
+button.bold{
+  font-weight: bold;
+background-color: tomato !important;
+color: white !important;
 }

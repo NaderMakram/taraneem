@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
 
+const inDevMode = process.env.NODE_ENV !== "production";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -91,7 +92,9 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  mainWindow.webContents.openDevTools();
+  if (inDevMode) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -140,7 +143,9 @@ const createSongWindow = () => {
     app.quit();
   });
 
-  songWindow.webContents.openDevTools();
+  if (inDevMode) {
+    songWindow.webContents.openDevTools();
+  }
 };
 
 app.on("ready", createMainWindow);
@@ -149,14 +154,16 @@ app.on("ready", addIPCs);
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content) => {
     console.log("update song window");
-    songWindow.webContents.send("load-content", content);
-  });
-  ipcMain.on("update-font-size", (event, fontSize) => {
-    console.log("update font");
-    songWindow.webContents.send("load-content", fontSize);
-    songWindow.webContents.send("update-font", fontSize);
+    songWindow.webContents.send("update-song-window", content);
   });
 }
+
+ipcMain.on("update-font-size", (event, message) => {
+  songWindow.webContents.send("update-font-size", message);
+});
+ipcMain.on("update-font-weight", (event) => {
+  songWindow.webContents.send("update-font-weight");
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

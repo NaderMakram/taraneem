@@ -1,5 +1,5 @@
 #content {
-  font-size: 6vw;
+  font-size: 100px;
   text-align: center;
   padding: 2rem;
   line-height: 1.25em;
@@ -25,4 +25,8 @@ body {
 
 .fade-in-out.hide {
   opacity: 0;
+}
+
+.bold{
+  font-weight: 700;
 }

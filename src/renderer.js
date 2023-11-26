@@ -4,14 +4,20 @@ const input = document.querySelector("input#title-input");
 const search_output = document.querySelector("#search_output");
 const preview_output = document.querySelector("#preview_output");
 const whiteButton = document.querySelector("#white");
-const blackButton = document.querySelector("#black");
+const fontSizeInput = document.querySelector("#fontSize");
+const fontWeightBtn = document.querySelector("#bold");
 
 whiteButton.addEventListener("click", () => {
   window.myCustomAPI.updateSongWindow("");
 });
 
-blackButton.addEventListener("click", () => {
-  window.myCustomAPI.updateFont("33");
+fontWeightBtn.addEventListener("click", () => {
+  window.myCustomAPI.updateFontWeight();
+  fontWeightBtn.classList.toggle("bold");
+});
+
+fontSizeInput.addEventListener("change", (e) => {
+  window.myCustomAPI.updateFontSize(e.target.value);
 });
 
 let res;
@@ -95,7 +101,11 @@ preview_output.addEventListener("click", (e) => {
 // ////////////////////////
 // ////////////////////////
 document.addEventListener("keydown", (e) => {
-  // console.log(e.key);
+  // console.log(e.target.id);
+  // ignore changing the font size key strokes
+  if (e.target.id == "fontSize") {
+    return;
+  }
   if (e.key === "ArrowUp" || e.key === "ArrowDown") {
     // check for first and last slide
     const previewOutput = document.getElementById("preview_output");
@@ -140,6 +150,10 @@ document.addEventListener("keydown", (e) => {
         ) {
           // Down arrow
           elements[currentActiveIndex + 1].classList.add("active");
+          // let elHeight = elements[currentActiveIndex].clientHeight;
+          // let elX = elements[currentActiveIndex].getBoundingClientRect().x;
+          // elements[currentActiveIndex].scrollIntoView({ block: "center" });
+
           window.myCustomAPI.updateSongWindow(
             elements[currentActiveIndex + 1].innerHTML
           );
