@@ -1,4 +1,10 @@
-const { app, BrowserWindow, screen, ipcMain } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  screen,
+  ipcMain,
+  globalShortcut,
+} = require("electron");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
@@ -163,6 +169,12 @@ ipcMain.on("update-font-size", (event, message) => {
 });
 ipcMain.on("update-font-weight", (event) => {
   songWindow.webContents.send("update-font-weight");
+});
+
+app.on("ready", () => {
+  globalShortcut.register("Shift+W", () => {
+    songWindow.webContents.send("update-song-window", "");
+  });
 });
 
 app.on("window-all-closed", () => {
