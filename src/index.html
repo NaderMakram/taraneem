@@ -5,19 +5,34 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
     <title>tasbe7na clone</title>
     <link rel="stylesheet" href="index.css" />
+    <!-- JSONEditor -->
+    <link
+      href="../node_modules/jsoneditor/dist/jsoneditor.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="../node_modules/jsoneditor/dist/jsoneditor.min.js"></script>
   </head>
   <body>
-    <button id="white" title="shift + W">white</button>
-    <button id="bold">B</button>
-    <input
-      type="number"
-      id="fontSize"
-      name="fontSize"
-      value="100"
-      min="50"
-      max="200"
-      step="5"
-    />
+    <!-- <div id="jsoneditor" style="width: 400px; height: 400px"></div> -->
+    <div id="tools_bar">
+      <button id="white" title="shift + W">white</button>
+      <!-- bold font button -->
+      <button id="bold">B</button>
+
+      <!-- font size input -->
+      <input
+        type="number"
+        id="fontSize"
+        name="fontSize"
+        value="100"
+        min="50"
+        max="200"
+        step="5"
+      />
+      <!-- dark mode switch -->
+      <input type="checkbox" id="switch" /><label for="switch">Toggle</label>
+    </div>
 
     <div id="main-wrapper">
       <div id="search-wrapper">
@@ -30,6 +45,7 @@
         <div id="preview_output"></div>
       </div>
     </div>
+
     <script src="renderer.js"></script>
   </body>
 </html>

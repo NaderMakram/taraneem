@@ -19,7 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
-    "fuse.js": "^7.0.0"
+    "fuse.js": "^7.0.0",
+    "jsoneditor": "^9.10.4"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.4.2",

@@ -6,9 +6,14 @@ const preview_output = document.querySelector("#preview_output");
 const whiteButton = document.querySelector("#white");
 const fontSizeInput = document.querySelector("#fontSize");
 const fontWeightBtn = document.querySelector("#bold");
+const darkModeToggle = document.querySelector("input#switch");
 
 whiteButton.addEventListener("click", () => {
   window.myCustomAPI.updateSongWindow("");
+});
+
+darkModeToggle.addEventListener("change", () => {
+  window.myCustomAPI.toggleDarkMode();
 });
 
 fontWeightBtn.addEventListener("click", () => {
@@ -40,7 +45,7 @@ const debouncedSearch = debounce(searchAndDisplayResults, 350);
 
 // for testing
 setTimeout(() => {
-  input.value = "الرب قريب ";
+  input.value ="حتى تنال مع العروس ";
 
   // Create a new event
   const inputEvent = new Event("input", {
@@ -298,3 +303,18 @@ function throttle(func, delay) {
     }
   };
 }
+
+// start testing jsoneditor
+// create the editor
+// async function readJson() {
+//   const container = document.getElementById("jsoneditor");
+//   const options = { mode: "view" };
+
+//   const myJson = await window.myCustomAPI.readJson();
+//   const editor = new JSONEditor(container, options, myJson);
+//   console.log(editor);
+//   // editor.set(myJson);
+
+//   const updatedJson = editor.get();
+// }
+// readJson();

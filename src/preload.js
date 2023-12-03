@@ -10,4 +10,6 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   },
   updateFontSize: (content) => ipcRenderer.send("update-font-size", content),
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
+  toggleDarkMode: () => ipcRenderer.send("toggle-dark-mode"),
+  readJson: () => ipcRenderer.invoke("read-json"),
 });

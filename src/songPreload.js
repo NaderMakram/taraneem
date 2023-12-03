@@ -4,6 +4,10 @@ ipcRenderer.on("update-font-size", (event, message) => {
   document.querySelector("#content").style.fontSize = `${message}px`;
 });
 
+ipcRenderer.on("toggle-dark-mode", (event, message) => {
+  document.body.classList.toggle("dark");
+});
+
 ipcRenderer.on("update-font-weight", (event, message) => {
   document.querySelector("#content").classList.toggle("bold");
 });

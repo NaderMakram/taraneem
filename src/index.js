@@ -9,12 +9,11 @@ const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
 
-const inDevMode = process.env.NODE_ENV !== "production";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
-console.time("MappingSongs");
+// console.time("MappingSongs");
 const songsDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "tasbe7naDB.json"), "utf-8")
 );
@@ -26,13 +25,16 @@ const songsWithSearchableContent = songsDB.map((song) => {
     searchableContent: createSearchableContent(song),
   };
 });
-console.timeEnd("MappingSongs");
+// console.timeEnd("MappingSongs");
 
 const fuse = new Fuse(songsWithSearchableContent, {
-  includeScore: true,
+  // includeScore: true,
   threshold: 0.2, // Adjust as needed
-  minMatchCharLength: 2,
+  // location: 2000,
+  // distance: 10000,
   ignoreLocation: true,
+  minMatchCharLength: 2,
+  // shouldSort: true,
   tokenize: (input) => {
     return normalize(input).split(/\s+/); // Split on spaces
   },
@@ -46,7 +48,13 @@ function createSearchableContent(song) {
   const versesText = verses
     ? verses.map((verse) => verse.join(" ")).join(" ")
     : "";
-  return normalize(`${title} ${chorusText} ${versesText}`);
+  const content = normalize(`${title} ${chorusText} ${versesText}`);
+  
+  // Remove duplicate words
+  const uniqueWords = [...new Set(content.split(" "))];
+  const uniqueContent = uniqueWords.join(" ");
+
+  return uniqueContent;
 }
 
 // normalize text
@@ -65,7 +73,9 @@ function normalize(text) {
 // Function to search for songs
 function searchSongs(event, term) {
   const normalizedTerm = normalize(term);
+  console.time("searching time");
   const results = fuse.search(normalizedTerm);
+  console.timeEnd("searching time");
   return results;
 }
 
@@ -74,9 +84,19 @@ const handleSetTitle = (event, title) => {
   const win = BrowserWindow.fromWebContents(webContents);
   win.setTitle(title);
 };
+
+function readJson() {
+  return JSON.parse(
+    fs.readFileSync(path.join(__dirname, "tasbe7naDB.json"), "utf-8")
+  );
+}
 app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
   ipcMain.handle("search-songs", searchSongs);
+  ipcMain.handle("read-json", readJson);
+  // const container = document.getElementById("jsoneditor");
+  // const options = {};
+  // const editor = new JSONEditor(container, options);
 });
 
 let mainWindow;
@@ -98,9 +118,7 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  if (inDevMode) {
-    mainWindow.webContents.openDevTools();
-  }
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -149,9 +167,7 @@ const createSongWindow = () => {
     app.quit();
   });
 
-  if (inDevMode) {
-    songWindow.webContents.openDevTools();
-  }
+  songWindow.webContents.openDevTools();
 };
 
 app.on("ready", createMainWindow);
@@ -159,7 +175,6 @@ app.on("ready", createSongWindow);
 app.on("ready", addIPCs);
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content) => {
-    console.log("update song window");
     songWindow.webContents.send("update-song-window", content);
   });
 }
@@ -169,6 +184,9 @@ ipcMain.on("update-font-size", (event, message) => {
 });
 ipcMain.on("update-font-weight", (event) => {
   songWindow.webContents.send("update-font-weight");
+});
+ipcMain.on("toggle-dark-mode", (event) => {
+  songWindow.webContents.send("toggle-dark-mode");
 });
 
 app.on("ready", () => {
