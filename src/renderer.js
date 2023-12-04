@@ -45,7 +45,7 @@ const debouncedSearch = debounce(searchAndDisplayResults, 350);
 
 // for testing
 setTimeout(() => {
-  input.value ="حتى تنال مع العروس ";
+  input.value = "حتى تنال مع العروس ";
 
   // Create a new event
   const inputEvent = new Event("input", {
@@ -84,6 +84,7 @@ search_output.addEventListener("click", (e) => {
   // console.log(res[1].refIndex);
   // console.log(targetedSong.item);
   preview_output.innerHTML = previewSelectedSong(targetedSong.item);
+  window.myCustomAPI.updateSongWindow("");
 });
 
 preview_output.addEventListener("click", (e) => {

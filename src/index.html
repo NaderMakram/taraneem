@@ -16,22 +16,25 @@
   <body>
     <!-- <div id="jsoneditor" style="width: 400px; height: 400px"></div> -->
     <div id="tools_bar">
-      <button id="white" title="shift + W">white</button>
+      <button id="white" title="Blank (shift + W)">white</button>
       <!-- bold font button -->
-      <button id="bold">B</button>
+      <button id="bold" title="Bold">B</button>
 
       <!-- font size input -->
       <input
         type="number"
         id="fontSize"
         name="fontSize"
-        value="100"
-        min="50"
-        max="200"
+        value="65"
+        min="20"
+        max="120"
         step="5"
+        title="Font Size"
       />
       <!-- dark mode switch -->
-      <input type="checkbox" id="switch" /><label for="switch">Toggle</label>
+      <input type="checkbox" id="switch" /><label for="switch" title="Dark Mode"
+        >Toggle</label
+      >
     </div>
 
     <div id="main-wrapper">

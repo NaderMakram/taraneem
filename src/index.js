@@ -49,7 +49,7 @@ function createSearchableContent(song) {
     ? verses.map((verse) => verse.join(" ")).join(" ")
     : "";
   const content = normalize(`${title} ${chorusText} ${versesText}`);
-  
+
   // Remove duplicate words
   const uniqueWords = [...new Set(content.split(" "))];
   const uniqueContent = uniqueWords.join(" ");
