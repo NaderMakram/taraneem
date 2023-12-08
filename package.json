@@ -20,7 +20,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "fuse.js": "^7.0.0",
-    "jsoneditor": "^9.10.4"
+    "update-electron-app": "^3.0.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.4.2",

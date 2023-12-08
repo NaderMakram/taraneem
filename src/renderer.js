@@ -237,21 +237,47 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }) {
     });
   }
 
+  // if (verses && verses.length > 0) {
+  //   verses.forEach((verse) => {
+  //     // console.log(verse);
+  //     // Display each line in a separate div
+  //     verse.forEach((line) => {
+  //       html += `<div class="verse">${replaceLineBreaks(line)}</div>`;
+  //     });
+
+  //     if (chorus && chorus.length > 0) {
+  //       // console.log(chorus);
+  //       chorus.forEach((line) => {
+  //         html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
+  //       });
+  //     }
+  //   });
+  // }
   if (verses && verses.length > 0) {
-    verses.forEach((verse) => {
-      // console.log(verse);
-      // Display each line in a separate div
-      verse.forEach((line) => {
-        html += `<div class="verse">${replaceLineBreaks(line)}</div>`;
-      });
+    for (let verseIndex = 0; verseIndex < verses.length; verseIndex++) {
+      const verse = verses[verseIndex];
+
+      for (let lineIndex = 0; lineIndex < verse.length; lineIndex++) {
+        const line = verse[lineIndex];
+
+        // add verse number for the first line in a verse
+        let verseNumber= '';
+        if (lineIndex == 0) {
+          verseNumber = verseIndex + 1;
+        }
+        html += `<div class="verse" data-verseNumber="${verseNumber}">
+          <span class="">${verseNumber}</span>
+          ${replaceLineBreaks(line)}
+        </div>`;
+      }
 
       if (chorus && chorus.length > 0) {
-        // console.log(chorus);
-        chorus.forEach((line) => {
-          html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
-        });
+        for (let chorusIndex = 0; chorusIndex < chorus.length; chorusIndex++) {
+          const chorusLine = chorus[chorusIndex];
+          html += `<div class="chorus">${replaceLineBreaks(chorusLine)}</div>`;
+        }
       }
-    });
+    }
   }
 
   // if (!chorusFirst && chorus && chorus.length > 0) {

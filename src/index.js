@@ -4,6 +4,8 @@ const {
   screen,
   ipcMain,
   globalShortcut,
+  autoUpdater,
+  dialog,
 } = require("electron");
 const path = require("path");
 const fs = require("fs");
@@ -30,8 +32,8 @@ const songsWithSearchableContent = songsDB.map((song) => {
 const fuse = new Fuse(songsWithSearchableContent, {
   // includeScore: true,
   threshold: 0.2, // Adjust as needed
-  // location: 2000,
-  // distance: 10000,
+  // location: 200,
+  // distance: 1000,
   ignoreLocation: true,
   minMatchCharLength: 2,
   // shouldSort: true,
@@ -115,6 +117,8 @@ const createMainWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
+  // mainWindow.maximize();
+
   // remove menu
   mainWindow.removeMenu();
 
@@ -192,6 +196,9 @@ ipcMain.on("toggle-dark-mode", (event) => {
 app.on("ready", () => {
   globalShortcut.register("Shift+W", () => {
     songWindow.webContents.send("update-song-window", "");
+  });
+  globalShortcut.register("Shift+1", () => {
+    mainWindow.webContents.send("shift-slide", 1);
   });
 });
 

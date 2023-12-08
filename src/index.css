@@ -91,6 +91,15 @@ input#fontSize {
   transition: all 0.2s ease;
 }
 
+input#fontSize{
+  width: 44px;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+  opacity: 1;
+}
+
+
 input#fontSize {
   padding: 10px;
 }
@@ -152,5 +161,5 @@ input:checked + label:after {
 }
 
 label:active:after {
-  width: 60px;
+  width: 50px;
 }
