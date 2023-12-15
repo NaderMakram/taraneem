@@ -6,14 +6,30 @@ const preview_output = document.querySelector("#preview_output");
 const whiteButton = document.querySelector("#white");
 const fontSizeInput = document.querySelector("#fontSize");
 const fontWeightBtn = document.querySelector("#bold");
-const darkModeToggle = document.querySelector("input#switch");
+const darkModeToggle = document.querySelector("input#dark_mode_input");
+const deepModeToggle = document.querySelector("input#deep_mode_input");
 
+let delay = 50;
 whiteButton.addEventListener("click", () => {
   window.myCustomAPI.updateSongWindow("");
 });
 
 darkModeToggle.addEventListener("change", () => {
   window.myCustomAPI.toggleDarkMode();
+});
+
+deepModeToggle.addEventListener("change", (e) => {
+  console.log(e.target.checked);
+  if (e.target.checked) {
+    // delay = 350;
+    debouncedSearch = debounce(searchAndDisplayResults, 350);
+  } else {
+    // delay = 100;
+    debouncedSearch = debounce(searchAndDisplayResults, 50);
+  }
+  console.log(delay);
+  debouncedSearch(input.value);
+  window.myCustomAPI.flipSearchingMode();
 });
 
 fontWeightBtn.addEventListener("click", () => {
@@ -41,20 +57,20 @@ async function searchAndDisplayResults(term) {
 }
 
 // Use debounce to delay the search function
-const debouncedSearch = debounce(searchAndDisplayResults, 350);
+let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
-setTimeout(() => {
-  input.value = "حتى تنال مع العروس ";
+// setTimeout(() => {
+//   input.value = "انت كل ما اريد";
 
-  // Create a new event
-  const inputEvent = new Event("input", {
-    bubbles: true,
-    cancelable: true,
-  });
+//   // Create a new event
+//   const inputEvent = new Event("input", {
+//     bubbles: true,
+//     cancelable: true,
+//   });
 
-  input.dispatchEvent(inputEvent);
-}, 500);
+//   input.dispatchEvent(inputEvent);
+// }, 500);
 // end testing
 
 // Attach the debouncedSearch function to the input event
@@ -76,24 +92,23 @@ input.addEventListener("input", function (e) {
 // });
 
 search_output.addEventListener("click", (e) => {
-  let song = e.target.closest(".song");
-  if (!song) return;
+  let clickedSong = e.target.closest(".song");
+  if (!clickedSong) return;
   // console.log(song);
-  let ref = song.getAttribute("data-ref");
+  let ref = clickedSong.getAttribute("data-ref");
   const targetedSong = res.find((song) => song.refIndex == ref);
   // console.log(res[1].refIndex);
-  // console.log(targetedSong.item);
+  console.log(targetedSong.item);
   preview_output.innerHTML = previewSelectedSong(targetedSong.item);
   window.myCustomAPI.updateSongWindow("");
 });
 
 preview_output.addEventListener("click", (e) => {
-  let element = e.target;
-  if (
-    element.classList.contains("verse") ||
-    element.classList.contains("chorus")
-  ) {
+  let element = e.target.closest(".verse, .chorus");
+
+  if (element) {
     const elements = document.querySelector(".song-preview").children;
+
     for (let i = 0; i < elements.length; i++) {
       elements[i].classList.remove("active");
     }
@@ -173,6 +188,9 @@ document.addEventListener("keydown", (e) => {
 });
 // ////////////////////////
 // ////////////////////////
+function truncate(str, max_length) {
+  return str.length > max_length ? str.slice(0, max_length - 1) + "…" : str;
+}
 
 function generateHTML(dataArray) {
   // Ensure the input is an array
@@ -210,13 +228,21 @@ function generateHTML(dataArray) {
             })
             .join("")
         : "";
+      trimmedVerses = "";
+      if (verses[0] && typeof verses[0][0] == "string") {
+        trimmedVerses = truncate(verses[0][0], 50);
+      }
       versesHTML = "";
       // Combine everything into a single HTML block
       return `
         <div class="song" data-ref="${refIndex}">
           ${titleHTML}
-          ${chorusHTML ? `<div class="chorus">${chorusHTML}</div>` : ""}
-          ${versesHTML ? `<div class="verses">${versesHTML}</div>` : ""}
+          ${
+            chorusHTML
+              ? `<div class="chorus">${truncate(chorusHTML, 50)}</div>`
+              : ""
+          }
+          ${verses[0] ? `<div class="verses">${trimmedVerses}</div>` : ""}
         </div>
       `;
     })
@@ -231,7 +257,7 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }) {
   html += `<div class="song-preview">`;
   const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
 
-  if (chorusFirst && chorus && chorus.length > 0) {
+  if ((chorusFirst && chorus && chorus.length > 0) || verses.length == 0) {
     chorus.forEach((line) => {
       html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
     });
@@ -261,20 +287,31 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }) {
         const line = verse[lineIndex];
 
         // add verse number for the first line in a verse
-        let verseNumber= '';
+        let verseNumber = "";
+        let arabicNumber = "";
         if (lineIndex == 0) {
           verseNumber = verseIndex + 1;
+          arabicNumber = new Intl.NumberFormat("ar-EG").format(verseNumber);
         }
         html += `<div class="verse" data-verseNumber="${verseNumber}">
-          <span class="">${verseNumber}</span>
+          <span class="verseNumber">${arabicNumber}</span>
+          <div>
           ${replaceLineBreaks(line)}
-        </div>`;
+          </div>
+          </div>`;
       }
 
       if (chorus && chorus.length > 0) {
         for (let chorusIndex = 0; chorusIndex < chorus.length; chorusIndex++) {
           const chorusLine = chorus[chorusIndex];
-          html += `<div class="chorus">${replaceLineBreaks(chorusLine)}</div>`;
+          let chorusSymbol = "";
+          if (chorusIndex == 0) {
+            chorusSymbol = "ق";
+          }
+          html += `<div class="chorus">
+          <span class="chorusSymbol">${chorusSymbol}</span>
+          ${replaceLineBreaks(chorusLine)}
+          </div>`;
         }
       }
     }
@@ -345,3 +382,34 @@ function throttle(func, delay) {
 //   const updatedJson = editor.get();
 // }
 // readJson();
+
+// shift to slide shortcut
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key >= "1" && e.key <= "9") {
+    // The user pressed Shift + a number (1-9)
+    const numberPressed = parseInt(e.key);
+
+    let element = document.querySelector(
+      `[data-verseNumber="${numberPressed}"]`
+    );
+    // if (!element) return;
+    // console.log(element);
+    // const elements = document.querySelector(".song-preview").children;
+    // for (let i = 0; i < elements.length; i++) {
+    //   elements[i].classList.remove("active");
+    // }
+
+    // element.classList.add("active");
+    // ipcRenderer.send("update-song-window", element.innerHTML);
+    if (element) {
+      const elements = document.querySelector(".song-preview").children;
+
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.remove("active");
+      }
+
+      element.classList.add("active");
+      window.myCustomAPI.updateSongWindow(element.innerHTML);
+    }
+  }
+});

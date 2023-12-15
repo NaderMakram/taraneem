@@ -1,4 +1,12 @@
+:root {
+  --primary: #ff7e67;
+  --secondary: #07689f;
+  --gray-1: rgba(221, 221, 221, 0.7);
+  --gray-2: rgba(221, 221, 221, 0.9);
+}
+
 #content {
+  position: relative;
   font-size: 6.5vw;
   text-align: center;
   padding: 2rem;
@@ -37,4 +45,13 @@ body {
 
 .bold {
   font-weight: 700;
+}
+
+.chorusSymbol, .verseNumber{
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  font-size: 0.65em;
+  color: var(--primary);
 }

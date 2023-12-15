@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
-    <title>tasbe7na clone</title>
+    <title>Taraneem - ترانيم</title>
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
     <!-- <div id="jsoneditor" style="width: 400px; height: 400px"></div> -->
     <div id="tools_bar">
-      <button id="white" title="Blank (shift + W)">white</button>
+      <button id="white" title="Blank (Ctrl + W)">white</button>
       <!-- bold font button -->
       <button id="bold" title="Bold">B</button>
 
@@ -24,6 +24,13 @@
         step="5"
         title="Font Size"
       />
+      <input type="checkbox" id="deep_mode_input" name="deep" />
+      <label
+        for="deep_mode_input"
+        id="deep_mode_label"
+        name="deep"
+        title="Fast/Deep Mode"
+      ></label>
       <!-- new test for font size -->
       <!-- <div id="fontSizeContainer">
         <p id="fontSizeNumber">65</p>
@@ -33,7 +40,8 @@
         </div>
       </div> -->
       <!-- dark mode switch -->
-      <input type="checkbox" id="switch" /><label for="switch" title="Dark Mode"
+      <input type="checkbox" id="dark_mode_input" />
+      <label for="dark_mode_input" title="Dark Mode" id="dark_mode_label"
         >Toggle</label
       >
     </div>

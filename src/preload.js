@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("myCustomAPI", {
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
+  flipSearchingMode: () => ipcRenderer.send("flip-searching-mode"),
   searchTerm: (term) => ipcRenderer.invoke("search-songs", term),
   updateSongWindow: (content) => {
     ipcRenderer.send("update-song-window", content);
@@ -14,14 +15,14 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   readJson: () => ipcRenderer.invoke("read-json"),
 });
 
-ipcRenderer.on("shift-slide", (event, message) => {
+ipcRenderer.on("shift-to-slide", (event, message) => {
   console.log("shift the slide", message);
-  let element = document.querySelector('[data-verseNumber="1"]');
-  const elements = document.querySelector(".song-preview").children;
-  for (let i = 0; i < elements.length; i++) {
-    elements[i].classList.remove("active");
-  }
-  
-  element.classList.add("active");
-  ipcRenderer.send("update-song-window", element.innerHTML);
+  // let element = document.querySelector('[data-verseNumber="1"]');
+  // const elements = document.querySelector(".song-preview").children;
+  // for (let i = 0; i < elements.length; i++) {
+  //   elements[i].classList.remove("active");
+  // }
+
+  // element.classList.add("active");
+  // ipcRenderer.send("update-song-window", element.innerHTML);
 });

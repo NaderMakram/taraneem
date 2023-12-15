@@ -11,6 +11,8 @@ const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
 
+let fastSearch = true;
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -21,21 +23,37 @@ const songsDB = JSON.parse(
 );
 
 // Map your songs array and create searchable content for each song
+console.time("creating content time:");
 const songsWithSearchableContent = songsDB.map((song) => {
   return {
     ...song,
     searchableContent: createSearchableContent(song),
   };
 });
+console.timeEnd("creating content time:");
 // console.timeEnd("MappingSongs");
 
-const fuse = new Fuse(songsWithSearchableContent, {
+const deepFuse = new Fuse(songsWithSearchableContent, {
   // includeScore: true,
   threshold: 0.2, // Adjust as needed
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
-  minMatchCharLength: 2,
+  // minMatchCharLength: 2,
+  // shouldSort: true,
+  tokenize: (input) => {
+    return normalize(input).split(/\s+/); // Split on spaces
+  },
+  keys: ["searchableContent"],
+});
+
+const fastFuse = new Fuse(songsWithSearchableContent, {
+  // includeScore: true,
+  threshold: 0.0,
+  // location: 200,
+  // distance: 1000,
+  ignoreLocation: true,
+  // minMatchCharLength: 2,
   // shouldSort: true,
   tokenize: (input) => {
     return normalize(input).split(/\s+/); // Split on spaces
@@ -53,9 +71,10 @@ function createSearchableContent(song) {
   const content = normalize(`${title} ${chorusText} ${versesText}`);
 
   // Remove duplicate words
-  const uniqueWords = [...new Set(content.split(" "))];
-  const uniqueContent = uniqueWords.join(" ");
+  // const uniqueWords = [...new Set(content.split(" "))];
+  // const uniqueContent = uniqueWords.join(" ");
 
+  return content;
   return uniqueContent;
 }
 
@@ -65,10 +84,13 @@ function normalize(text) {
     text
       .replace(/أ|آ|إ|ا/g, "ا") // Treat أ, إ, and ا as the same
       .replace(/ى|ي/g, "ي")
+      .replace(/س|ث/g, "س")
+      .replace(/ق|ك/g, "ك")
+      .replace(/ه|ة/g, "ه")
       .replace(/ذ|ظ|ز/g, "ز")
       .replace(/ء|ؤ|ئ/g, "ء")
       // .replace(/َ|ً|ُ|ٌ|ِ|ٍ|ّ/g, "");
-      .replace(/[ًٌٍَُِّ]/g, "")
+      .replace(/[ًٌٍَُِّْ~ـٰ]/g, "")
   ); // Remove Arabic diacritics
 }
 
@@ -76,7 +98,14 @@ function normalize(text) {
 function searchSongs(event, term) {
   const normalizedTerm = normalize(term);
   console.time("searching time");
-  const results = fuse.search(normalizedTerm);
+  // console.log(BrowserWindow.getAllWindows());
+  console.log(fastSearch);
+  let results;
+  if (fastSearch) {
+    results = fastFuse.search(normalizedTerm);
+  } else {
+    results = deepFuse.search(normalizedTerm);
+  }
   console.timeEnd("searching time");
   return results;
 }
@@ -95,6 +124,7 @@ function readJson() {
 app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
   ipcMain.handle("search-songs", searchSongs);
+  ipcMain.on("flip-searching-mode", () => (fastSearch = !fastSearch));
   ipcMain.handle("read-json", readJson);
   // const container = document.getElementById("jsoneditor");
   // const options = {};
@@ -107,6 +137,7 @@ const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 600,
+    icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
     webPreferences: {
       nodeIntegration: true,
       // contextIsolation: false,
@@ -122,7 +153,7 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -139,6 +170,7 @@ const createSongWindow = () => {
     songWindow = new BrowserWindow({
       width: secondScreen.size.width,
       height: secondScreen.size.height,
+      icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
       x: secondScreen.bounds.x,
       y: secondScreen.bounds.y,
       frame: false,
@@ -154,6 +186,7 @@ const createSongWindow = () => {
     songWindow = new BrowserWindow({
       width: 500,
       height: 400,
+      icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
       webPreferences: {
         nodeIntegration: true,
         // contextIsolation: false,
@@ -171,7 +204,7 @@ const createSongWindow = () => {
     app.quit();
   });
 
-  songWindow.webContents.openDevTools();
+  // songWindow.webContents.openDevTools();
 };
 
 app.on("ready", createMainWindow);
@@ -193,12 +226,14 @@ ipcMain.on("toggle-dark-mode", (event) => {
   songWindow.webContents.send("toggle-dark-mode");
 });
 
+// verse number shortcut
+ipcMain.on("shift-to-slide", (event, message) => {
+  mainWindow.webContents.send("shift-to-slide", message);
+});
+
 app.on("ready", () => {
-  globalShortcut.register("Shift+W", () => {
+  globalShortcut.register("Ctrl+W", () => {
     songWindow.webContents.send("update-song-window", "");
-  });
-  globalShortcut.register("Shift+1", () => {
-    mainWindow.webContents.send("shift-slide", 1);
   });
 });
 
