@@ -189,8 +189,7 @@ label#dark_mode_label:active:after {
 }
 
 #deep_mode_input + label:before {
-  /* background-image: url(./img/fast.png); */
-  background-image: ;
+  background-image: url(./img/fast.png);
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
