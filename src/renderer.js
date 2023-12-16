@@ -61,7 +61,7 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
 // setTimeout(() => {
-//   input.value = "انت كل ما اريد";
+//   input.value = "السائح المسيحي";
 
 //   // Create a new event
 //   const inputEvent = new Event("input", {
@@ -71,11 +71,24 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 //   input.dispatchEvent(inputEvent);
 // }, 500);
+// const clickSong = new Event("click", {
+//   bubbles: true,
+//   cancelable: true,
+// });
+// setTimeout(() => {
+//   let son = document.querySelector(".song");
+//   son.dispatchEvent(clickSong);
+// }, 2000);
+// setTimeout(() => {
+//   let ver = document.querySelector(".verse");
+//   ver.dispatchEvent(clickSong);
+// }, 2500);
 // end testing
 
 // Attach the debouncedSearch function to the input event
 input.addEventListener("input", function (e) {
-  const term = e.target.value;
+  let term = e.target.value;
+  if (term.length < 3) return;
   debouncedSearch(term);
 });
 
@@ -341,6 +354,14 @@ function debounce(func, delay) {
   };
 }
 
+// function scroll(y) {
+//   window.scrollBy({
+//     top: x,
+//     left: y,
+//     behavior: "smooth",
+//   });
+// }
+
 function countLineBreaks(text) {
   const lineBreakRegex = /\n/g;
   const matches = text.match(lineBreakRegex);
@@ -383,11 +404,13 @@ function throttle(func, delay) {
 // }
 // readJson();
 
-// shift to slide shortcut
+// all ctrl shortcuts
 document.addEventListener("keydown", (e) => {
+  console.log(e);
   if (e.ctrlKey && e.key >= "1" && e.key <= "9") {
     // The user pressed Shift + a number (1-9)
     const numberPressed = parseInt(e.key);
+    console.log(numberPressed);
 
     let element = document.querySelector(
       `[data-verseNumber="${numberPressed}"]`
@@ -411,5 +434,22 @@ document.addEventListener("keydown", (e) => {
       element.classList.add("active");
       window.myCustomAPI.updateSongWindow(element.innerHTML);
     }
+  }
+
+  if (e.ctrlKey && e.code == "KeyF") {
+    console.log(window.scrollY);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, window.scrollY / (window.scrollY < 4000 ? 3 : 12));
+  }
+
+  if (e.ctrlKey && e.code == "KeyW") {
+    window.myCustomAPI.updateSongWindow("");
   }
 });

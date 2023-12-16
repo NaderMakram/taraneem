@@ -1,7 +1,7 @@
 const { ipcRenderer } = require("electron");
 
 ipcRenderer.on("update-font-size", (event, message) => {
-  document.querySelector("#content").style.fontSize = `${message / 10}vw`;
+  document.querySelector("#content").style.fontSize = `${message / 10}rem`;
 });
 
 ipcRenderer.on("toggle-dark-mode", (event, message) => {

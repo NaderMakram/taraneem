@@ -39,7 +39,7 @@ const deepFuse = new Fuse(songsWithSearchableContent, {
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
-  // minMatchCharLength: 2,
+  minMatchCharLength: 2,
   // shouldSort: true,
   tokenize: (input) => {
     return normalize(input).split(/\s+/); // Split on spaces
@@ -53,7 +53,7 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
-  // minMatchCharLength: 2,
+  minMatchCharLength: 2,
   // shouldSort: true,
   tokenize: (input) => {
     return normalize(input).split(/\s+/); // Split on spaces
@@ -213,6 +213,21 @@ app.on("ready", addIPCs);
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content) => {
     songWindow.webContents.send("update-song-window", content);
+    if (content != "") {
+      mainWindow.webContents.executeJavaScript(
+        `
+        element = document.querySelector('.active');
+        elementRect = element.getBoundingClientRect();
+        absoluteElementTop = elementRect.top + window.pageYOffset;
+        middle = absoluteElementTop - (window.innerHeight / 2);
+        window.scrollTo({
+          top: middle,
+          left: 0,
+          behavior: "smooth",
+        });
+        `
+      );
+    }
   });
 }
 
@@ -231,10 +246,15 @@ ipcMain.on("shift-to-slide", (event, message) => {
   mainWindow.webContents.send("shift-to-slide", message);
 });
 
-app.on("ready", () => {
-  globalShortcut.register("Ctrl+W", () => {
-    songWindow.webContents.send("update-song-window", "");
-  });
+// move screen when pressing up or down arrow
+ipcMain.on("scroll-to-active", (event, message) => {
+  // mainWindow.webContents.executeJavaScript(
+  //   `window.scrollBy({top: ${message},left: 0,behavior : 'smooth'})`
+  // );
+  // mainWindow.webContents.executeJavaScript(
+  //   `document.querySelector('.active').scrollIntoView({behavior: "smooth", block: "center", inline: "center" });
+  //   `
+  // );
 });
 
 app.on("window-all-closed", () => {

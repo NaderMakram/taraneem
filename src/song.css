@@ -7,10 +7,11 @@
 
 #content {
   position: relative;
-  font-size: 6.5vw;
+  font-size: 6.5rem;
   text-align: center;
-  padding: 2rem;
+  padding: 0.2em;
   line-height: 1.25em;
+  max-width: 90vw;
   transition: 0.3s;
 }
 
@@ -22,6 +23,7 @@ html {
 body {
   color: rgb(23, 23, 23);
   min-height: 100%;
+  /* padding: 5vh 5vw; */
   margin: 0;
   display: flex;
   align-items: center;
@@ -47,10 +49,12 @@ body {
   font-weight: 700;
 }
 
-.chorusSymbol, .verseNumber{
+.chorusSymbol,
+.verseNumber {
   position: absolute;
   top: 0;
   right: 0;
+  transform: translate(0.5em, -0.5em);
   display: block;
   font-size: 0.65em;
   color: var(--primary);
