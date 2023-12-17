@@ -3,10 +3,9 @@ const {
   BrowserWindow,
   screen,
   ipcMain,
-  globalShortcut,
   autoUpdater,
-  dialog,
 } = require("electron");
+const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
@@ -153,7 +152,9 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  // mainWindow.webContents.openDevTools();
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -203,13 +204,20 @@ const createSongWindow = () => {
   songWindow.on("closed", () => {
     app.quit();
   });
-
-  // songWindow.webContents.openDevTools();
+  if (isDev) {
+    songWindow.webContents.openDevTools();
+  }
 };
 
 app.on("ready", createMainWindow);
 app.on("ready", createSongWindow);
 app.on("ready", addIPCs);
+app.on("ready", () => {
+  let currentVersion = app.getVersion();
+  mainWindow.webContents.executeJavaScript(
+    `document.querySelector('#version').textContent =("version: ${currentVersion}")`
+  );
+});
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content) => {
     songWindow.webContents.send("update-song-window", content);
@@ -217,14 +225,17 @@ function addIPCs() {
       mainWindow.webContents.executeJavaScript(
         `
         element = document.querySelector('.active');
-        elementRect = element.getBoundingClientRect();
-        absoluteElementTop = elementRect.top + window.pageYOffset;
-        middle = absoluteElementTop - (window.innerHeight / 2);
-        window.scrollTo({
-          top: middle,
-          left: 0,
-          behavior: "smooth",
-        });
+        if(element){
+
+          elementRect = element.getBoundingClientRect();
+          absoluteElementTop = elementRect.top + window.pageYOffset;
+          middle = absoluteElementTop - (window.innerHeight / 2);
+          window.scrollTo({
+            top: middle,
+            left: 0,
+            behavior: "smooth",
+          });
+        }
         `
       );
     }

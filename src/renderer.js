@@ -11,7 +11,8 @@ const deepModeToggle = document.querySelector("input#deep_mode_input");
 
 let delay = 50;
 whiteButton.addEventListener("click", () => {
-  window.myCustomAPI.updateSongWindow("");
+  // newSlide("");
+  pause();
 });
 
 darkModeToggle.addEventListener("change", () => {
@@ -61,7 +62,7 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
 // setTimeout(() => {
-//   input.value = "السائح المسيحي";
+//   input.value = "يا راحة النفس";
 
 //   // Create a new event
 //   const inputEvent = new Event("input", {
@@ -71,17 +72,19 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 //   input.dispatchEvent(inputEvent);
 // }, 500);
-// const clickSong = new Event("click", {
+
+// let clickDev = new Event("click", {
 //   bubbles: true,
 //   cancelable: true,
 // });
+
 // setTimeout(() => {
 //   let son = document.querySelector(".song");
-//   son.dispatchEvent(clickSong);
+//   son.dispatchEvent(clickDev);
 // }, 2000);
 // setTimeout(() => {
 //   let ver = document.querySelector(".verse");
-//   ver.dispatchEvent(clickSong);
+//   ver.dispatchEvent(clickDev);
 // }, 2500);
 // end testing
 
@@ -106,14 +109,46 @@ input.addEventListener("input", function (e) {
 
 search_output.addEventListener("click", (e) => {
   let clickedSong = e.target.closest(".song");
+
+  // if not song then ignore the click
   if (!clickedSong) return;
-  // console.log(song);
+
+  // get info about the song
   let ref = clickedSong.getAttribute("data-ref");
-  const targetedSong = res.find((song) => song.refIndex == ref);
-  // console.log(res[1].refIndex);
-  console.log(targetedSong.item);
-  preview_output.innerHTML = previewSelectedSong(targetedSong.item);
-  window.myCustomAPI.updateSongWindow("");
+  let currentSong = document.querySelector("#preview_output .song-title");
+  let currentSongRef = 0;
+
+  // if there is a current song in preview, get it's refIndex
+  if (currentSong) {
+    currentSongRef = currentSong.getAttribute("data-ref");
+  }
+
+  // mark the selected song with red border
+  const elements = document.querySelectorAll(".song");
+
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].classList.remove("selectedSong");
+  }
+
+  // if the selected song already is in preview, start showing the first slide
+  clickedSong.classList.add("selectedSong");
+  if (ref && currentSongRef && ref == currentSongRef) {
+    let firstSlide = document.querySelector(".slide");
+    if (firstSlide) {
+      newSlide(firstSlide.innerHTML);
+      firstSlide.classList.add("active");
+    }
+    return;
+
+    // if the selected song is not in preview, add it to preview
+  } else {
+    const targetedSong = res.find((song) => song.refIndex == ref);
+    preview_output.innerHTML = previewSelectedSong(
+      targetedSong.item,
+      targetedSong.refIndex
+    );
+    newSlide("");
+  }
 });
 
 preview_output.addEventListener("click", (e) => {
@@ -127,15 +162,14 @@ preview_output.addEventListener("click", (e) => {
     }
 
     element.classList.add("active");
-    window.myCustomAPI.updateSongWindow(element.innerHTML);
+    newSlide(element.innerHTML);
   }
 });
 
-// test up and down function
+// up and down function
 // ////////////////////////
 // ////////////////////////
 document.addEventListener("keydown", (e) => {
-  // console.log(e.target.id);
   // ignore changing the font size key strokes
   if (e.target.id == "fontSize") {
     return;
@@ -145,8 +179,6 @@ document.addEventListener("keydown", (e) => {
     const previewOutput = document.getElementById("preview_output");
     const activeElement = previewOutput.querySelector(".active");
     if (activeElement) {
-      // console.log("continue");
-
       const siblings = Array.from(activeElement.parentElement.children);
       const position = siblings.indexOf(activeElement);
       const isLast = position === siblings.length - 1;
@@ -175,25 +207,15 @@ document.addEventListener("keydown", (e) => {
         if (e.keyCode === 38 && currentActiveIndex > 0) {
           // Up arrow
           elements[currentActiveIndex - 1].classList.add("active");
-          window.myCustomAPI.updateSongWindow(
-            elements[currentActiveIndex - 1].innerHTML
-          );
+          newSlide(elements[currentActiveIndex - 1].innerHTML);
         } else if (
           e.keyCode === 40 &&
           currentActiveIndex < elements.length - 1
         ) {
           // Down arrow
           elements[currentActiveIndex + 1].classList.add("active");
-          // let elHeight = elements[currentActiveIndex].clientHeight;
-          // let elX = elements[currentActiveIndex].getBoundingClientRect().x;
-          // elements[currentActiveIndex].scrollIntoView({ block: "center" });
 
-          window.myCustomAPI.updateSongWindow(
-            elements[currentActiveIndex + 1].innerHTML
-          );
-        } else {
-          // Handle other keys or do nothing
-          // You can add your custom logic here
+          newSlide(elements[currentActiveIndex + 1].innerHTML);
         }
       }
     }
@@ -201,63 +223,56 @@ document.addEventListener("keydown", (e) => {
 });
 // ////////////////////////
 // ////////////////////////
+
 function truncate(str, max_length) {
   return str.length > max_length ? str.slice(0, max_length - 1) + "…" : str;
 }
 
-function generateHTML(dataArray) {
+function generateHTML(dataArray, truncateLimit = 50) {
   // Ensure the input is an array
   if (!Array.isArray(dataArray)) {
     console.error("Input must be an array.");
     return "";
   }
 
-  // Take the first 5 elements from the array
-  const firstFiveElements = dataArray.slice(0, 15);
+  // Limit the results to the first 10 elements
+  let trimmedResults = dataArray.slice(0, 10);
 
   // Generate HTML for each element
-  const htmlData = firstFiveElements
+  let htmlData = trimmedResults
     .map((element) => {
       // Extract information from the object
-      const { item, refIndex } = element;
-      const { title, chorus, verses } = item;
+      let { item, refIndex } = element;
+      let { title, chorus, verses } = item;
 
       // Generate HTML for title
-      const titleHTML = title ? `<h2>${title}</h2>` : "";
+      let titleHTML = title ? `<h2>${title}</h2>` : "";
 
       // Generate HTML for chorus if it exists
-      const chorusHTML = chorus
-        ? chorus.map((line) => `<p>${line}</p>`).join("")
+      let chorusHTML = chorus
+        ? `<div class="chorus">(ق) ${truncate(
+            chorus.map((line) => `${line}`).join(""),
+            50
+          )}</div>`
         : "";
 
       // Generate HTML for verses if they exist
       let versesHTML = verses
-        ? verses
-            .map((verse) => {
-              const verseLinesHTML = verse
-                .map((line) => `<p>${line}</p>`)
-                .join("");
-              return `<div class="verse">${verseLinesHTML}</div>`;
-            })
-            .join("")
+        ? `<div class="verses">1- ${
+            verses[0] && typeof verses[0][0] == "string"
+              ? truncate(verses[0][0], truncateLimit)
+              : ""
+          }</div>`
         : "";
-      trimmedVerses = "";
-      if (verses[0] && typeof verses[0][0] == "string") {
-        trimmedVerses = truncate(verses[0][0], 50);
-      }
-      versesHTML = "";
+
       // Combine everything into a single HTML block
       return `
-        <div class="song" data-ref="${refIndex}">
-          ${titleHTML}
-          ${
-            chorusHTML
-              ? `<div class="chorus">${truncate(chorusHTML, 50)}</div>`
-              : ""
-          }
-          ${verses[0] ? `<div class="verses">${trimmedVerses}</div>` : ""}
-        </div>
-      `;
+      <div class="song" data-ref="${refIndex}">
+        ${titleHTML}
+        ${chorusHTML}
+        ${versesHTML}
+      </div>
+    `;
     })
     .join("");
 
@@ -265,8 +280,8 @@ function generateHTML(dataArray) {
 }
 
 // preview selected song
-function previewSelectedSong({ title, chorus, verses, chorusFirst }) {
-  let html = `<h4 class="song-title">${title}</h4>`;
+function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
+  let html = `<h4 class="song-title" data-ref="${refIndex}">${title}</h4>`;
   html += `<div class="song-preview">`;
   const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
 
@@ -306,7 +321,7 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }) {
           verseNumber = verseIndex + 1;
           arabicNumber = new Intl.NumberFormat("ar-EG").format(verseNumber);
         }
-        html += `<div class="verse" data-verseNumber="${verseNumber}">
+        html += `<div class="verse slide" data-verseNumber="${verseNumber}">
           <span class="verseNumber">${arabicNumber}</span>
           <div>
           ${replaceLineBreaks(line)}
@@ -321,7 +336,7 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }) {
           if (chorusIndex == 0) {
             chorusSymbol = "ق";
           }
-          html += `<div class="chorus">
+          html += `<div class="chorus slide">
           <span class="chorusSymbol">${chorusSymbol}</span>
           ${replaceLineBreaks(chorusLine)}
           </div>`;
@@ -406,11 +421,11 @@ function throttle(func, delay) {
 
 // all ctrl shortcuts
 document.addEventListener("keydown", (e) => {
-  console.log(e);
+  // console.log(e);
   if (e.ctrlKey && e.key >= "1" && e.key <= "9") {
     // The user pressed Shift + a number (1-9)
     const numberPressed = parseInt(e.key);
-    console.log(numberPressed);
+    // console.log(numberPressed);
 
     let element = document.querySelector(
       `[data-verseNumber="${numberPressed}"]`
@@ -432,12 +447,12 @@ document.addEventListener("keydown", (e) => {
       }
 
       element.classList.add("active");
-      window.myCustomAPI.updateSongWindow(element.innerHTML);
+      newSlide(element.innerHTML);
     }
   }
 
   if (e.ctrlKey && e.code == "KeyF") {
-    console.log(window.scrollY);
+    // console.log(window.scrollY);
     window.scrollTo({
       top: 0,
       left: 0,
@@ -450,6 +465,25 @@ document.addEventListener("keydown", (e) => {
   }
 
   if (e.ctrlKey && e.code == "KeyW") {
-    window.myCustomAPI.updateSongWindow("");
+    // newSlide("");
+    pause();
   }
 });
+
+function pause() {
+  let active = document.querySelector(".active");
+  if (!active) return;
+  if (active.classList.contains("pause")) {
+    active.classList.remove("pause");
+    window.myCustomAPI.updateSongWindow(active.innerHTML);
+  } else {
+    active.classList.add("pause");
+    window.myCustomAPI.updateSongWindow("");
+  }
+}
+
+function newSlide(html) {
+  let paused = document.querySelector(".pause");
+  if (paused) paused.classList.remove("pause");
+  window.myCustomAPI.updateSongWindow(html);
+}

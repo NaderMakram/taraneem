@@ -1,8 +1,8 @@
 :root {
   --primary: #ff7e67;
   --secondary: #07689f;
-   --gray-1: rgba(221, 221, 221, 0.7);
-  --gray-2: rgba(221, 221, 221, 0.9);
+   --gray-1: rgba(221, 221, 221, 0.6);
+  --gray-2: rgba(221, 221, 221, 0.8);
 }
 
 body {
@@ -11,6 +11,7 @@ body {
   margin: auto;
   /* max-width: 38rem; */
   padding: 2rem;
+  user-select: none
   /* scroll-behavior: smooth; */
   /* direction: rtl; */
 }
@@ -38,18 +39,27 @@ body {
   text-align: center;
   direction: rtl;
   padding: 1rem;
-  border: 1px dashed rgb(216, 216, 216);
-  border-radius: 5px;
+  border: 2px dashed rgb(216, 216, 216);
+  border-radius: 8px;
   cursor: pointer;
   margin-bottom: 5px;
+  transition: background-color 0.2s;
 }
+
+.song-preview .chorus div,
+.song-preview .verse div{
+  transition: color 0.2s;
+  
+}
+
+
 .song-preview .chorus {
   font-weight: bold;
 }
 
-.song-preview .active,
+#search_output .song.selectedSong,
 .song-preview .active {
-  border: 1px solid var(--primary);
+  border: 2px solid var(--primary);
 }
 .song-title {
   text-align: center;
@@ -58,12 +68,14 @@ body {
 
 #search_output .song {
   background: var(--gray-1);
+  border: 2px solid var(--gray-1);
   direction: rtl;
   cursor: pointer;
   padding: 1rem;
   margin: 5px;
-  border-radius: 5px;
+  border-radius: 8px;
   text-align: center;
+  box-shadow: #9090901a 0px 1px 3px 0px, #9090901a 0px 1px 2px 0px;
 }
 
 .song h2{
@@ -77,8 +89,8 @@ body {
 #title-input {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
   margin-right: 10px;
   width: 93%;
   text-align: right;
@@ -92,8 +104,8 @@ input#fontSize {
   font-size: 16px;
   background-color: #ffffff;
   color: var(--primary);
-  border: 1px solid var(--primary);
-  border-radius: 5px;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -201,4 +213,16 @@ label#dark_mode_label:active:after {
 
 #deep_mode_input:checked + label:before {
   background-image: url(./img/snail2.png);
+}
+
+#version{
+  margin-bottom: 1rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  
+}
+
+.pause{
+  background: #f7f7f7;
+  color: #bebebe;
 }
