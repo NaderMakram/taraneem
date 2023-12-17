@@ -35,5 +35,11 @@ module.exports = {
       name: "@electron-forge/plugin-auto-unpack-natives",
       config: {},
     },
+    {
+      name: "@electron-forge/plugin-github-publisher",
+      config: {
+        repositoryUrl: "https://github.com/NaderMakram/taraneem",
+      },
+    },
   ],
 };

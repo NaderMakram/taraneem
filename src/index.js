@@ -10,6 +10,16 @@ const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
 
+if(!isDev) {
+  const server = 'https://update.electronjs.org'
+  const feed = `${server}/OWNER/REPO/${process.platform}-${process.arch}/${app.getVersion()}` 
+  autoUpdater.setFeedURL(feed)
+  app.on('ready',()=>{
+    autoUpdater.checkForUpdates()
+  })
+}
+
+
 let fastSearch = true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
