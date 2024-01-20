@@ -1,4 +1,16 @@
 module.exports = {
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "me",
+          name: "awesome-thing",
+        },
+        prerelease: true,
+      },
+    },
+  ],
   packagerConfig: {
     asar: true,
     icon: "./src/assets/taraneem",
@@ -31,15 +43,15 @@ module.exports = {
     },
   ],
   plugins: [
-    {
-      name: "@electron-forge/plugin-auto-unpack-natives",
-      config: {},
-    },
-    {
-      name: "@electron-forge/plugin-github-publisher",
-      config: {
-        repositoryUrl: "https://github.com/NaderMakram/taraneem",
-      },
-    },
+    // {
+    //   name: "@electron-forge/plugin-auto-unpack-natives",
+    //   config: {},
+    // },
+    // {
+    //   name: "@electron-forge/plugin-github-publisher",
+    //   config: {
+    //     repositoryUrl: "https://github.com/NaderMakram/taraneem",
+    //   },
+    // },
   ],
 };

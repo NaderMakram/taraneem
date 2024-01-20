@@ -10,15 +10,20 @@ const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
 
-if(!isDev) {
-  const server = 'https://update.electronjs.org'
-  const feed = `${server}/OWNER/REPO/${process.platform}-${process.arch}/${app.getVersion()}` 
-  autoUpdater.setFeedURL(feed)
-  app.on('ready',()=>{
-    autoUpdater.checkForUpdates()
-  })
-}
+// auto update
+const { updateElectronApp } = require("update-electron-app");
+updateElectronApp();
 
+if (!isDev) {
+  const server = "https://update.electronjs.org";
+  const feed = `${server}/OWNER/REPO/${process.platform}-${
+    process.arch
+  }/${app.getVersion()}`;
+  autoUpdater.setFeedURL(feed);
+  app.on("ready", () => {
+    autoUpdater.checkForUpdates();
+  });
+}
 
 let fastSearch = true;
 
