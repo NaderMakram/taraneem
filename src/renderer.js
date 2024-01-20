@@ -62,7 +62,7 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
 // setTimeout(() => {
-//   input.value = "يا راحة النفس";
+//   input.value = "عند شق الفجر";
 
 //   // Create a new event
 //   const inputEvent = new Event("input", {
