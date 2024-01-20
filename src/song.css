@@ -10,7 +10,7 @@
   font-size: 5.5rem;
   text-align: center;
   padding: 0.2em;
-  line-height: 1.25em;
+  line-height: 1.3em;
   max-width: 90vw;
   transition: 0.3s;
 }
@@ -19,16 +19,21 @@ html {
   height: 100%;
   direction: rtl !important;
   font-family: calibri;
+  cursor: none;
 }
 body {
   color: rgb(23, 23, 23);
   min-height: 100%;
-  /* padding: 5vh 5vw; */
+  padding: 5vh 5vw;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: 0.3s;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 .dark {

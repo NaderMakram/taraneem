@@ -7,7 +7,7 @@ module.exports = {
           owner: "me",
           name: "awesome-thing",
         },
-        prerelease: true,
+        prerelease: false,
       },
     },
   ],

@@ -14,16 +14,16 @@ const Fuse = require("fuse.js");
 const { updateElectronApp } = require("update-electron-app");
 updateElectronApp();
 
-if (!isDev) {
-  const server = "https://update.electronjs.org";
-  const feed = `${server}/OWNER/REPO/${process.platform}-${
-    process.arch
-  }/${app.getVersion()}`;
-  autoUpdater.setFeedURL(feed);
-  app.on("ready", () => {
-    autoUpdater.checkForUpdates();
-  });
-}
+// if (!isDev) {
+//   const server = "https://update.electronjs.org";
+//   const feed = `${server}/OWNER/REPO/${process.platform}-${
+//     process.arch
+//   }/${app.getVersion()}`;
+//   autoUpdater.setFeedURL(feed);
+//   app.on("ready", () => {
+//     autoUpdater.checkForUpdates();
+//   });
+// }
 
 let fastSearch = true;
 
