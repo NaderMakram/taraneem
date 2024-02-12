@@ -53,6 +53,7 @@ let res;
 
 async function searchAndDisplayResults(term) {
   res = await window.myCustomAPI.searchTerm(term);
+  console.log(res);
   // console.log(res);
   search_output.innerHTML = generateHTML(res);
 }

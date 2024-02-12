@@ -4,12 +4,11 @@
   "version": "1.5.2",
   "description": "My Electron application description",
   "main": "src/index.js",
-  
   "repository": {
     "type": "git",
     "url": "https://github.com/NaderMakram/taraneem"
   },
-"scripts": {
+  "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -23,10 +22,10 @@
   },
   "license": "MIT",
   "dependencies": {
+    "electron-builder-squirrel-windows": "^24.11.0",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
-    "fuse.js": "^7.0.0",
-    "update-electron-app": "^3.0.0"
+    "fuse.js": "^7.0.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.4.2",

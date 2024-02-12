@@ -1,4 +1,4 @@
-const {
+﻿const {
   app,
   BrowserWindow,
   screen,
@@ -9,10 +9,11 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
+// const { autoUpdater } = require("electron-updater")
 
 // auto update
-const { updateElectronApp } = require("update-electron-app");
-updateElectronApp();
+// const { updateElectronApp } = require("update-electron-app");
+// updateElectronApp();
 
 // if (!isDev) {
 //   const server = "https://update.electronjs.org";
@@ -33,8 +34,9 @@ if (require("electron-squirrel-startup")) {
 }
 // console.time("MappingSongs");
 const songsDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "tasbe7naDB.json"), "utf-8")
-);
+  fs.readFileSync(path.join(__dirname, "01-genesis.json"), "utf-8")
+)["chapters"];
+// console.log(songsDB);
 
 // Map your songs array and create searchable content for each song
 console.time("creating content time:");
@@ -47,32 +49,26 @@ const songsWithSearchableContent = songsDB.map((song) => {
 console.timeEnd("creating content time:");
 // console.timeEnd("MappingSongs");
 
-const deepFuse = new Fuse(songsWithSearchableContent, {
-  // includeScore: true,
-  threshold: 0.2, // Adjust as needed
+const deepFuse = new Fuse(songsDB, {
+  includeScore: true,
+  threshold: 0.1, // Adjust as needed
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
-  minMatchCharLength: 2,
+  minMatchCharLength: 0,
   // shouldSort: true,
-  tokenize: (input) => {
-    return normalize(input).split(/\s+/); // Split on spaces
-  },
-  keys: ["searchableContent"],
+  keys: ["chapterNameShort"],
 });
 
-const fastFuse = new Fuse(songsWithSearchableContent, {
-  // includeScore: true,
+const fastFuse = new Fuse(songsDB, {
+  includeScore: true,
   threshold: 0.0,
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
-  minMatchCharLength: 2,
+  minMatchCharLength: 0,
   // shouldSort: true,
-  tokenize: (input) => {
-    return normalize(input).split(/\s+/); // Split on spaces
-  },
-  keys: ["searchableContent"],
+  keys: ["chapterNameShort"],
 });
 
 // Function to create a searchable content string for each song
@@ -116,10 +112,12 @@ function searchSongs(event, term) {
   console.log(fastSearch);
   let results;
   if (fastSearch) {
-    results = fastFuse.search(normalizedTerm);
+    results = fastFuse.search(term.split(/\s+/).reverse().join(" "));
   } else {
-    results = deepFuse.search(normalizedTerm);
+    results = deepFuse.search(term.split(/\s+/).reverse().join(" "));
   }
+  // console.log(term);
+  // console.log(results);
   console.timeEnd("searching time");
   return results;
 }
@@ -236,6 +234,13 @@ app.on("ready", () => {
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content) => {
     songWindow.webContents.send("update-song-window", content);
+    songWindow.webContents.executeJavaScript(`
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+    `);
     if (content != "") {
       mainWindow.webContents.executeJavaScript(
         `
