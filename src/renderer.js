@@ -52,46 +52,49 @@ let res;
 // });
 
 async function searchAndDisplayResults(term) {
+  console.log(term.split(/\s+/).reverse().join(" "));
   res = await window.myCustomAPI.searchTerm(term);
+  console.log(res);
   // console.log(res);
-  search_output.innerHTML = generateHTML(res);
+  // search_output.innerHTML = generateHTML(res);
+  search_output.innerHTML = generateBibleHTML(res);
 }
 
 // Use debounce to delay the search function
 let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
-// setTimeout(() => {
-//   input.value = "يا راحة النفس";
+setTimeout(() => {
+  input.value = "تك 1";
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
 
-//   input.dispatchEvent(inputEvent);
-// }, 500);
+  input.dispatchEvent(inputEvent);
+}, 500);
 
-// let clickDev = new Event("click", {
-//   bubbles: true,
-//   cancelable: true,
-// });
+let clickDev = new Event("click", {
+  bubbles: true,
+  cancelable: true,
+});
 
-// setTimeout(() => {
-//   let son = document.querySelector(".song");
-//   son.dispatchEvent(clickDev);
-// }, 2000);
-// setTimeout(() => {
-//   let ver = document.querySelector(".verse");
-//   ver.dispatchEvent(clickDev);
-// }, 2500);
+setTimeout(() => {
+  let son = document.querySelector(".song");
+  son.dispatchEvent(clickDev);
+}, 2000);
+setTimeout(() => {
+  let ver = document.querySelector(".verse");
+  ver.dispatchEvent(clickDev);
+}, 2500);
 // end testing
 
 // Attach the debouncedSearch function to the input event
 input.addEventListener("input", function (e) {
   let term = e.target.value;
-  if (term.length < 3) return;
+  // if (term.length < 3) return;
   debouncedSearch(term);
 });
 
@@ -143,7 +146,8 @@ search_output.addEventListener("click", (e) => {
     // if the selected song is not in preview, add it to preview
   } else {
     const targetedSong = res.find((song) => song.refIndex == ref);
-    preview_output.innerHTML = previewSelectedSong(
+    console.log(targetedSong);
+    preview_output.innerHTML = previewSelectedChapter(
       targetedSong.item,
       targetedSong.refIndex
     );
@@ -236,7 +240,7 @@ function generateHTML(dataArray, truncateLimit = 50) {
   }
 
   // Limit the results to the first 10 elements
-  let trimmedResults = dataArray.slice(0, 10);
+  let trimmedResults = dataArray.slice(0, 30);
 
   // Generate HTML for each element
   let htmlData = trimmedResults
@@ -279,9 +283,65 @@ function generateHTML(dataArray, truncateLimit = 50) {
   return htmlData;
 }
 
+function generateBibleHTML(dataArray, truncateLimit = 50) {
+  // Ensure the input is an array
+  if (!Array.isArray(dataArray)) {
+    console.error("Input must be an array.");
+    return "";
+  }
+
+  // Limit the results to the first 10 elements
+  let trimmedResults = dataArray.slice(0, 30);
+
+  // Generate HTML for each element
+  let htmlData = trimmedResults
+    .map((element) => {
+      // Extract information from the object
+      // console.log(element);
+      let { item, refIndex } = element;
+      let { chapterName, chapterNameShort, chapterNumber, chapterVerses } =
+        item;
+
+      // Generate HTML for title
+      let titleHTML = chapterNameShort
+        ? `<h2>${chapterNameShort.split(/\s+/).reverse().join(" ")}</h2>`
+        : "";
+
+      // Generate HTML for chorus if it exists
+      // let chorusHTML = chorus
+      //   ? `<div class="chorus">(ق) ${truncate(
+      //       chorus.map((line) => `${line}`).join(""),
+      //       50
+      //     )}</div>`
+      //   : "";
+
+      // Generate HTML for verses if they exist
+      // console.log(chapterVerses["1"]);
+      let versesHTML = chapterVerses
+        ? `<div class="verses">1- ${
+            chapterVerses["1"] + "2- " + chapterVerses["2"] + " ..."
+          }</div>`
+        : "";
+
+      // Combine everything into a single HTML block
+      return `
+      <div class="song" data-ref="${refIndex}" dir="rtl">
+        ${titleHTML}
+        ${versesHTML}
+      </div>
+    `;
+    })
+    .join("");
+
+  return htmlData;
+}
+
 // preview selected song
-function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${title}</h4>`;
+function previewSelectedChapter(
+  { chapterName, chapterNameShort, chapterNumber, chapterVerses },
+  refIndex
+) {
+  let html = `<h4 class="song-title" data-ref="${refIndex}">${chapterNameShort}</h4>`;
   html += `<div class="song-preview">`;
   const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
 
@@ -307,9 +367,9 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
   //     }
   //   });
   // }
-  if (verses && verses.length > 0) {
+  if (chapterVerses && chapterVerses.length > 0) {
     for (let verseIndex = 0; verseIndex < verses.length; verseIndex++) {
-      const verse = verses[verseIndex];
+      const verse = chapterVerses[verseIndex];
 
       for (let lineIndex = 0; lineIndex < verse.length; lineIndex++) {
         const line = verse[lineIndex];
@@ -317,14 +377,14 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
         // add verse number for the first line in a verse
         let verseNumber = "";
         let arabicNumber = "";
-        if (lineIndex == 0) {
-          verseNumber = verseIndex + 1;
-          arabicNumber = new Intl.NumberFormat("ar-EG").format(verseNumber);
-        }
+        // if (lineIndex == 0) {
+        //   verseNumber = verseIndex + 1;
+        //   arabicNumber = new Intl.NumberFormat("ar-EG").format(verseNumber);
+        // }
         html += `<div class="verse slide" data-verseNumber="${verseNumber}">
           <span class="verseNumber">${arabicNumber}</span>
           <div>
-          ${replaceLineBreaks(line)}
+          ${verse}
           </div>
           </div>`;
       }
