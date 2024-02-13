@@ -65,7 +65,7 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
 setTimeout(() => {
-  input.value = "تك 1";
+  input.value = "تك21";
 
   // Create a new event
   const inputEvent = new Event("input", {
@@ -81,14 +81,14 @@ let clickDev = new Event("click", {
   cancelable: true,
 });
 
-setTimeout(() => {
-  let son = document.querySelector(".song");
-  son.dispatchEvent(clickDev);
-}, 2000);
-setTimeout(() => {
-  let ver = document.querySelector(".verse");
-  ver.dispatchEvent(clickDev);
-}, 2500);
+// setTimeout(() => {
+//   let son = document.querySelector(".song");
+//   son.dispatchEvent(clickDev);
+// }, 2000);
+// setTimeout(() => {
+//   let ver = document.querySelector(".verse");
+//   ver.dispatchEvent(clickDev);
+// }, 2500);
 // end testing
 
 // Attach the debouncedSearch function to the input event
@@ -343,72 +343,23 @@ function previewSelectedChapter(
 ) {
   let html = `<h4 class="song-title" data-ref="${refIndex}">${chapterNameShort}</h4>`;
   html += `<div class="song-preview">`;
-  const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
+  console.log(chapterVerses);
 
-  if ((chorusFirst && chorus && chorus.length > 0) || verses.length == 0) {
-    chorus.forEach((line) => {
-      html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
-    });
+  for (const [key, value] of Object.entries(chapterVerses)) {
+    console.log(`Key: ${key}, Value: ${value}`);
   }
 
-  // if (verses && verses.length > 0) {
-  //   verses.forEach((verse) => {
-  //     // console.log(verse);
-  //     // Display each line in a separate div
-  //     verse.forEach((line) => {
-  //       html += `<div class="verse">${replaceLineBreaks(line)}</div>`;
-  //     });
+  for (const [key, value] of Object.entries(chapterVerses)) {
+    console.log(value);
 
-  //     if (chorus && chorus.length > 0) {
-  //       // console.log(chorus);
-  //       chorus.forEach((line) => {
-  //         html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
-  //       });
-  //     }
-  //   });
-  // }
-  if (chapterVerses && chapterVerses.length > 0) {
-    for (let verseIndex = 0; verseIndex < verses.length; verseIndex++) {
-      const verse = chapterVerses[verseIndex];
-
-      for (let lineIndex = 0; lineIndex < verse.length; lineIndex++) {
-        const line = verse[lineIndex];
-
-        // add verse number for the first line in a verse
-        let verseNumber = "";
-        let arabicNumber = "";
-        // if (lineIndex == 0) {
-        //   verseNumber = verseIndex + 1;
-        //   arabicNumber = new Intl.NumberFormat("ar-EG").format(verseNumber);
-        // }
-        html += `<div class="verse slide" data-verseNumber="${verseNumber}">
-          <span class="verseNumber">${arabicNumber}</span>
+    // add verse number for the first line in a verse
+    html += `<div class="verse slide" data-verseNumber="${key}">
+          <span class="verseNumber">${key}</span>
           <div>
-          ${verse}
+          ${value}
           </div>
           </div>`;
-      }
-
-      if (chorus && chorus.length > 0) {
-        for (let chorusIndex = 0; chorusIndex < chorus.length; chorusIndex++) {
-          const chorusLine = chorus[chorusIndex];
-          let chorusSymbol = "";
-          if (chorusIndex == 0) {
-            chorusSymbol = "ق";
-          }
-          html += `<div class="chorus slide">
-          <span class="chorusSymbol">${chorusSymbol}</span>
-          ${replaceLineBreaks(chorusLine)}
-          </div>`;
-        }
-      }
-    }
   }
-
-  // if (!chorusFirst && chorus && chorus.length > 0) {
-  //   html += `<div class="chorus">${replaceLineBreaks(chorus.join("\n"))}</div>`;
-  // }
-  html += `<div class="chorus"></div>`;
 
   html += `</div>`;
   return html;

@@ -51,7 +51,7 @@ console.timeEnd("creating content time:");
 
 const deepFuse = new Fuse(songsDB, {
   includeScore: true,
-  threshold: 0.2, // Adjust as needed
+  threshold: 0.1, // Adjust as needed
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
@@ -62,7 +62,7 @@ const deepFuse = new Fuse(songsDB, {
 
 const fastFuse = new Fuse(songsDB, {
   includeScore: true,
-  threshold: 0.0,
+  threshold: 0.5,
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
@@ -103,6 +103,18 @@ function normalize(text) {
       .replace(/[ًٌٍَُِّْ~ـٰ]/g, "")
   ); // Remove Arabic diacritics
 }
+function filterVerse(text) {
+  // Extract letters and numbers using regular expressions
+  const lettersMatch = text.match(/[\u0600-\u06FF]+/g);
+  const numbersMatch = text.match(/\d+/g);
+
+  // Check if matches are null and handle accordingly
+  const letters = lettersMatch ? lettersMatch.join("") : "";
+  const numbers = numbersMatch ? numbersMatch.join("") : "";
+
+  // Return letters followed by a space and then numbers
+  return letters + " " + numbers;
+}
 
 // Function to search for songs
 function searchSongs(event, term) {
@@ -112,7 +124,7 @@ function searchSongs(event, term) {
   console.log(fastSearch);
   let results;
 
-  results = deepFuse.search(term.split(/\s+/).reverse().join(" "));
+  results = deepFuse.search(filterVerse(term).split(/\s+/).reverse().join(" "));
 
   // console.log(term);
   console.timeEnd("searching time");
