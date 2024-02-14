@@ -34,42 +34,42 @@ if (require("electron-squirrel-startup")) {
 }
 // console.time("MappingSongs");
 const songsDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "bible.json"), "utf-8")
+  fs.readFileSync(path.join(__dirname, "chapters_only.json"), "utf-8")
 );
 // console.log(songsDB);
 
 // Map your songs array and create searchable content for each song
 console.time("creating content time:");
-const songsWithSearchableContent = songsDB.map((song) => {
-  return {
-    ...song,
-    searchableContent: createSearchableContent(song),
-  };
-});
+// const songsWithSearchableContent = songsDB.map((song) => {
+//   return {
+//     ...song,
+//     searchableContent: createSearchableContent(song),
+//   };
+// });
 console.timeEnd("creating content time:");
 // console.timeEnd("MappingSongs");
 
 const deepFuse = new Fuse(songsDB, {
   includeScore: true,
-  threshold: 0.1, // Adjust as needed
+  threshold: 0.2, // Adjust as needed
   // location: 200,
   // distance: 1000,
-  ignoreLocation: true,
-  minMatchCharLength: 0,
-  // shouldSort: true,
-  keys: ["chapterNameShort"],
+  // ignoreLocation: true,
+  minMatchCharLength: 2,
+  shouldSort: true,
+  keys: ["chapter_name"],
 });
 
-const fastFuse = new Fuse(songsDB, {
-  includeScore: true,
-  threshold: 0.5,
-  // location: 200,
-  // distance: 1000,
-  ignoreLocation: true,
-  minMatchCharLength: 0,
-  // shouldSort: true,
-  keys: ["chapterNameShort"],
-});
+// const fastFuse = new Fuse(songsDB, {
+//   includeScore: true,
+//   threshold: 0.2,
+//   // location: 200,
+//   // distance: 1000,
+//   ignoreLocation: true,
+//   minMatchCharLength: 1,
+//   // shouldSort: true,
+//   keys: ["chapters.chapter_name"],
+// });
 
 // Function to create a searchable content string for each song
 function createSearchableContent(song) {
@@ -124,10 +124,12 @@ function searchSongs(event, term) {
   console.log(fastSearch);
   let results;
 
-  results = deepFuse.search(filterVerse(term).split(/\s+/).reverse().join(" "));
+  // results = deepFuse.search(filterVerse(term).split(/\s+/).reverse().join(" "));
+  results = deepFuse.search(term);
 
   // console.log(term);
   console.timeEnd("searching time");
+  console.log(results);
   return results;
 }
 

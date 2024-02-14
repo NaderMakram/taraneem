@@ -299,12 +299,11 @@ function generateBibleHTML(dataArray, truncateLimit = 50) {
       // Extract information from the object
       // console.log(element);
       let { item, refIndex } = element;
-      let { chapterName, chapterNameShort, chapterNumber, chapterVerses } =
-        item;
+      let { chapter_name, verses } = item;
 
       // Generate HTML for title
-      let titleHTML = chapterNameShort
-        ? `<h2>${chapterNameShort.split(/\s+/).reverse().join(" ")}</h2>`
+      let titleHTML = chapter_name
+        ? `<h2>${chapter_name.split(/\s+/).reverse().join(" ")}</h2>`
         : "";
 
       // Generate HTML for chorus if it exists
@@ -316,10 +315,10 @@ function generateBibleHTML(dataArray, truncateLimit = 50) {
       //   : "";
 
       // Generate HTML for verses if they exist
-      // console.log(chapterVerses["1"]);
-      let versesHTML = chapterVerses
+      // console.log(verses["1"]);
+      let versesHTML = verses
         ? `<div class="verses">1- ${
-            chapterVerses["1"] + "2- " + chapterVerses["2"] + " ..."
+            verses["1"] + "2- " + verses["2"] + " ..."
           }</div>`
         : "";
 
@@ -337,19 +336,16 @@ function generateBibleHTML(dataArray, truncateLimit = 50) {
 }
 
 // preview selected song
-function previewSelectedChapter(
-  { chapterName, chapterNameShort, chapterNumber, chapterVerses },
-  refIndex
-) {
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${chapterNameShort}</h4>`;
+function previewSelectedChapter({ chapter_name, verses }, refIndex) {
+  let html = `<h4 class="song-title" data-ref="${refIndex}">${chapter_name}</h4>`;
   html += `<div class="song-preview">`;
-  console.log(chapterVerses);
+  console.log(verses);
 
-  for (const [key, value] of Object.entries(chapterVerses)) {
+  for (const [key, value] of Object.entries(verses)) {
     console.log(`Key: ${key}, Value: ${value}`);
   }
 
-  for (const [key, value] of Object.entries(chapterVerses)) {
+  for (const [key, value] of Object.entries(verses)) {
     console.log(value);
 
     // add verse number for the first line in a verse
