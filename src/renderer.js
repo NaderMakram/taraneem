@@ -57,7 +57,7 @@ async function searchAndDisplayResults(term) {
   console.log(res);
   // console.log(res);
   // search_output.innerHTML = generateHTML(res);
-  search_output.innerHTML = generateBibleHTML(res);
+  search_output.innerHTML = generateBibleHTML(res, term);
 }
 
 // Use debounce to delay the search function
@@ -283,7 +283,7 @@ function generateHTML(dataArray, truncateLimit = 50) {
   return htmlData;
 }
 
-function generateBibleHTML(dataArray, truncateLimit = 50) {
+function generateBibleHTML(dataArray, term, truncateLimit = 50) {
   // Ensure the input is an array
   if (!Array.isArray(dataArray)) {
     console.error("Input must be an array.");
@@ -291,20 +291,29 @@ function generateBibleHTML(dataArray, truncateLimit = 50) {
   }
 
   // Limit the results to the first 10 elements
-  let trimmedResults = dataArray.slice(0, 30);
+  let trimmedResults = dataArray.slice(0, 100);
 
   // Generate HTML for each element
   let htmlData = trimmedResults
+    .filter(function (element) {
+      let { item } = element;
+      let { chapter_number } = item;
+      let searched_numbers = term.match(/\d+/g);
+      let numbers = searched_numbers ? searched_numbers.map(Number) : 0;
+      if (chapter_number != numbers[0]) {
+        console.log(searched_numbers);
+        return false; // skip
+      }
+      return true;
+    })
     .map((element) => {
       // Extract information from the object
       // console.log(element);
-      let { item, refIndex } = element;
-      let { chapter_name, verses } = item;
+      let { item, refIndex, score } = element;
+      let { chapter_name, chapter_number, verses } = item;
 
       // Generate HTML for title
-      let titleHTML = chapter_name
-        ? `<h2>${chapter_name.split(/\s+/).reverse().join(" ")}</h2>`
-        : "";
+      let titleHTML = chapter_name ? `<h2>${chapter_name}</h2>` : "";
 
       // Generate HTML for chorus if it exists
       // let chorusHTML = chorus

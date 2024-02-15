@@ -51,13 +51,24 @@ console.timeEnd("creating content time:");
 
 const deepFuse = new Fuse(songsDB, {
   includeScore: true,
-  threshold: 0.2, // Adjust as needed
+  threshold: 0.1, // Adjust as needed
   // location: 200,
   // distance: 1000,
-  // ignoreLocation: true,
-  minMatchCharLength: 2,
+  ignoreLocation: true,
+  minMatchCharLength: 0,
+  // includeMatches: true,
   shouldSort: true,
-  keys: ["chapter_name"],
+  keys: ["chapter_book_short", "chapter_book"],
+  // keys: [
+  //   {
+  //     name: "chapter_book_short",
+  //     weight: 0.5,
+  //   },
+  //   {
+  //     name: "chapter_book",
+  //     weight: 0.1,
+  //   },
+  // ],
 });
 
 // const fastFuse = new Fuse(songsDB, {
@@ -125,7 +136,7 @@ function searchSongs(event, term) {
   let results;
 
   // results = deepFuse.search(filterVerse(term).split(/\s+/).reverse().join(" "));
-  results = deepFuse.search(term);
+  results = deepFuse.search(term.replace(/[\d\b]/g, ""));
 
   // console.log(term);
   console.timeEnd("searching time");
