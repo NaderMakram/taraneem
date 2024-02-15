@@ -71,17 +71,6 @@ const deepFuse = new Fuse(songsDB, {
   // ],
 });
 
-// const fastFuse = new Fuse(songsDB, {
-//   includeScore: true,
-//   threshold: 0.2,
-//   // location: 200,
-//   // distance: 1000,
-//   ignoreLocation: true,
-//   minMatchCharLength: 1,
-//   // shouldSort: true,
-//   keys: ["chapters.chapter_name"],
-// });
-
 // Function to create a searchable content string for each song
 function createSearchableContent(song) {
   const { title, chorus, verses } = song;
@@ -132,16 +121,19 @@ function searchSongs(event, term) {
   const normalizedTerm = normalize(term);
   console.time("searching time");
   // console.log(BrowserWindow.getAllWindows());
-  console.log(fastSearch);
+  // console.log(fastSearch);
   let results;
 
   // results = deepFuse.search(filterVerse(term).split(/\s+/).reverse().join(" "));
-  results = deepFuse.search(term.replace(/[\d\b]/g, ""));
+  text_in_term = term.match(/[\u0600-\u06FF]+/g);
+  if (text_in_term) {
+    results = deepFuse.search(text_in_term[0]);
 
-  // console.log(term);
-  console.timeEnd("searching time");
-  console.log(results);
-  return results;
+    console.log(term.replace(/[\d\b]/g, ""));
+    console.timeEnd("searching time");
+    console.log(results);
+    return results;
+  }
 }
 
 const handleSetTitle = (event, title) => {
