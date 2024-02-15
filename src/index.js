@@ -31,9 +31,13 @@ let fastSearch = true;
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
-// console.time("MappingSongs");
+
 const songsDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "tasbe7naDB.json"), "utf-8")
+);
+
+const bibleDB = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "chapters_only.json"), "utf-8")
 );
 
 // Map your songs array and create searchable content for each song
@@ -75,6 +79,18 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
   keys: ["searchableContent"],
 });
 
+const bibleFuse = new Fuse(bibleDB, {
+  includeScore: true,
+  threshold: 0.1,
+  // location: 200,
+  // distance: 1000,
+  ignoreLocation: true,
+  minMatchCharLength: 0,
+  // includeMatches: true,
+  shouldSort: true,
+  keys: ["chapter_book_short", "chapter_book"],
+});
+
 // Function to create a searchable content string for each song
 function createSearchableContent(song) {
   const { title, chorus, verses } = song;
@@ -110,17 +126,29 @@ function normalize(text) {
 
 // Function to search for songs
 function searchSongs(event, term) {
-  const normalizedTerm = normalize(term);
-  console.time("searching time");
+  let containsDigit = /\d/.test(term);
+
+  // console.time("searching time");
   // console.log(BrowserWindow.getAllWindows());
-  console.log(fastSearch);
+  // console.log(fastSearch);
   let results;
-  if (fastSearch) {
-    results = fastFuse.search(normalizedTerm);
+  if (containsDigit) {
+    // do bible search
+    let text_in_term = term.match(/[\u0600-\u06FF]+/g);
+    if (text_in_term) {
+      results = bibleFuse.search(text_in_term[0]);
+    }
   } else {
-    results = deepFuse.search(normalizedTerm);
+    // do song search
+    let normalizedTerm = normalize(term);
+    if (fastSearch) {
+      results = fastFuse.search(normalizedTerm);
+    } else {
+      results = deepFuse.search(normalizedTerm);
+    }
   }
-  console.timeEnd("searching time");
+
+  // console.timeEnd("searching time");
   return results;
 }
 

@@ -54,38 +54,48 @@ let res;
 async function searchAndDisplayResults(term) {
   res = await window.myCustomAPI.searchTerm(term);
   // console.log(res);
-  search_output.innerHTML = generateHTML(res);
+  let containsDigit = /\d/.test(term);
+  console.log("containsDigit: ", containsDigit);
+
+  if (containsDigit) {
+    // display bible
+    search_output.innerHTML = generateBibleHTML(res, term);
+  } else {
+    // display songs
+    search_output.innerHTML = generateHTML(res);
+  }
+  console.log(res);
 }
 
 // Use debounce to delay the search function
 let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
-// setTimeout(() => {
-//   input.value = "عند شق الفجر";
+setTimeout(() => {
+  input.value = "تك 2";
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
 
-//   input.dispatchEvent(inputEvent);
-// }, 500);
+  input.dispatchEvent(inputEvent);
+}, 1000);
 
-// let clickDev = new Event("click", {
-//   bubbles: true,
-//   cancelable: true,
-// });
+let clickDev = new Event("click", {
+  bubbles: true,
+  cancelable: true,
+});
 
-// setTimeout(() => {
-//   let son = document.querySelector(".song");
-//   son.dispatchEvent(clickDev);
-// }, 2000);
-// setTimeout(() => {
-//   let ver = document.querySelector(".verse");
-//   ver.dispatchEvent(clickDev);
-// }, 2500);
+setTimeout(() => {
+  let son = document.querySelector(".song");
+  son.dispatchEvent(clickDev);
+}, 2000);
+setTimeout(() => {
+  let ver = document.querySelector(".verse");
+  ver.dispatchEvent(clickDev);
+}, 2500);
 // end testing
 
 // Attach the debouncedSearch function to the input event
@@ -109,45 +119,86 @@ input.addEventListener("input", function (e) {
 
 search_output.addEventListener("click", (e) => {
   let clickedSong = e.target.closest(".song");
-
+  let clickedChapter = e.target.closest(".chapter");
+  // console.log("clickedSong: " + clickedSong);
+  // console.log("clickedChapter: " + clickedChapter);
   // if not song then ignore the click
-  if (!clickedSong) return;
 
-  // get info about the song
-  let ref = clickedSong.getAttribute("data-ref");
-  let currentSong = document.querySelector("#preview_output .song-title");
-  let currentSongRef = 0;
+  if (clickedSong) {
+    // get info about the song
+    let ref = clickedSong.getAttribute("data-ref");
+    let currentSong = document.querySelector("#preview_output .song-title");
+    let currentSongRef = 0;
 
-  // if there is a current song in preview, get it's refIndex
-  if (currentSong) {
-    currentSongRef = currentSong.getAttribute("data-ref");
-  }
-
-  // mark the selected song with red border
-  const elements = document.querySelectorAll(".song");
-
-  for (let i = 0; i < elements.length; i++) {
-    elements[i].classList.remove("selectedSong");
-  }
-
-  // if the selected song already is in preview, start showing the first slide
-  clickedSong.classList.add("selectedSong");
-  if (ref && currentSongRef && ref == currentSongRef) {
-    let firstSlide = document.querySelector(".slide");
-    if (firstSlide) {
-      newSlide(firstSlide.innerHTML);
-      firstSlide.classList.add("active");
+    // if there is a current song in preview, get it's refIndex
+    if (currentSong) {
+      currentSongRef = currentSong.getAttribute("data-ref");
     }
-    return;
 
-    // if the selected song is not in preview, add it to preview
-  } else {
-    const targetedSong = res.find((song) => song.refIndex == ref);
-    preview_output.innerHTML = previewSelectedSong(
-      targetedSong.item,
-      targetedSong.refIndex
-    );
-    newSlide("");
+    // mark the selected song with red border
+    const elements = document.querySelectorAll(".song");
+
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.remove("selectedSong");
+    }
+
+    // if the selected song already is in preview, start showing the first slide
+    clickedSong.classList.add("selectedSong");
+    if (ref && currentSongRef && ref == currentSongRef) {
+      let firstSlide = document.querySelector(".slide");
+      if (firstSlide) {
+        newSlide(firstSlide.innerHTML);
+        firstSlide.classList.add("active");
+      }
+      return;
+
+      // if the selected song is not in preview, add it to preview
+    } else {
+      const targetedSong = res.find((song) => song.refIndex == ref);
+      preview_output.innerHTML = previewSelectedSong(
+        targetedSong.item,
+        targetedSong.refIndex
+      );
+      newSlide("");
+    }
+  } else if (clickedChapter) {
+    let ref = clickedChapter.getAttribute("data-ref");
+    let currentSong = document.querySelector("#preview_output .song-title");
+    let currentSongRef = 0;
+
+    // if there is a current song in preview, get it's refIndex
+    if (currentSong) {
+      currentSongRef = currentSong.getAttribute("data-ref");
+    }
+
+    console.log(res);
+    // mark the selected song with red border
+    const elements = document.querySelectorAll(".song");
+
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.remove("selectedSong");
+    }
+
+    // if the selected song already is in preview, start showing the first slide
+    clickedChapter.classList.add("selectedSong");
+    if (ref && currentSongRef && ref == currentSongRef) {
+      let firstSlide = document.querySelector(".slide");
+      if (firstSlide) {
+        newSlide(firstSlide.innerHTML);
+        firstSlide.classList.add("active");
+      }
+      return;
+
+      // if the selected song is not in preview, add it to preview
+    } else {
+      const targetedSong = res.find((song) => song.refIndex == ref);
+      console.log(targetedSong);
+      preview_output.innerHTML = previewSelectedChapter(
+        targetedSong.item,
+        targetedSong.refIndex
+      );
+      newSlide("");
+    }
   }
 });
 
@@ -267,7 +318,7 @@ function generateHTML(dataArray, truncateLimit = 50) {
 
       // Combine everything into a single HTML block
       return `
-      <div class="song" data-ref="${refIndex}">
+      <div class="big song" data-ref="${refIndex}">
         ${titleHTML}
         ${chorusHTML}
         ${versesHTML}
@@ -277,6 +328,81 @@ function generateHTML(dataArray, truncateLimit = 50) {
     .join("");
 
   return htmlData;
+}
+
+function generateBibleHTML(dataArray, term, truncateLimit = 50) {
+  // Ensure the input is an array
+  if (!Array.isArray(dataArray)) {
+    console.error("Input must be an array.");
+    console.log(dataArray);
+    console.log(term);
+    return "";
+  }
+
+  // Limit the results to the first 10 elements
+  // let trimmedResults = dataArray.slice(0, 100);
+
+  // Generate HTML for each element
+  // let containsDigit = /\d/.test(term);
+
+  let htmlData = dataArray
+    .filter(function (element) {
+      let { item } = element;
+      let { chapter_number } = item;
+      let searched_numbers = term.match(/\d+/g);
+      let numbers = searched_numbers ? searched_numbers.map(Number) : 0;
+      if (!searched_numbers[0] || chapter_number != searched_numbers[0]) {
+        return false; // skip
+      }
+      return true;
+    })
+    .map((element) => {
+      let { item, refIndex, score } = element;
+      let { chapter_name, chapter_number, verses } = item;
+
+      let titleHTML = chapter_name ? `<h2>${chapter_name}</h2>` : "";
+
+      let versesHTML = verses
+        ? `<div class="verses">1- ${
+            verses["1"] + "2- " + verses["2"] + " ..."
+          }</div>`
+        : "";
+
+      return `
+      <div class="big chapter" data-ref="${refIndex}" dir="rtl">
+        ${titleHTML}
+        ${versesHTML}
+      </div>
+    `;
+    })
+    .join("");
+
+  return htmlData;
+}
+
+function previewSelectedChapter({ chapter_name, verses }, refIndex) {
+  let html = `<h4 class="song-title" data-ref="${refIndex}">${chapter_name}</h4>`;
+  html += `<div class="song-preview">`;
+  console.log(verses);
+
+  for (const [key, value] of Object.entries(verses)) {
+    console.log(`Key: ${key}, Value: ${value}`);
+  }
+
+  for (const [key, value] of Object.entries(verses)) {
+    console.log(value);
+
+    // add verse number for the first line in a verse
+    html += `<div class="verse slide" data-verseNumber="${key}">
+          <span class="verseNumber">${key}</span>
+          <div>
+          ${value}
+          </div>
+          </div>`;
+  }
+
+  html += `</div>`;
+  return html;
 }
 
 // preview selected song
@@ -291,22 +417,6 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
     });
   }
 
-  // if (verses && verses.length > 0) {
-  //   verses.forEach((verse) => {
-  //     // console.log(verse);
-  //     // Display each line in a separate div
-  //     verse.forEach((line) => {
-  //       html += `<div class="verse">${replaceLineBreaks(line)}</div>`;
-  //     });
-
-  //     if (chorus && chorus.length > 0) {
-  //       // console.log(chorus);
-  //       chorus.forEach((line) => {
-  //         html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
-  //       });
-  //     }
-  //   });
-  // }
   if (verses && verses.length > 0) {
     for (let verseIndex = 0; verseIndex < verses.length; verseIndex++) {
       const verse = verses[verseIndex];
@@ -345,9 +455,6 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
     }
   }
 
-  // if (!chorusFirst && chorus && chorus.length > 0) {
-  //   html += `<div class="chorus">${replaceLineBreaks(chorus.join("\n"))}</div>`;
-  // }
   html += `<div class="chorus"></div>`;
 
   html += `</div>`;
@@ -368,14 +475,6 @@ function debounce(func, delay) {
     }, delay);
   };
 }
-
-// function scroll(y) {
-//   window.scrollBy({
-//     top: x,
-//     left: y,
-//     behavior: "smooth",
-//   });
-// }
 
 function countLineBreaks(text) {
   const lineBreakRegex = /\n/g;
@@ -403,21 +502,6 @@ function throttle(func, delay) {
     }
   };
 }
-
-// start testing jsoneditor
-// create the editor
-// async function readJson() {
-//   const container = document.getElementById("jsoneditor");
-//   const options = { mode: "view" };
-
-//   const myJson = await window.myCustomAPI.readJson();
-//   const editor = new JSONEditor(container, options, myJson);
-//   console.log(editor);
-//   // editor.set(myJson);
-
-//   const updatedJson = editor.get();
-// }
-// readJson();
 
 // all ctrl shortcuts
 document.addEventListener("keydown", (e) => {

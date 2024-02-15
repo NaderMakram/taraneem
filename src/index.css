@@ -1,9 +1,9 @@
 :root {
-  /* --primary: #ff7e67; */
-  --primary: #67ff6a;
+  --primary: #ff7e67;
+  /* --primary: #67ff6a; */
 
   --secondary: #07689f;
-   --gray-1: rgba(221, 221, 221, 0.6);
+  --gray-1: rgba(221, 221, 221, 0.6);
   --gray-2: rgba(221, 221, 221, 0.8);
 }
 
@@ -13,7 +13,7 @@ body {
   margin: auto;
   /* max-width: 38rem; */
   padding: 2rem;
-  user-select: none
+  user-select: none;
   /* scroll-behavior: smooth; */
   /* direction: rtl; */
 }
@@ -49,11 +49,9 @@ body {
 }
 
 .song-preview .chorus div,
-.song-preview .verse div{
+.song-preview .verse div {
   transition: color 0.2s;
-  
 }
-
 
 .song-preview .chorus {
   font-weight: bold;
@@ -68,7 +66,7 @@ body {
   margin-bottom: 35px;
 }
 
-#search_output .song {
+#search_output .big {
   background: var(--gray-1);
   border: 2px solid var(--gray-1);
   direction: rtl;
@@ -80,11 +78,11 @@ body {
   box-shadow: #9090901a 0px 1px 3px 0px, #9090901a 0px 1px 2px 0px;
 }
 
-.song h2{
+.big h2 {
   margin-top: 0;
 }
 
-#search_output .song:hover {
+#search_output .big:hover {
   background: var(--gray-2);
 }
 
@@ -112,14 +110,13 @@ input#fontSize {
   transition: all 0.2s ease;
 }
 
-input#fontSize{
+input#fontSize {
   width: 44px;
 }
 
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"]::-webkit-inner-spin-button {
   opacity: 1;
 }
-
 
 input#fontSize {
   padding: 10px;
@@ -185,7 +182,8 @@ label#dark_mode_label:active:after {
   width: 50px;
 }
 
-.chorusSymbol, .verseNumber{
+.chorusSymbol,
+.verseNumber {
   display: block;
   font-size: 0.65em;
   color: var(--primary);
@@ -198,7 +196,7 @@ label#dark_mode_label:active:after {
   width: 10px;
 }
 
-#deep_mode_label{
+#deep_mode_label {
   cursor: pointer;
 }
 
@@ -208,23 +206,22 @@ label#dark_mode_label:active:after {
   background-repeat: no-repeat;
   display: inline-block;
   margin-left: 10px;
-  width: 30px; 
-  height: 30px; 
-  content:"";
+  width: 30px;
+  height: 30px;
+  content: "";
 }
 
 #deep_mode_input:checked + label:before {
   background-image: url(./img/snail2.png);
 }
 
-#version{
+#version {
   margin-bottom: 1rem;
   font-size: 0.7rem;
   font-weight: 500;
-  
 }
 
-.pause{
+.pause {
   background: #f7f7f7;
   color: #bebebe;
 }
