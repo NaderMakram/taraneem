@@ -6,15 +6,6 @@
   --gray-2: rgba(221, 221, 221, 0.9);
 }
 
-#content {
-  position: relative;
-  font-size: 5.5rem;
-  text-align: center;
-  padding: 0.2em;
-  line-height: 1.3em;
-  max-width: 90vw;
-  transition: 0.3s;
-}
 
 html {
   height: 100%;
@@ -23,8 +14,8 @@ html {
   cursor: none;
 }
 body {
-  color: rgb(23, 23, 23);
-  min-height: calc(100% - 10vh);
+  color: rgb(25, 25, 25);
+  min-height: 90vh;
   padding: 5vh 5vw;
   margin: 0;
   display: flex;
@@ -37,19 +28,58 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+#content {
+  /* position: relative; */
+  font-size: 5.5rem;
+  display: flex;
+  height: 90vh;
+  /* text-align: center; */
+  /* padding: 0.2em; */
+  line-height: 1.3em;
+  /* max-width: 90vw; */
+  /* transition: 0.3s; */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container .body {
+  position: relative;
+}
+
+.container *{
+  margin: 0;
+}
+
+
+/* bible style */
+.bible-head {
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+.bible-body{
+  padding-right: 2rem;
+}
+
+
+/* song style */
 .dark {
   background-color: rgba(0, 0, 0, 0.95);
   color: white;
 }
 
 .fade-in-out {
-  opacity: 1;
+  opacity: 0;
   transition: opacity 150ms ease-in-out; /* Adjust the duration and timing function as needed */
 }
 
-.fade-in-out.hide {
-  opacity: 0;
+.fade-in-out.show {
+  opacity: 1;
 }
+
 
 .bold {
   font-weight: 700;

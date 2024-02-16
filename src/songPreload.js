@@ -20,13 +20,13 @@ function updateContent(content) {
   const contentElement = document.getElementById("content");
 
   // Add the fade-out class to initiate the fade-out effect
-  contentElement.classList.add("hide");
+  contentElement.classList.remove("show");
 
   // Set a timeout to update the content after the fade-out effect completes
   setTimeout(() => {
     contentElement.innerHTML = content;
 
-    // Remove the fade-out class to initiate the fade-in effect
-    contentElement.classList.remove("hide");
+    // Add the fade-in class to initiate the fade-in effect
+    contentElement.classList.add("show");
   }, 150); // Adjust the duration to match the transition duration
 }

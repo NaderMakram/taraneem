@@ -1,4 +1,4 @@
-const {
+﻿const {
   app,
   BrowserWindow,
   screen,
@@ -11,8 +11,8 @@ const fs = require("fs");
 const Fuse = require("fuse.js");
 
 // auto update
-const { updateElectronApp } = require("update-electron-app");
-updateElectronApp();
+// const { updateElectronApp } = require("update-electron-app");
+// updateElectronApp();
 
 // if (!isDev) {
 //   const server = "https://update.electronjs.org";

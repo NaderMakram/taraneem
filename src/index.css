@@ -36,8 +36,7 @@ body {
   flex: 1;
 }
 
-.song-preview .chorus,
-.song-preview .verse {
+.song-preview .slide {
   text-align: center;
   direction: rtl;
   padding: 1rem;
@@ -48,8 +47,7 @@ body {
   transition: background-color 0.2s;
 }
 
-.song-preview .chorus div,
-.song-preview .verse div {
+.song-preview .slide div {
   transition: color 0.2s;
 }
 
@@ -57,7 +55,7 @@ body {
   font-weight: bold;
 }
 
-#search_output .song.selectedSong,
+#search_output .big.selectedSong,
 .song-preview .active {
   border: 2px solid var(--primary);
 }

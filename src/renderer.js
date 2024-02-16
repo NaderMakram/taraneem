@@ -147,8 +147,8 @@ search_output.addEventListener("click", (e) => {
     if (ref && currentSongRef && ref == currentSongRef) {
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
-        newSlide(firstSlide.innerHTML);
         firstSlide.classList.add("active");
+        newSlide(firstSlide.innerHTML);
       }
       return;
 
@@ -184,8 +184,8 @@ search_output.addEventListener("click", (e) => {
     if (ref && currentSongRef && ref == currentSongRef) {
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
-        newSlide(firstSlide.innerHTML);
         firstSlide.classList.add("active");
+        newSlide(firstSlide.innerHTML);
       }
       return;
 
@@ -203,7 +203,7 @@ search_output.addEventListener("click", (e) => {
 });
 
 preview_output.addEventListener("click", (e) => {
-  let element = e.target.closest(".verse, .chorus");
+  let element = e.target.closest(".verse, .chorus, .bible-verse");
 
   if (element) {
     const elements = document.querySelector(".song-preview").children;
@@ -393,7 +393,7 @@ function previewSelectedChapter({ chapter_name, verses }, refIndex) {
     console.log(value);
 
     // add verse number for the first line in a verse
-    html += `<div class="verse slide" data-verseNumber="${key}">
+    html += `<div class="bible-verse slide" data-verseNumber="${key}">
           <span class="verseNumber">${key}</span>
           <div>
           ${value}
@@ -567,7 +567,32 @@ function pause() {
 }
 
 function newSlide(html) {
+  // console.log(html);
   let paused = document.querySelector(".pause");
   if (paused) paused.classList.remove("pause");
-  window.myCustomAPI.updateSongWindow(html);
+  // if it's a bible verse, add the chapter title
+  if (
+    document.querySelector(".slide").classList.contains("bible-verse") &&
+    document.querySelector(".slide.active")
+  ) {
+    let chapter_title = document.querySelector(".song-title").outerHTML;
+    let combined_html = `<div class="container bible-container">
+    <div class="head bible-head">
+    ${chapter_title}
+    </div>
+    
+    <div class="body bible-body">
+    ${html}
+    </div>
+    </div>`;
+    console.log(combined_html);
+    window.myCustomAPI.updateSongWindow(combined_html);
+  } else {
+    let combined_html = `<div class="container song-container">
+    <div class="body song-body">
+    ${html}
+    </div>
+    </div>`;
+    window.myCustomAPI.updateSongWindow(combined_html);
+  }
 }
