@@ -1,10 +1,4 @@
-﻿const {
-  app,
-  BrowserWindow,
-  screen,
-  ipcMain,
-  autoUpdater,
-} = require("electron");
+﻿const { app, BrowserWindow, screen, ipcMain } = require("electron");
 const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
@@ -262,8 +256,8 @@ app.on("ready", () => {
   );
 });
 function addIPCs() {
-  ipcMain.on("update-song-window", (event, content) => {
-    songWindow.webContents.send("update-song-window", content);
+  ipcMain.on("update-song-window", (event, content, isBible) => {
+    songWindow.webContents.send("update-song-window", content, isBible);
     if (content != "") {
       mainWindow.webContents.executeJavaScript(
         `

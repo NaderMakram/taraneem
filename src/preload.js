@@ -4,8 +4,8 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
   flipSearchingMode: () => ipcRenderer.send("flip-searching-mode"),
   searchTerm: (term) => ipcRenderer.invoke("search-songs", term),
-  updateSongWindow: (content) => {
-    ipcRenderer.send("update-song-window", content);
+  updateSongWindow: (content, isBible) => {
+    ipcRenderer.send("update-song-window", content, isBible);
     // console.log(content.clientHeight);
     // window.scrollBy(0, content.clientHeight);
   },

@@ -8,6 +8,78 @@ const fontSizeInput = document.querySelector("#fontSize");
 const fontWeightBtn = document.querySelector("#bold");
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
+const slideScreen = document.querySelector("#slide-screen");
+
+let keySequence = [];
+document.addEventListener("keydown", function (event) {
+  const key = event.key;
+  const focusedElementType = document.activeElement.tagName.toLowerCase();
+
+  // Check if the focused element is an input field or a number field
+  if (
+    focusedElementType === "input" &&
+    (document.activeElement.type === "text" ||
+      document.activeElement.type === "number")
+  ) {
+    return; // Do nothing if the focused element is an input field
+  }
+
+  // Check if the pressed key is a number
+  if (!isNaN(key)) {
+    // Add the pressed key to the sequence
+    keySequence.push(key);
+
+    // Display the key sequence in the slide screen
+    slideScreen.textContent = keySequence.join("");
+
+    // Reset the sequence every 3 digits
+    if (keySequence.length === 4) {
+      // Reset the sequence
+      keySequence = [];
+      // Clear the slide screen
+      slideScreen.textContent = "";
+    }
+
+    // Prevent default behavior
+    event.preventDefault();
+  } else if (event.keyCode === 13) {
+    // Check if the pressed key is Enter
+    // Check if there's content in the slide screen
+    if (slideScreen.textContent.trim() !== "") {
+      // Log the content
+      console.log(slideScreen.textContent.trim());
+      const numberPressed = parseInt(slideScreen.textContent.trim());
+      // console.log(numberPressed);
+
+      let element = document.querySelector(
+        `[data-verseNumber="${numberPressed}"]`
+      );
+      // if (!element) return;
+      // console.log(element);
+      // const elements = document.querySelector(".song-preview").children;
+      // for (let i = 0; i < elements.length; i++) {
+      //   elements[i].classList.remove("active");
+      // }
+
+      // element.classList.add("active");
+      // ipcRenderer.send("update-song-window", element.innerHTML);
+      if (element) {
+        const elements = document.querySelector(".song-preview").children;
+
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].classList.remove("active");
+        }
+
+        element.classList.add("active");
+        newSlide(element.innerHTML);
+      }
+
+      keySequence = [];
+      // Clear the slide screen
+      slideScreen.textContent = "";
+    }
+  }
+});
 
 let delay = 50;
 whiteButton.addEventListener("click", () => {
@@ -72,7 +144,7 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
 setTimeout(() => {
-  input.value = "تك 2";
+  input.value = "تك 8";
 
   // Create a new event
   const inputEvent = new Event("input", {
@@ -89,11 +161,11 @@ let clickDev = new Event("click", {
 });
 
 setTimeout(() => {
-  let son = document.querySelector(".song");
+  let son = document.querySelector(".big");
   son.dispatchEvent(clickDev);
 }, 2000);
 setTimeout(() => {
-  let ver = document.querySelector(".verse");
+  let ver = document.querySelector(".slide");
   ver.dispatchEvent(clickDev);
 }, 2500);
 // end testing
@@ -136,7 +208,7 @@ search_output.addEventListener("click", (e) => {
     }
 
     // mark the selected song with red border
-    const elements = document.querySelectorAll(".song");
+    const elements = document.querySelectorAll(".big");
 
     for (let i = 0; i < elements.length; i++) {
       elements[i].classList.remove("selectedSong");
@@ -173,7 +245,7 @@ search_output.addEventListener("click", (e) => {
 
     console.log(res);
     // mark the selected song with red border
-    const elements = document.querySelectorAll(".song");
+    const elements = document.querySelectorAll(".big");
 
     for (let i = 0; i < elements.length; i++) {
       elements[i].classList.remove("selectedSong");
@@ -455,7 +527,7 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
     }
   }
 
-  html += `<div class="chorus"></div>`;
+  html += `<div class="chorus slide"></div>`;
 
   html += `</div>`;
   return html;
@@ -570,10 +642,12 @@ function newSlide(html) {
   // console.log(html);
   let paused = document.querySelector(".pause");
   if (paused) paused.classList.remove("pause");
+  console.log(html.length);
   // if it's a bible verse, add the chapter title
   if (
-    document.querySelector(".slide").classList.contains("bible-verse") &&
-    document.querySelector(".slide.active")
+    (document.querySelector(".slide").classList.contains("bible-verse") &&
+      document.querySelector(".slide.active")) ||
+    html.legnth == 0
   ) {
     let chapter_title = document.querySelector(".song-title").outerHTML;
     let combined_html = `<div class="container bible-container">
@@ -585,14 +659,14 @@ function newSlide(html) {
     ${html}
     </div>
     </div>`;
-    console.log(combined_html);
-    window.myCustomAPI.updateSongWindow(combined_html);
+    // console.log(combined_html);
+    window.myCustomAPI.updateSongWindow(combined_html, true);
   } else {
     let combined_html = `<div class="container song-container">
     <div class="body song-body">
     ${html}
     </div>
     </div>`;
-    window.myCustomAPI.updateSongWindow(combined_html);
+    window.myCustomAPI.updateSongWindow(combined_html, false);
   }
 }
