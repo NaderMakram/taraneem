@@ -15,6 +15,15 @@ document.addEventListener("keydown", function (event) {
   const key = event.key;
   const focusedElementType = document.activeElement.tagName.toLowerCase();
 
+  // escape focus
+  if (key === "Escape") {
+    // Get the currently focused element
+    const focusedElement = document.activeElement;
+
+    // Remove focus from the currently focused element
+    focusedElement.blur();
+  }
+
   // Check if the focused element is an input field or a number field
   if (
     focusedElementType === "input" &&
@@ -45,7 +54,18 @@ document.addEventListener("keydown", function (event) {
   } else if (event.keyCode === 13) {
     // Check if the pressed key is Enter
     // Check if there's content in the slide screen
-    if (slideScreen.textContent.trim() !== "") {
+    let bigElement = document.querySelector(".big");
+    if (slideScreen.textContent.trim() == "" && bigElement) {
+      let activeSlide = document.querySelector("#preview_output .active");
+      console.log(!activeSlide);
+      console.log(bigElement.classList.contains("active"));
+      if (bigElement.classList.contains("selectedSong") && !activeSlide) {
+        console.log("here");
+        setTimeout(() => {
+          bigElement.click();
+        }, 200);
+      }
+    } else if (slideScreen.textContent.trim() !== "") {
       // Log the content
       console.log(slideScreen.textContent.trim());
       const numberPressed = parseInt(slideScreen.textContent.trim());
@@ -144,7 +164,7 @@ let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
 setTimeout(() => {
-  input.value = "تك 8";
+  input.value = "ان اشتياق القلب زاد";
 
   // Create a new event
   const inputEvent = new Event("input", {
@@ -163,11 +183,11 @@ let clickDev = new Event("click", {
 setTimeout(() => {
   let son = document.querySelector(".big");
   son.dispatchEvent(clickDev);
-}, 2000);
+}, 2500);
 setTimeout(() => {
   let ver = document.querySelector(".slide");
   ver.dispatchEvent(clickDev);
-}, 2500);
+}, 2800);
 // end testing
 
 // Attach the debouncedSearch function to the input event
@@ -175,6 +195,26 @@ input.addEventListener("input", function (e) {
   let term = e.target.value;
   if (term.length < 3) return;
   debouncedSearch(term);
+});
+
+input.addEventListener("keydown", function (event) {
+  // Check if the pressed key is 'Enter' (key code 13)
+  if (event.keyCode === 13) {
+    // Log "Enter" to the console
+    console.log("Enter");
+    let bigElement = document.querySelector(".big");
+
+    // Check if the bigElement exists
+    if (bigElement) {
+      // Dispatch a click event to the big element twice
+      bigElement.click();
+    }
+
+    // Remove focus from the input field
+    input.blur(); // This removes focus from the input
+    // Stop the event from bubbling up to the document
+    event.stopPropagation();
+  }
 });
 
 // input.addEventListener("keydown", function (e) {
@@ -452,8 +492,15 @@ function generateBibleHTML(dataArray, term, truncateLimit = 50) {
   return htmlData;
 }
 
-function previewSelectedChapter({ chapter_name, verses }, refIndex) {
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${chapter_name}</h4>`;
+function previewSelectedChapter(
+  { chapter_name, chapter_book, chapter_number, verses },
+  refIndex
+) {
+  let chapter_number_ar = new Intl.NumberFormat("ar-EG").format(chapter_number);
+
+  let html = `<h4 class="song-title" data-ref="${refIndex}">${
+    chapter_book + "  " + chapter_number_ar
+  }</h4>`;
   html += `<div class="song-preview">`;
   console.log(verses);
 
@@ -466,7 +513,9 @@ function previewSelectedChapter({ chapter_name, verses }, refIndex) {
 
     // add verse number for the first line in a verse
     html += `<div class="bible-verse slide" data-verseNumber="${key}">
-          <span class="verseNumber">${key}</span>
+          <span class="verseNumber">${new Intl.NumberFormat("ar-EG").format(
+            key
+          )}</span>
           <div>
           ${value}
           </div>
@@ -485,7 +534,7 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
 
   if ((chorusFirst && chorus && chorus.length > 0) || verses.length == 0) {
     chorus.forEach((line) => {
-      html += `<div class="chorus">${replaceLineBreaks(line)}</div>`;
+      html += `<div class="chorus slide">${replaceLineBreaks(line)}</div>`;
     });
   }
 
@@ -617,7 +666,7 @@ document.addEventListener("keydown", (e) => {
     setTimeout(() => {
       input.focus();
       input.select();
-    }, window.scrollY / (window.scrollY < 4000 ? 3 : 12));
+    }, window.scrollY / (window.scrollY < 4000 ? 3 : 15));
   }
 
   if (e.ctrlKey && e.code == "KeyW") {

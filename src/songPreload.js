@@ -1,7 +1,10 @@
 const { ipcRenderer } = require("electron");
 
 ipcRenderer.on("update-font-size", (event, message) => {
-  document.querySelector("html").style.fontSize = `${message}px`;
+  console.log(parseInt(message) / 10);
+  document.querySelector(".body").style.fontSize = `${
+    parseInt(message) / 10
+  }vw`;
 });
 
 ipcRenderer.on("toggle-dark-mode", (event, message) => {
@@ -16,8 +19,10 @@ ipcRenderer.on("update-song-window", (event, content, isBible) => {
   // console.log(isBible);
   if (isBible) {
     // reset html font size
-    let html = document.querySelector("html");
-    html.style.fontSize = `20px`;
+    let text = document.querySelector(".bible-body div");
+    if (text) {
+      text.style.fontSize = `8vw`;
+    }
     // update slide
     const contentElement = document.getElementById("content");
     contentElement.innerHTML = content;
@@ -47,16 +52,37 @@ function adjustFontSizeToFit() {
   let container = document.querySelector(".bible-body");
   let text = document.querySelector(".bible-body div");
   let html = document.querySelector("html");
-  let fontSize = parseInt(window.getComputedStyle(html).fontSize); // Get the computed font size
+  let fontSize = parseFloat(window.getComputedStyle(text).fontSize); // Get the computed font size in vw
 
   // Reduce font size until text fits within container
-  if (fontSize && container) {
-    while (
-      text.scrollWidth > container.offsetWidth ||
-      text.scrollHeight > container.offsetHeight
-    ) {
-      fontSize--;
-      html.style.fontSize = `${fontSize}px`;
+  if (fontSize && container && text.scrollHeight > container.offsetHeight) {
+    console.time("OptimizedFontSizeCalculation"); // Start measuring time for the optimized font size calculation
+
+    let minFontSize = 4; // Minimum font size
+    let maxFontSize = 8; // Maximum font size (adjust as needed)
+    let finalFontSize = -1; // Variable to store the final font size
+
+    // Binary search for the optimal font size
+    while (minFontSize <= maxFontSize) {
+      const midFontSize = (minFontSize + maxFontSize) / 2; // Calculate the middle font size
+      text.style.fontSize = `${midFontSize}vw`; // Set the font size
+      console.log(midFontSize);
+
+      // Check if the text fits within the container
+      if (
+        text.scrollWidth <= container.offsetWidth &&
+        text.scrollHeight <= container.offsetHeight
+      ) {
+        finalFontSize = midFontSize; // Update the final font size
+        minFontSize = midFontSize + 0.1; // Continue searching for larger font size
+      } else {
+        maxFontSize = midFontSize - 0.1; // Continue searching for smaller font size
+      }
     }
+
+    // Apply the final font size
+    text.style.fontSize = `${finalFontSize}vw`;
+
+    console.timeEnd("OptimizedFontSizeCalculation"); // End measuring time for the optimized font size calculation and print the result
   }
 }
