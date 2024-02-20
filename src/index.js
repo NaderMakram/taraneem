@@ -82,7 +82,7 @@ const bibleFuse = new Fuse(bibleDB, {
   minMatchCharLength: 0,
   // includeMatches: true,
   shouldSort: true,
-  keys: ["chapter_book_short", "chapter_book"],
+  keys: ["chapter_book_short", "chapter_book_normalized"],
 });
 
 // Function to create a searchable content string for each song
