@@ -34,7 +34,7 @@ body::-webkit-scrollbar {
 }
 
 /* .container { */
-  /* display: flex;
+/* display: flex;
   flex-direction: column; */
 /* } */
 
@@ -42,15 +42,13 @@ body::-webkit-scrollbar {
   position: relative;
 }
 
-.container .song-body{
+.container .song-body {
   line-height: 1.3em;
-
 }
 
-.container *{
+.container * {
   margin: 0;
 }
-
 
 /* bible style */
 .bible-head {
@@ -60,17 +58,18 @@ body::-webkit-scrollbar {
   color: var(--primary);
 }
 
-.bible-body{
+.bible-body {
   padding-right: 45px;
-  font-size: 5rem;
+  font-size: 6rem;
+  line-height: 1.5em;
   height: 80vh;
 }
 
-.bible-body .verseNumber{
+.bible-body .verseNumber {
   font-size: 35px;
 }
 
-.song-body{
+.song-body {
   padding-right: 2rem;
   font-size: 5rem;
   display: flex;
@@ -79,14 +78,13 @@ body::-webkit-scrollbar {
   text-align: center;
 }
 
-.song-container{
+.song-container {
   display: flex;
   min-height: 90vh;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
-
 
 /* song style */
 .dark {
@@ -103,7 +101,6 @@ body::-webkit-scrollbar {
 .fade-in-out.show {
   opacity: 1;
 }
-
 
 .bold {
   font-weight: 700;
