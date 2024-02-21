@@ -18,6 +18,7 @@ body {
   align-items: center;
   justify-content: center; */
     background-image: url("./img/clean-gray-paper-40.png");
+    /* background-image: url("./img/cream-paper.png"); */
     background-repeat: repeat;
   transition: 0.3s;
 
@@ -69,7 +70,7 @@ body::-webkit-scrollbar {
 }
 .bible-head {
   text-align: center;
-  padding-bottom: 3vw;
+  padding-bottom: 2.7vw;
   padding-top: 1vw;
   line-height: 1em;
   font-size: 3.8vw;
@@ -77,10 +78,10 @@ body::-webkit-scrollbar {
 }
 
 .bible-body{
-  padding-right: 45px;
+  padding-right: 4vw;
   font-size: 8vw;
   line-height: 1.4em;
-  height: 83vh;
+  height: 82.5vh;
 }
 
 
@@ -91,7 +92,8 @@ body::-webkit-scrollbar {
   /* text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); */
 }
 .bible-body .verseNumber {
-  font-size: 3.5vw;
+  font-size: 3vw;
+  transform: translate(1.2rem, -0.3rem);
 }
 
 .song-body {
