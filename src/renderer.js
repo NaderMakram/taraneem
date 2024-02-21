@@ -193,7 +193,7 @@ setTimeout(() => {
 // Attach the debouncedSearch function to the input event
 input.addEventListener("input", function (e) {
   let term = e.target.value;
-  if (term.length < 3) return;
+  if (term.length < 3) return (search_output.innerHTML = "");
   debouncedSearch(term);
 });
 
@@ -463,10 +463,12 @@ function generateBibleHTML(dataArray, term, truncateLimit = 50) {
     .filter(function (element) {
       let { item } = element;
       let { chapter_number } = item;
-      let searched_numbers = term.match(/\d+/g);
+      let searched_numbers = term.match(/\d+$/);
       let numbers = searched_numbers ? searched_numbers.map(Number) : 0;
-      if (!searched_numbers[0] || chapter_number != searched_numbers[0]) {
-        return false; // skip
+      if (searched_numbers) {
+        if (!searched_numbers[0] || chapter_number != searched_numbers[0]) {
+          return false; // skip
+        }
       }
       return true;
     })

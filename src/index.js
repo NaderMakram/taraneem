@@ -128,9 +128,14 @@ function searchSongs(event, term) {
   let results;
   if (containsDigit) {
     // do bible search
-    let text_in_term = term.match(/[\u0600-\u06FF]+/g);
-    if (text_in_term) {
-      results = bibleFuse.search(text_in_term[0]);
+    let termWithoutSpaces = term.replace(/\s+/g, "");
+    let book_and_chapter = termWithoutSpaces.match(
+      /(?:\b\d+)?[\u0600-\u06FF]+/
+    );
+    if (book_and_chapter) {
+      console.log("text in term", book_and_chapter[0]);
+      results = bibleFuse.search(book_and_chapter[0]);
+      console.log(results);
     }
   } else {
     // do song search
