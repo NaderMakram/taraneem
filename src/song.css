@@ -17,7 +17,10 @@ body {
   /* display: flex;
   align-items: center;
   justify-content: center; */
+    background-image: url("./img/clean-gray-paper-40.png");
+    background-repeat: repeat;
   transition: 0.3s;
+
 }
 
 body::-webkit-scrollbar {
@@ -56,11 +59,13 @@ body::-webkit-scrollbar {
 
 /* bible style */
 .bible-container{
-  /* font-family: 'Scheherazade New'; */
-  font-family: "Noto Naskh Arabic", serif;
-  font-optical-sizing: auto;
-  /* font-weight: 400; */
-  font-style: normal;
+  font-family: 'Scheherazade New';
+  font-family: 'Times New Roman';
+
+  /* font-family: "Noto Naskh Arabic", serif; */
+  /* font-optical-sizing: auto; */
+  /* font-weight: 500; */
+  /* font-style: normal; */
 }
 .bible-head {
   text-align: center;
@@ -82,7 +87,7 @@ body::-webkit-scrollbar {
 /* the actual bible verse */
 .bible-body > div{
   line-height: 1.35em !important;
-  -webkit-text-stroke-width: 1px;
+  /* -webkit-text-stroke-width: 1px; */
   /* text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); */
 }
 .bible-body .verseNumber {
@@ -91,7 +96,7 @@ body::-webkit-scrollbar {
 
 .song-body {
   padding-right: 2rem;
-  font-size: 6vw;
+  font-size: 6rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,6 +114,7 @@ body::-webkit-scrollbar {
 /* song style */
 .dark {
   /* background-color: rgba(0, 0, 0, 0.95); */
+  background-image: none;
   background-color: #15171d;
   color: whitesmoke;
 }
@@ -133,7 +139,7 @@ body::-webkit-scrollbar {
   position: absolute;
   top: 0;
   right: 0;
-  transform: translate(0.5em, -0.3em);
+  transform: translate(0.7rem, -0.3rem);
   display: block;
   font-size: 0.5em;
   color: var(--primary);

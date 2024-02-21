@@ -237,6 +237,7 @@ search_output.addEventListener("click", (e) => {
   // if not song then ignore the click
 
   if (clickedSong) {
+    toggleFontSizeInput(false);
     // get info about the song
     let ref = clickedSong.getAttribute("data-ref");
     let currentSong = document.querySelector("#preview_output .song-title");
@@ -274,6 +275,7 @@ search_output.addEventListener("click", (e) => {
       newSlide("");
     }
   } else if (clickedChapter) {
+    toggleFontSizeInput(true);
     let ref = clickedChapter.getAttribute("data-ref");
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
@@ -677,10 +679,10 @@ document.addEventListener("keydown", (e) => {
 
 function pause() {
   let active = document.querySelector(".active");
+  console.log(active.innerHTML);
   if (!active) return;
   if (active.classList.contains("pause")) {
-    active.classList.remove("pause");
-    window.myCustomAPI.updateSongWindow(active.innerHTML);
+    active.click();
   } else {
     active.classList.add("pause");
     window.myCustomAPI.updateSongWindow("");
@@ -719,3 +721,25 @@ function newSlide(html) {
     window.myCustomAPI.updateSongWindow(combined_html, false);
   }
 }
+
+let toggleFontSizeInput = (isBible) => {
+  if (isBible) {
+    // Disable the input field
+    fontSizeInput.disabled = true;
+
+    // Change cursor style to not-allowed
+    fontSizeInput.style.cursor = "not-allowed";
+
+    // Adjust opacity to visually indicate disabled state
+    fontSizeInput.style.opacity = "0.5"; // Example: Reduced opacity (50%)
+  } else {
+    // Enable the input field
+    fontSizeInput.disabled = false;
+
+    // Reset cursor style
+    fontSizeInput.style.cursor = "pointer";
+
+    // Reset opacity
+    fontSizeInput.style.opacity = "1"; // Reset opacity to normal
+  }
+};
