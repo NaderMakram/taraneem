@@ -163,31 +163,31 @@ async function searchAndDisplayResults(term) {
 let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
-setTimeout(() => {
-  input.value = "ان اشتياق القلب زاد";
+// setTimeout(() => {
+//   input.value = "ان اشتياق القلب زاد";
 
-  // Create a new event
-  const inputEvent = new Event("input", {
-    bubbles: true,
-    cancelable: true,
-  });
+//   // Create a new event
+//   const inputEvent = new Event("input", {
+//     bubbles: true,
+//     cancelable: true,
+//   });
 
-  input.dispatchEvent(inputEvent);
-}, 1000);
+//   input.dispatchEvent(inputEvent);
+// }, 1000);
 
-let clickDev = new Event("click", {
-  bubbles: true,
-  cancelable: true,
-});
+// let clickDev = new Event("click", {
+//   bubbles: true,
+//   cancelable: true,
+// });
 
-setTimeout(() => {
-  let son = document.querySelector(".big");
-  son.dispatchEvent(clickDev);
-}, 2500);
-setTimeout(() => {
-  let ver = document.querySelector(".slide");
-  ver.dispatchEvent(clickDev);
-}, 2800);
+// setTimeout(() => {
+//   let son = document.querySelector(".big");
+//   son.dispatchEvent(clickDev);
+// }, 2500);
+// setTimeout(() => {
+//   let ver = document.querySelector(".slide");
+//   ver.dispatchEvent(clickDev);
+// }, 2800);
 // end testing
 
 // Attach the debouncedSearch function to the input event
