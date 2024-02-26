@@ -4,6 +4,7 @@ body {
   margin: auto;
   /* max-width: 38rem; */
   padding: 2rem;
+  min-height: calc(100vh - 4rem);
   position: relative;
   user-select: none;
   /* scroll-behavior: smooth; */
@@ -15,9 +16,10 @@ body {
   align-items: center;
   position: sticky;
   background: white;
-  top: 0;
+  top: -1px;
   padding: 10px;
   border-bottom: 1px solid #e0e0e0;
+  z-index: 100;
 }
 
 #tools_bar > * {
@@ -52,7 +54,7 @@ body {
   font-weight: bold;
 }
 
-#search_output .big.selectedSong,
+.big.selectedSong,
 .song-preview .active {
   border: 2px solid var(--primary);
 }
@@ -61,7 +63,7 @@ body {
   margin-bottom: 35px;
 }
 
-#search_output .big {
+ .big {
   background: var(--gray-1);
   border: 2px solid var(--gray-1);
   direction: rtl;
@@ -77,8 +79,29 @@ body {
   margin-top: 0;
 }
 
-#search_output .big:hover {
+ .big:hover {
   background: var(--gray-2);
+}
+
+.big{
+  position: relative;
+}
+
+.plus, .delete{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: transform 0.2s;
+}
+.plus:hover, .delete:hover{
+opacity: 1;
+transform: scale(1.2);
 }
 
 #title-input {
@@ -216,10 +239,8 @@ label#dark_mode_label:active:after {
   font-weight: 500;
 }
 
-.pause {
-  background: #f7f7f7;
-  color: #bebebe;
-}
+
+/* .hide{display: none} */
 
 #slide-screen {
   width: 45px;
@@ -229,10 +250,34 @@ label#dark_mode_label:active:after {
   position: sticky;
   bottom: 30px;
   font-size: 18px;
-  left: 30px;
+  left: 37px;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding-bottom: 2px;
+}
+
+.waiting-mode .plus,
+.waiting-mode #waiting-wrapper {
+  display: none;
+}
+
+#list-toggle-group{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  /* margin-left: 0.7rem; */
+  /* border: 2px solid var(--primary);
+  border-radius: 8px; */
+}
+
+#list-toggle-group *{
+  margin: 0;
+}
+#list-toggle-group input{
+  width: 1.8rem;
+  height: 1.8rem;
+  transform: translate(-0.4rem, 0.15rem);
 }

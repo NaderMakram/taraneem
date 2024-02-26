@@ -11,9 +11,9 @@
     <!-- <div id="jsoneditor" style="width: 400px; height: 400px"></div> -->
     <div id="version"></div>
     <div id="tools_bar">
-      <button id="white" title="Blank (Ctrl + W)">white</button>
+      <button id="white" title="Blank (Ctrl + W)">Pause</button>
       <!-- bold font button -->
-      <button id="bold" title="Bold">B</button>
+      <button id="bold" title="Bold">Bold</button>
 
       <!-- font size input -->
       <input
@@ -46,6 +46,16 @@
       <label for="dark_mode_input" title="Dark Mode" id="dark_mode_label"
         >Toggle</label
       >
+      <!-- waiting toggle -->
+      <div id="list-toggle-group">
+        📋
+        <input
+          type="checkbox"
+          title="List Mode"
+          checked
+          id="waiting_mode_input"
+        />
+      </div>
     </div>
 
     <div id="main-wrapper">
@@ -53,6 +63,10 @@
         <h2>search</h2>
         <input id="title-input" autocomplete="on" />
         <div id="search_output"></div>
+      </div>
+      <div id="waiting-wrapper" class="hide">
+        <h2>List</h2>
+        <div id="waiting_output"></div>
       </div>
       <div id="preview-wrapper">
         <h2>preview</h2>

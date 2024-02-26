@@ -133,9 +133,9 @@ function searchSongs(event, term) {
       /(?:\b\d+)?[\u0600-\u06FF]+/
     );
     if (book_and_chapter) {
-      console.log("text in term", book_and_chapter[0]);
+      // console.log("text in term", book_and_chapter[0]);
       results = bibleFuse.search(book_and_chapter[0]);
-      console.log(results);
+      // console.log(results);
     }
   } else {
     // do song search

@@ -2,12 +2,14 @@ const myBtn = document.querySelector("#btn");
 const h1 = document.querySelector("h1");
 const input = document.querySelector("input#title-input");
 const search_output = document.querySelector("#search_output");
+const waiting_output = document.querySelector("#waiting_output");
 const preview_output = document.querySelector("#preview_output");
 const whiteButton = document.querySelector("#white");
 const fontSizeInput = document.querySelector("#fontSize");
 const fontWeightBtn = document.querySelector("#bold");
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
+const waitingModeToggle = document.querySelector("input#waiting_mode_input");
 const slideScreen = document.querySelector("#slide-screen");
 
 let keySequence = [];
@@ -63,7 +65,7 @@ document.addEventListener("keydown", function (event) {
         console.log("here");
         setTimeout(() => {
           bigElement.click();
-        }, 200);
+        }, 300);
       }
     } else if (slideScreen.textContent.trim() !== "") {
       // Log the content
@@ -134,7 +136,13 @@ fontSizeInput.addEventListener("change", (e) => {
   window.myCustomAPI.updateFontSize(e.target.value);
 });
 
+waitingModeToggle.addEventListener("change", (e) => {
+  // Toggle a class on the body based on checkbox state
+  document.body.classList.toggle("waiting-mode", !e.target.checked);
+});
+
 let res;
+let waiting = [];
 // input.addEventListener("input", async (e) => {
 //   const newTitle = e.target.value;
 //   //   window.myCustomAPI.changeTitleTo(newTitle);
@@ -163,27 +171,27 @@ async function searchAndDisplayResults(term) {
 let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 // for testing
-// setTimeout(() => {
-//   input.value = "ان اشتياق القلب زاد";
+setTimeout(() => {
+  input.value = "يسوع";
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
 
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
+  input.dispatchEvent(inputEvent);
+}, 1000);
 
-// let clickDev = new Event("click", {
-//   bubbles: true,
-//   cancelable: true,
-// });
+let clickDev = new Event("click", {
+  bubbles: true,
+  cancelable: true,
+});
 
-// setTimeout(() => {
-//   let son = document.querySelector(".big");
-//   son.dispatchEvent(clickDev);
-// }, 2500);
+setTimeout(() => {
+  let son = document.querySelector(".big");
+  son.dispatchEvent(clickDev);
+}, 2500);
 // setTimeout(() => {
 //   let ver = document.querySelector(".slide");
 //   ver.dispatchEvent(clickDev);
@@ -229,12 +237,37 @@ input.addEventListener("keydown", function (event) {
 //   search_output.textContent = e.target.value;
 // });
 
-search_output.addEventListener("click", (e) => {
+let selectSongEventFunction = (e) => {
   let clickedSong = e.target.closest(".song");
   let clickedChapter = e.target.closest(".chapter");
+  let clickedPlus = e.target.classList.contains("plus");
+  let clickedDelete = e.target.classList.contains("delete");
   // console.log("clickedSong: " + clickedSong);
   // console.log("clickedChapter: " + clickedChapter);
   // if not song then ignore the click
+
+  if (clickedDelete) {
+    let clickedRef = e.target.parentNode.getAttribute("data-ref");
+    // console.log(clickedRef);
+    waiting = waiting.filter((item) => item.refIndex !== parseInt(clickedRef));
+    displayWaitingList();
+    return;
+  }
+  if (clickedPlus) {
+    let ref;
+    if (clickedSong) {
+      ref = clickedSong.getAttribute("data-ref");
+    } else {
+      ref = clickedChapter.getAttribute("data-ref");
+    }
+    console.log(ref);
+    // console.log(res.find((song) => song.refIndex == ref));
+    let foundItem = res.find((song) => song.refIndex == ref);
+    if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
+      waiting.push(foundItem);
+    }
+    displayWaitingList();
+  }
 
   if (clickedSong) {
     toggleFontSizeInput(false);
@@ -256,7 +289,9 @@ search_output.addEventListener("click", (e) => {
     }
 
     // if the selected song already is in preview, start showing the first slide
-    clickedSong.classList.add("selectedSong");
+    if (!clickedPlus) {
+      clickedSong.classList.add("selectedSong");
+    }
     if (ref && currentSongRef && ref == currentSongRef) {
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
@@ -267,12 +302,19 @@ search_output.addEventListener("click", (e) => {
 
       // if the selected song is not in preview, add it to preview
     } else {
-      const targetedSong = res.find((song) => song.refIndex == ref);
-      preview_output.innerHTML = previewSelectedSong(
-        targetedSong.item,
-        targetedSong.refIndex
-      );
-      newSlide("");
+      let targetedSong;
+      if (clickedSong.parentNode.id == "search_output") {
+        targetedSong = res.find((song) => song.refIndex == ref);
+      } else if (clickedSong.parentNode.id == "waiting_output") {
+        targetedSong = waiting.find((song) => song.refIndex == ref);
+      }
+      if (!clickedPlus) {
+        preview_output.innerHTML = previewSelectedSong(
+          targetedSong.item,
+          targetedSong.refIndex
+        );
+        newSlide("");
+      }
     }
   } else if (clickedChapter) {
     toggleFontSizeInput(true);
@@ -289,8 +331,10 @@ search_output.addEventListener("click", (e) => {
     // mark the selected song with red border
     const elements = document.querySelectorAll(".big");
 
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].classList.remove("selectedSong");
+    if (!clickedPlus) {
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.remove("selectedSong");
+      }
     }
 
     // if the selected song already is in preview, start showing the first slide
@@ -305,16 +349,25 @@ search_output.addEventListener("click", (e) => {
 
       // if the selected song is not in preview, add it to preview
     } else {
-      const targetedSong = res.find((song) => song.refIndex == ref);
-      console.log(targetedSong);
-      preview_output.innerHTML = previewSelectedChapter(
-        targetedSong.item,
-        targetedSong.refIndex
-      );
-      newSlide("");
+      let targetedSong;
+      if (clickedChapter.parentNode.id == "search_output") {
+        targetedSong = res.find((song) => song.refIndex == ref);
+      } else if (clickedChapter.parentNode.id == "waiting_output") {
+        targetedSong = waiting.find((song) => song.refIndex == ref);
+      }
+      if (!clickedPlus) {
+        preview_output.innerHTML = previewSelectedChapter(
+          targetedSong.item,
+          targetedSong.refIndex
+        );
+        newSlide("");
+      }
     }
   }
-});
+};
+
+search_output.addEventListener("click", selectSongEventFunction);
+waiting_output.addEventListener("click", selectSongEventFunction);
 
 preview_output.addEventListener("click", (e) => {
   let element = e.target.closest(".verse, .chorus, .bible-verse");
@@ -436,6 +489,7 @@ function generateHTML(dataArray, truncateLimit = 50) {
         ${titleHTML}
         ${chorusHTML}
         ${versesHTML}
+        <img src="./img/plus.svg" class="plus hide" alt="plus"/>
       </div>
     `;
     })
@@ -488,6 +542,7 @@ function generateBibleHTML(dataArray, term, truncateLimit = 50) {
       <div class="big chapter" data-ref="${refIndex}" dir="rtl">
         ${titleHTML}
         ${versesHTML}
+        <img src="./img/plus.svg" class="plus hide" alt="plus"/>
       </div>
     `;
     })
@@ -506,14 +561,14 @@ function previewSelectedChapter(
     chapter_book + "  " + chapter_number_ar
   }</h4>`;
   html += `<div class="song-preview">`;
-  console.log(verses);
+  // console.log(verses);
 
   for (const [key, value] of Object.entries(verses)) {
-    console.log(`Key: ${key}, Value: ${value}`);
+    // console.log(`Key: ${key}, Value: ${value}`);
   }
 
   for (const [key, value] of Object.entries(verses)) {
-    console.log(value);
+    // console.log(value);
 
     // add verse number for the first line in a verse
     html += `<div class="bible-verse slide" data-verseNumber="${key}">
@@ -695,7 +750,7 @@ function newSlide(html) {
   // console.log(html);
   let paused = document.querySelector(".pause");
   if (paused) paused.classList.remove("pause");
-  console.log(html.length);
+  // console.log(html.length);
   // if it's a bible verse, add the chapter title
   if (
     (document.querySelector(".slide").classList.contains("bible-verse") &&
@@ -745,3 +800,50 @@ let toggleFontSizeInput = (isBible) => {
     fontSizeInput.style.opacity = "1"; // Reset opacity to normal
   }
 };
+
+function displayWaitingList() {
+  console.log(waiting);
+  let htmlData = waiting
+    .map((element) => {
+      // Extract information from the object
+      let { item, refIndex } = element;
+      let { title, chorus, verses, chapter_name } = item;
+
+      // Generate HTML for title
+      let titleHTML = title ? `<h2>${title}</h2>` : "";
+
+      // Generate HTML for chorus if it exists
+      let chorusHTML = chorus
+        ? `<div class="chorus">(ق) ${truncate(
+            chorus.map((line) => `${line}`).join(""),
+            50
+          )}</div>`
+        : "";
+
+      // Generate HTML for verses if they exist
+      let versesHTML = verses
+        ? `<div class="verses">1- ${
+            verses[0] && typeof verses[0][0] == "string"
+              ? truncate(verses[0][0], 50)
+              : ""
+          }</div>`
+        : "";
+
+      // Combine everything into a single HTML block
+      return `
+    <div class="big song" data-ref="${refIndex}">
+      ${titleHTML}
+      <h3>
+      ${chapter_name ? chapter_name : ""}
+      </h3>
+      ${chapter_name ? verses[1] : ""}
+      
+      ${chapter_name ? "" : chorusHTML + versesHTML}
+      <img src="./img/minus-64.png" class="delete hide" alt="delete"/>
+      </div>
+  `;
+    })
+    .join("");
+
+  waiting_output.innerHTML = htmlData;
+}
