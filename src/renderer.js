@@ -642,19 +642,19 @@ function previewSelectedSong({ title, chorus, verses, chorusFirst }, refIndex) {
 }
 
 // debounce function
-function debounce(func, delay) {
-  let timeoutId;
+// function debounce(func, delay) {
+//   let timeoutId;
 
-  return function (...args) {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
+//   return function (...args) {
+//     if (timeoutId) {
+//       clearTimeout(timeoutId);
+//     }
 
-    timeoutId = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-  };
-}
+//     timeoutId = setTimeout(() => {
+//       func.apply(this, args);
+//     }, delay);
+//   };
+// }
 
 function countLineBreaks(text) {
   const lineBreakRegex = /\n/g;
