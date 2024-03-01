@@ -176,6 +176,7 @@ let mainWindow;
 const createMainWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    show: false,
     width: 1000,
     height: 600,
     icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
@@ -188,6 +189,8 @@ const createMainWindow = () => {
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
+  mainWindow.maximize();
+  mainWindow.show();
 
   // mainWindow.maximize();
 

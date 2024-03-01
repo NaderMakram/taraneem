@@ -1,0 +1,32 @@
+export function newSlide(html) {
+  // console.log(html);
+  let paused = document.querySelector(".pause");
+  if (paused) paused.classList.remove("pause");
+  // console.log(html.length);
+  // if it's a bible verse, add the chapter title
+  if (
+    (document.querySelector(".slide").classList.contains("bible-verse") &&
+      document.querySelector(".slide.active")) ||
+    html.legnth == 0
+  ) {
+    let chapter_title = document.querySelector(".song-title").outerHTML;
+    let combined_html = `<div class="container bible-container">
+      <div class="head bible-head">
+      ${chapter_title}
+      </div>
+      
+      <div class="body bible-body">
+      ${html}
+      </div>
+      </div>`;
+    // console.log(combined_html);
+    window.myCustomAPI.updateSongWindow(combined_html, true);
+  } else {
+    let combined_html = `<div class="container song-container">
+      <div class="body song-body">
+      ${html}
+      </div>
+      </div>`;
+    window.myCustomAPI.updateSongWindow(combined_html, false);
+  }
+}

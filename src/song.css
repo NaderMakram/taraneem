@@ -12,7 +12,7 @@ body {
   color: #15171d;
   background-color: hsl(0, 0%, 99%);
   min-height: 90vh;
-  padding: 3vh 5vw;
+  padding: 5vh 6vw;
   margin: 0;
   /* display: flex;
   align-items: center;
@@ -32,7 +32,7 @@ body::-webkit-scrollbar {
   /* position: relative; */
   /* font-size: 5.5rem; */
   /* display: flex; */
-  height: 90vh;
+  height: 88vh;
   /* text-align: center; */
   /* padding: 0.2em; */
   /* line-height: 1.3em; */
@@ -71,7 +71,7 @@ body::-webkit-scrollbar {
 .bible-head {
   text-align: center;
   padding-bottom: 2.7vw;
-  padding-top: 1vw;
+  /* padding-top: 1vw; */
   line-height: 1em;
   font-size: 3.8vw;
   color: var(--primary);
@@ -93,11 +93,11 @@ body::-webkit-scrollbar {
 }
 .bible-body .verseNumber {
   font-size: 3.5vw;
-  transform: translate(1.2rem, -0.3rem);
+  transform: translate(2.2vw, -0.3vw)
 }
 
 .song-body {
-  padding-right: 2rem;
+  padding-right: 3rem;
   font-size: 6rem;
   display: flex;
   align-items: center;

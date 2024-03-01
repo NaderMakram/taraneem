@@ -241,6 +241,11 @@ label#dark_mode_label:active:after {
 
 
 /* .hide{display: none} */
+.pause {
+  background: #f7f7f7;
+  color: #bebebe;
+}
+
 
 #slide-screen {
   width: 45px;
@@ -269,8 +274,7 @@ label#dark_mode_label:active:after {
   justify-content: center;
   font-size: 1.9rem;
   /* margin-left: 0.7rem; */
-  /* border: 2px solid var(--primary);
-  border-radius: 8px; */
+  border-left: 2px solid var(--gray-1);
 }
 
 #list-toggle-group *{
