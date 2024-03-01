@@ -10,6 +10,10 @@ body {
   /* scroll-behavior: smooth; */
   /* direction: rtl; */
 }
+html{
+  scrollbar-gutter: stable;
+  overflow-y: auto;
+}
 
 #tools_bar {
   display: flex;
@@ -29,10 +33,18 @@ body {
 #main-wrapper {
   display: flex;
   flex-direction: row;
+  min-height: 75vh;
 }
 
 #main-wrapper > div {
   flex: 1;
+  text-align: right;
+  padding: 0.5rem;
+}
+
+#main-wrapper > :not(:last-child){
+  border-right: 1px solid var(--gray-1);
+
 }
 
 .song-preview .slide {
@@ -284,4 +296,8 @@ label#dark_mode_label:active:after {
   width: 1.8rem;
   height: 1.8rem;
   transform: translate(-0.4rem, 0.15rem);
+}
+
+#waiting-wrapper{
+  background: #d2efff29;
 }

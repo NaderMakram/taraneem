@@ -1,7 +1,7 @@
 {
   "name": "Taraneem",
   "productName": "Taraneem",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
   "main": "src/index.js",
   "repository": {

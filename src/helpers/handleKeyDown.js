@@ -63,7 +63,10 @@ export function handleKeyDown(e) {
   }
 
   if (key === "End") {
-    let AllSlides = document.querySelectorAll(`[data-verseNumber]`);
+    let AllSlides = document.querySelectorAll(
+      '[data-verseNumber]:not([data-verseNumber=""])'
+    );
+
     if (AllSlides) {
       let lastSlide = AllSlides[AllSlides.length - 1];
       let elements = document.querySelector(".song-preview").children;
