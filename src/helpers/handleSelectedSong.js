@@ -8,13 +8,23 @@ import { displayWaitingList } from "./displayWaitingList.js";
 const fontSizeInput = document.querySelector("#fontSize");
 
 let res;
+let searchResults;
 let waiting = [];
 let delay = 50;
 
 export async function searchAndDisplayResults(term) {
-  res = await window.myCustomAPI.searchTerm(term);
-  // console.log(res);
+  // if term contains digits meaning it's a bible search
   let containsDigit = /\d/.test(term);
+
+  searchResults = await window.myCustomAPI.searchTerm(term);
+  res = searchResults.map(({ item, refIndex }) => {
+    // Add a prefix to the bible results to differentiate them from songs with the same index
+    let modifiedRefIndex = containsDigit ? `b-${refIndex}` : refIndex;
+    // Return the modified object
+    return { item, refIndex: modifiedRefIndex };
+  });
+
+  console.log(typeof res);
   console.log("containsDigit: ", containsDigit);
 
   if (containsDigit) {

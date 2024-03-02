@@ -117,7 +117,7 @@ body::-webkit-scrollbar {
 .dark {
   /* background-color: rgba(0, 0, 0, 0.95); */
   background-image: none;
-  background-color: #15171d;
+  background-color: var(--dark);
   color: whitesmoke;
 }
 .dark * {
