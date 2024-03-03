@@ -1,9 +1,9 @@
 {
   "name": "taraneem",
   "productName": "Taraneem",
-  "version": "2.1.1",
-  "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
+  "version": "2.1.2",
   "main": "src/index.js",
+  "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
   "repository": {
     "type": "git",
     "url": "https://github.com/NaderMakram/taraneem"
@@ -14,7 +14,10 @@
     "make": "electron-forge make",
     "make32": "electron-forge make --arch=ia32",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [],
   "author": {
@@ -25,6 +28,7 @@
   "dependencies": {
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^6.1.8",
     "fuse.js": "^7.0.0"
   },
   "devDependencies": {
@@ -34,6 +38,7 @@
     "@electron-forge/maker-squirrel": "^6.4.2",
     "@electron-forge/maker-zip": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-    "electron": "27.0.4"
+    "electron": "27.0.4",
+    "electron-builder": "^24.13.3"
   }
 }
