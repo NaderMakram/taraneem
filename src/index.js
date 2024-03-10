@@ -1,4 +1,5 @@
 ﻿const { app, BrowserWindow, screen, ipcMain } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
@@ -197,9 +198,9 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  mainWindow.webContents.openDevTools();
+  // if (isDev) {
+  // }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -249,9 +250,9 @@ const createSongWindow = () => {
   songWindow.on("closed", () => {
     app.quit();
   });
-  if (isDev) {
-    songWindow.webContents.openDevTools();
-  }
+  songWindow.webContents.openDevTools();
+  // if (isDev) {
+  // }
 };
 
 app.on("ready", createMainWindow);
@@ -313,6 +314,10 @@ ipcMain.on("scroll-to-active", (event, message) => {
   // );
 });
 
+ipcMain.on("update-version-message", (event, message) => {
+  mainWindow.webContents.send("update-version-message", message);
+});
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -327,5 +332,34 @@ app.on("activate", () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+// auto update
+
+app.on("ready", function () {
+  console.log("app ready, checking for updates");
+  autoUpdater.checkForUpdates();
+});
+autoUpdater.on("checking-for-update", () => {
+  console.log("on checking for updates");
+});
+autoUpdater.on("update-available", (info) => {
+  console.log("on update available");
+  console.log(info);
+});
+autoUpdater.on("update-not-available", (info) => {
+  console.log("on update not available");
+  console.log(info);
+});
+autoUpdater.on("error", (err) => {
+  console.log("on error");
+  console.log(err);
+});
+autoUpdater.on("download-progress", (progressObj) => {
+  console.log("on download progress");
+  let log_message = "Downloaded " + Math.floor(progressObj.percent) + "%";
+  console.log(log_message);
+});
+autoUpdater.on("update-downloaded", (info) => {
+  console.log("on update-downloaded");
+  console.log(info);
+  autoUpdater.quitAndInstall();
+});
