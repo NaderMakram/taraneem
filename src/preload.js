@@ -14,7 +14,10 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   toggleDarkMode: () => ipcRenderer.send("toggle-dark-mode"),
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),
-  updateVersionMessage: (content) => ipcRenderer.send("update-version-message"),
+});
+
+ipcRenderer.on("log", (event, message) => {
+  console.log(message);
 });
 
 ipcRenderer.on("shift-to-slide", (event, message) => {

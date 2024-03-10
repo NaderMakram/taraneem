@@ -255,14 +255,20 @@ const createSongWindow = () => {
   // }
 };
 
+// update version message
+function updateVersionMessage(message) {
+  mainWindow.webContents.executeJavaScript(
+    `document.querySelector('#version').textContent =("${message}")`
+  );
+  mainWindow.webContents.send("log", message);
+}
+
 app.on("ready", createMainWindow);
 app.on("ready", createSongWindow);
 app.on("ready", addIPCs);
 app.on("ready", () => {
   let currentVersion = app.getVersion();
-  mainWindow.webContents.executeJavaScript(
-    `document.querySelector('#version').textContent =("version: ${currentVersion}")`
-  );
+  updateVersionMessage(`version: ${currentVersion}`);
 });
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content, isBible) => {
@@ -335,31 +341,31 @@ app.on("activate", () => {
 // auto update
 
 app.on("ready", function () {
-  console.log("app ready, checking for updates");
+  updateVersionMessage("app ready, checking for updates");
   autoUpdater.checkForUpdates();
 });
 autoUpdater.on("checking-for-update", () => {
-  console.log("on checking for updates");
+  updateVersionMessage("on checking for updates");
 });
 autoUpdater.on("update-available", (info) => {
-  console.log("on update available");
-  console.log(info);
+  updateVersionMessage("on update available");
+  updateVersionMessage(info);
 });
 autoUpdater.on("update-not-available", (info) => {
-  console.log("on update not available");
-  console.log(info);
+  updateVersionMessage("on update not available");
+  updateVersionMessage(info);
 });
 autoUpdater.on("error", (err) => {
-  console.log("on error");
-  console.log(err);
+  updateVersionMessage("on error");
+  updateVersionMessage(err);
 });
 autoUpdater.on("download-progress", (progressObj) => {
-  console.log("on download progress");
+  updateVersionMessage("on download progress");
   let log_message = "Downloaded " + Math.floor(progressObj.percent) + "%";
-  console.log(log_message);
+  updateVersionMessage(log_message);
 });
 autoUpdater.on("update-downloaded", (info) => {
-  console.log("on update-downloaded");
-  console.log(info);
+  updateVersionMessage("on update-downloaded");
+  updateVersionMessage(info);
   autoUpdater.quitAndInstall();
 });
