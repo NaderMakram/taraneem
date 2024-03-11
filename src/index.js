@@ -221,7 +221,7 @@ const createSongWindow = () => {
       x: secondScreen.bounds.x,
       y: secondScreen.bounds.y,
       frame: false,
-      alwaysOnTop: true,
+      alwaysOnTop: false,
       webPreferences: {
         nodeIntegration: true,
         // contextIsolation: false,
@@ -258,7 +258,7 @@ const createSongWindow = () => {
 // update version message
 function updateVersionMessage(message) {
   mainWindow.webContents.executeJavaScript(
-    `document.querySelector('#version').textContent =("${message}")`
+    `document.querySelector('#version').innerHTML=("${message}")`
   );
   mainWindow.webContents.send("log", message);
 }
@@ -266,10 +266,10 @@ function updateVersionMessage(message) {
 app.on("ready", createMainWindow);
 app.on("ready", createSongWindow);
 app.on("ready", addIPCs);
-app.on("ready", () => {
-  let currentVersion = app.getVersion();
-  updateVersionMessage(`version: ${currentVersion}`);
-});
+// app.on("ready", () => {
+//   let currentVersion = app.getVersion();
+//   updateVersionMessage(`version: ${currentVersion}`);
+// });
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content, isBible) => {
     songWindow.webContents.send("update-song-window", content, isBible);
@@ -341,31 +341,34 @@ app.on("activate", () => {
 // auto update
 
 app.on("ready", function () {
-  updateVersionMessage("app ready, checking for updates");
+  let currentVersion = app.getVersion();
+  updateVersionMessage(`Version: ${currentVersion}`);
   autoUpdater.checkForUpdates();
 });
 autoUpdater.on("checking-for-update", () => {
-  updateVersionMessage("on checking for updates");
+  updateVersionMessage("<span class='loader'></span>Checking for new version");
 });
 autoUpdater.on("update-available", (info) => {
-  updateVersionMessage("on update available");
+  updateVersionMessage("There is a new version");
   updateVersionMessage(info);
 });
 autoUpdater.on("update-not-available", (info) => {
-  updateVersionMessage("on update not available");
-  updateVersionMessage(info);
+  let currentVersion = app.getVersion();
+  updateVersionMessage(`✅ You are up to date. Version: ${currentVersion}`);
 });
 autoUpdater.on("error", (err) => {
-  updateVersionMessage("on error");
-  updateVersionMessage(err);
+  let currentVersion = app.getVersion();
+  updateVersionMessage(`Version: ${currentVersion}`);
 });
+
 autoUpdater.on("download-progress", (progressObj) => {
-  updateVersionMessage("on download progress");
-  let log_message = "Downloaded " + Math.floor(progressObj.percent) + "%";
+  let log_message =
+    "<span class='loader'></span> Downloading: " +
+    Math.floor(progressObj.percent) +
+    "%";
   updateVersionMessage(log_message);
 });
 autoUpdater.on("update-downloaded", (info) => {
-  updateVersionMessage("on update-downloaded");
-  updateVersionMessage(info);
+  updateVersionMessage("✅ Finished downloading, Restarting the App.");
   autoUpdater.quitAndInstall();
 });

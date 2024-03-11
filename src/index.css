@@ -10,7 +10,7 @@ body {
   /* scroll-behavior: smooth; */
   /* direction: rtl; */
 }
-html{
+html {
   scrollbar-gutter: stable;
   overflow-y: auto;
 }
@@ -42,9 +42,8 @@ html{
   padding: 0.5rem;
 }
 
-#main-wrapper > :not(:last-child){
+#main-wrapper > :not(:last-child) {
   border-right: 1px solid var(--gray-1);
-
 }
 
 .song-preview .slide {
@@ -75,7 +74,7 @@ html{
   margin-bottom: 35px;
 }
 
- .big {
+.big {
   background: var(--gray-1);
   border: 2px solid var(--gray-1);
   direction: rtl;
@@ -91,15 +90,16 @@ html{
   margin-top: 0;
 }
 
- .big:hover {
+.big:hover {
   background: var(--gray-2);
 }
 
-.big{
+.big {
   position: relative;
 }
 
-.plus, .delete{
+.plus,
+.delete {
   width: 20px;
   height: 20px;
   position: absolute;
@@ -111,9 +111,10 @@ html{
   opacity: 0.8;
   transition: transform 0.2s;
 }
-.plus:hover, .delete:hover{
-opacity: 1;
-transform: scale(1.2);
+.plus:hover,
+.delete:hover {
+  opacity: 1;
+  transform: scale(1.2);
 }
 
 #title-input {
@@ -201,7 +202,7 @@ label#dark_mode_label:after {
 
 input#dark_mode_input:checked + label {
   /* background: rgba(0, 0, 0, 0.95); */
-  background: var(--dark)
+  background: var(--dark);
 }
 
 input#dark_mode_input:checked + label:after {
@@ -250,15 +251,15 @@ label#dark_mode_label:active:after {
   margin-bottom: 1rem;
   font-size: 0.7rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
 }
-
 
 /* .hide{display: none} */
 .pause {
   background: #f7f7f7;
   color: #bebebe;
 }
-
 
 #slide-screen {
   width: 45px;
@@ -281,7 +282,7 @@ label#dark_mode_label:active:after {
   display: none;
 }
 
-#list-toggle-group{
+#list-toggle-group {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,15 +291,15 @@ label#dark_mode_label:active:after {
   border-left: 2px solid var(--gray-1);
 }
 
-#list-toggle-group *{
+#list-toggle-group * {
   margin: 0;
 }
-#list-toggle-group input{
+#list-toggle-group input {
   width: 1.8rem;
   height: 1.8rem;
   transform: translate(-0.4rem, 0.15rem);
 }
 
-#waiting-wrapper{
+#waiting-wrapper {
   background: #d2efff29;
 }
