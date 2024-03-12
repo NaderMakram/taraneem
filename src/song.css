@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400..700&display=swap");
 
 html {
   height: 100%;
@@ -17,11 +17,10 @@ body {
   /* display: flex;
   align-items: center;
   justify-content: center; */
-    background-image: url("./img/clean-gray-paper-40.png");
-    /* background-image: url("./img/cream-paper.png"); */
-    background-repeat: repeat;
+  background-image: url("./img/clean-gray-paper-40.png");
+  /* background-image: url("./img/cream-paper.png"); */
+  background-repeat: repeat;
   transition: 0.3s;
-
 }
 
 body::-webkit-scrollbar {
@@ -59,9 +58,9 @@ body::-webkit-scrollbar {
 }
 
 /* bible style */
-.bible-container{
-  font-family: 'Scheherazade New';
-  font-family: 'Times New Roman';
+.bible-container {
+  font-family: "Scheherazade New";
+  font-family: "Times New Roman";
 
   /* font-family: "Noto Naskh Arabic", serif; */
   /* font-optical-sizing: auto; */
@@ -77,23 +76,22 @@ body::-webkit-scrollbar {
   color: var(--primary);
 }
 
-.bible-body{
+.bible-body {
   padding-right: 4vw;
-  font-size: 8vw;
+  font-size: 7vw;
   line-height: 1.4em;
   height: 82.5vh;
 }
 
-
 /* the actual bible verse */
-.bible-body > div{
+.bible-body > div {
   line-height: 1.35em !important;
   /* -webkit-text-stroke-width: 1px; */
   /* text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); */
 }
 .bible-body .verseNumber {
   font-size: 3.5vw;
-  transform: translate(2.2vw, -0.3vw)
+  transform: translate(2.2vw, -0.3vw);
 }
 
 .song-body {
