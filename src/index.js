@@ -198,9 +198,9 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  mainWindow.webContents.openDevTools();
-  // if (isDev) {
-  // }
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -250,9 +250,9 @@ const createSongWindow = () => {
   songWindow.on("closed", () => {
     app.quit();
   });
-  songWindow.webContents.openDevTools();
-  // if (isDev) {
-  // }
+  if (isDev) {
+    songWindow.webContents.openDevTools();
+  }
 };
 
 // update version message
@@ -350,11 +350,10 @@ autoUpdater.on("checking-for-update", () => {
 });
 autoUpdater.on("update-available", (info) => {
   updateVersionMessage("There is a new version");
-  updateVersionMessage(info);
 });
 autoUpdater.on("update-not-available", (info) => {
   let currentVersion = app.getVersion();
-  updateVersionMessage(`✅ You are up to date. Version: ${currentVersion}`);
+  updateVersionMessage(`Up to date. Version: ${currentVersion}`);
 });
 autoUpdater.on("error", (err) => {
   let currentVersion = app.getVersion();
@@ -362,27 +361,12 @@ autoUpdater.on("error", (err) => {
 });
 
 autoUpdater.on("download-progress", (progressObj) => {
-  let log_message =
-    ` <svg viewBox="20 20 40 40">
-        <circle id="myCircle" r="10" cy="40" cx="40"></circle>
-      </svg></span> Downloading: ` +
-    Math.floor(progressObj.percent) +
-    "%";
+  let log_message = "Downloading: " + Math.floor(progressObj.percent) + "%";
   updateVersionMessage(log_message);
-  updateProgressCircle(Math.floor(progressObj.percent));
 });
 autoUpdater.on("update-downloaded", (info) => {
-  updateVersionMessage("✅ Finished downloading, Restarting the App.");
-  autoUpdater.quitAndInstall();
+  updateVersionMessage(
+    "✅ Finished downloading, Restart the app to install updates."
+  );
+  // autoUpdater.quitAndInstall();
 });
-
-function updateProgressCircle(percent) {
-  mainWindow.webContents.executeJavaScript(`
-  
-  let circle = document.getElementById("myCircle");
-  let radius = circle.r.baseVal.value;
-  let circumference = radius * 2 * Math.PI;
-  let offset = circumference - (${percent} / 100) * circumference;
-  circle.style.strokeDashoffset = offset;
-  `);
-}

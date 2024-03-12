@@ -42,7 +42,7 @@ svg {
 
 circle {
   fill: none;
-  stroke: #77dd77;
+  stroke: hsl(214, 97%, 59%);
   stroke-width: 4;
   stroke-dasharray: 30, 200; /* Adjust the first value to change the length of the visible arc */
   stroke-dashoffset: 0;
