@@ -31,8 +31,16 @@ jobs:
         with:
           name: release-assets
           path: |
-            ./release/${{ github.ref_name }}/*
+            ./release/${{ github.ref_name }}/*.exe
+  download:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
 
+      - name: Test download
+        run: ls -R
       # - name: Publish the release
       #   uses: actions/create-release@v1
       #   env:
