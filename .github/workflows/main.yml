@@ -26,6 +26,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
 
+      - name: Wait for Build Completion
+        run: sleep 10s
+
+      - name: List Release Contents
+        run: ls -R ./release/
+
       - name: Upload Release Artifacts
         uses: actions/upload-release-asset@v1
         with:
