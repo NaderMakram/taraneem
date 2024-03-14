@@ -2,7 +2,7 @@ name: Release Builder and Publisher
 
 on:
   release:
-    types: [created]
+    types: [prereleased]
 
 jobs:
   build-and-publish:
