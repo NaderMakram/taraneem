@@ -29,15 +29,13 @@ jobs:
       - name: Upload release assets
         uses: actions/upload-artifact@v4
         with:
-          name: release-assets
-          path: |
+          name: release-assets # Replace with a descriptive name if needed
+          path: | # Target existing assets in the pre-release
             ./release/${{ github.ref_name }}/*
 
-      # - name: Publish the release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: ${{ github.ref }} # Customize release name if desired
-      #     draft: false # Publish the release after build and asset upload
+      - name: Upload new release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets # Use the same name (optional)
+          path: | # Path to your new artifacts
+            ./release/new-artifacts/*
