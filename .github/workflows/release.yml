@@ -1,0 +1,76 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build_and_release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: install dependencies
+        run: npm install
+
+      - name: Package Electron app for Windows
+        run: npm run dist
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Determine artifact filename
+        id: set_artifact_filename
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+              echo "::set-output name=filename::dist/${{github.ref_name}}/*.exe"
+              echo "::set-output name=appName::Taraneem.exe"
+          fi
+        shell: bash
+
+      # Publish build
+      - name: Create a Release
+        if: github.run_number == 1
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Taraneem-${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      # Upload binaries to release
+      - name: Upload Release Asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          # file: ${{github.workspace}}/${{ steps.set_artifact_filename.outputs.filename }}
+          file: ./${{ steps.set_artifact_filename.outputs.filename }}
+          asset_name: ${{ steps.set_artifact_filename.outputs.appName }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+
+      - name: Create a Release and Upload Assets (Windows)
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: ${{ secrets.GH_TOKEN }}
+          prerelease: false
+          files: |
+            ./dist/${{github.ref_name}}/*.exe
+
+      - name: Upload Release Asset (Windows)
+        uses: actions/upload-artifact@v2
+        with:
+          name: Taraneem Setup
+          path: |
+            ./dist/${{github.ref_name}}/*.exe
