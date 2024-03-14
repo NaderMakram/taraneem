@@ -1,4 +1,4 @@
-name: preRelease
+name: New pre-Release
 
 on:
   release:
