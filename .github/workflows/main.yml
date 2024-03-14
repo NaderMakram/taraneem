@@ -6,15 +6,6 @@ on:
       - master
 
 jobs:
-  version:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
-
   build:
     runs-on: windows-latest
     steps:
@@ -22,11 +13,11 @@ jobs:
         with:
           clean: true
 
-      - name: Use Node.js (adjust version if needed)
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20.x
-          cache: "npm" # Cache npm dependencies
+      # - name: Use Node.js (adjust version if needed)
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 20.x
+      #     cache: "npm" # Cache npm dependencies
 
       # - name: Install dependencies
       #   run: npm ci
@@ -47,8 +38,16 @@ jobs:
       #     draft: false
       #     prerelease: false
 
-      - name: Echo Output
-        run: echo "Current version is ${{ steps.package-version.outputs.current-version }}"
+      - name: Retrieve Version
+        run: |
+          $version = (Get-Content -Path 'package.json' | ConvertFrom-Json).version
+          Write-Output $version  #
+
+      - uses: actions/create-release@v1 # You can use a different version if needed
+        with:
+          tag_name: ${{ github.ref }} # Assuming you use tags for versions
+          release_name: "Release v$version" # Using the output variable here
+
 
       # - name: Upload Release Asset
       #   id: upload-release-asset
