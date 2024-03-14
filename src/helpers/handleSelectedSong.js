@@ -138,6 +138,7 @@ export function selectSongEventFunction(e) {
     if (ref && currentSongRef && ref == currentSongRef) {
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
+        document.querySelector(".active").classList.remove("active");
         firstSlide.classList.add("active");
         newSlide(firstSlide.innerHTML);
       }
@@ -185,6 +186,7 @@ export function selectSongEventFunction(e) {
     if (ref && currentSongRef && ref == currentSongRef) {
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
+        document.querySelector(".active").classList.remove("active");
         firstSlide.classList.add("active");
         newSlide(firstSlide.innerHTML);
       }
