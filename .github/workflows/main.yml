@@ -27,23 +27,23 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
-      - name: Get Version and Create Release
+      - name: Get Version
         run: |
           $version = (Get-Content -Path 'package.json' | ConvertFrom-Json).version
-          gh release create v$version
+          Write-Output $version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: $version
+          release_name: $version
+          draft: false
+          prerelease: false
 
       # - name: Upload Release Asset
       #   id: upload-release-asset
