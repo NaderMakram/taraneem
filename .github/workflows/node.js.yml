@@ -25,15 +25,12 @@ jobs:
       - name: Create a temporary directory for release assets
         run: mkdir release_assets
 
-      - name: Find all files (not folders) inside release directory
-        run: |
-          find /release/${{ github.ref }} -type f >> release_assets/files.txt
-
       - name: Upload release assets
         uses: actions/upload-artifact@v3
         with:
           name: release-assets
-          path: ${{ path.dirname('release_assets/files.txt') }}/*  # Upload all files in release directory
+          path: |
+            find /release/${{ github.ref }} -type f
 
       - name: Publish the release
         uses: actions/create-release@v1
