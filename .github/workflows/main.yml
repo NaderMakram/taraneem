@@ -3,7 +3,7 @@ name: preRelease
 on:
   push:
     branches:
-      - release
+      - master
 
 jobs:
   build:
