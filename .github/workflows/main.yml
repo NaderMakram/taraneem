@@ -46,7 +46,7 @@ jobs:
       #     const version = packageJson.version;
 
       - name: Print the version (optional)
-        run: echo ${{ github.ref }}
+        run: echo ${{ github }}
 
       # - name: Upload Release Asset
       #   id: upload-release-asset
