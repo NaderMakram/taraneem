@@ -31,15 +31,14 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: |
-            ./release/latest.yml
-            ./release/Taraneem-Windows*.exe
-            ./release/Taraneem-Windows*.exe.blockmap
+            ./release/${{github.ref_name}}/latest.yml
+            ./release/${{github.ref_name}}/Taraneem-Windows*.exe
+            ./release/${{github.ref_name}}/Taraneem-Windows*.exe.blockmap
           asset_name: |
             latest.yml
             Taraneem-Windows.exe
             Taraneem-Windows.exe.blockmap
           asset_content_type: application/octet-stream
-          github_token: ${{ secrets.GITHUB_TOKEN }}
       # - name: Publish the release
       #   uses: actions/create-release@v1
       #   env:
