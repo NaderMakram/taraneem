@@ -27,14 +27,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
 
-      - name: Upload built artifacts as release assets
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.releases.upload_url }} # Provided by create-release
-          asset_path: ${{ github.workspace }}/*.exe # Path to the artifacts
-          asset_name: ${{ github.run_number }}.exe # Name of the asset to upload
-          asset_content_type: application/octet-stream # Content type of the asset
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
