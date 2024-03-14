@@ -16,7 +16,7 @@
     "lint": "echo \"No linting configured\"",
     "build": "electron-builder",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "dist": "electron-builder -p never",
     "publish": "electron-builder -p always"
   },
   "keywords": [],
