@@ -38,15 +38,14 @@ jobs:
       #     draft: false
       #     prerelease: false
 
-      # - name: Get version from package.json (using Node.js)
-      #   run: |
-      #     const fs = require('fs');
-      #     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-      #     console.log('Version:', packageJson.version);  # Prints to console
-      #     const version = packageJson.version;
+      - name: Get Package Version
+        id: package-version
+        run: |
+          $packageJson = Get-Content -Raw -Path package.json | ConvertFrom-Json
+          echo "current-version=$($packageJson.version)" >> $GITHUB_ENV
 
-      - name: Print the version (optional)
-        run: echo ${{ github }}
+      - name: Echo Output
+        run: echo "Current version is ${{ steps.package-version.outputs.current-version }}"
 
       # - name: Upload Release Asset
       #   id: upload-release-asset
