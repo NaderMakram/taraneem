@@ -1,9 +1,8 @@
 name: preRelease
 
 on:
-  push:
-    tags:
-      - v**
+  release:
+    types: [prereleased]
 
 jobs:
   build-and-publish:
@@ -34,11 +33,11 @@ jobs:
           path: |
             find /release/${{ github.ref }} -type f
 
-      - name: Publish the release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }} # Customize release name if desired
-          draft: false # Publish the release after build and asset upload
+      # - name: Publish the release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: ${{ github.ref }} # Customize release name if desired
+      #     draft: false # Publish the release after build and asset upload
