@@ -41,7 +41,7 @@ jobs:
       - name: Get Version and Create Release
         run: |
           $version = (Get-Content -Path 'package.json' | ConvertFrom-Json).version
-          gh release create -t "Release v$version" -n "Release notes for version $version"
+          gh release create v$version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
