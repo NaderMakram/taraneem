@@ -21,6 +21,8 @@ jobs:
 
       - name: Build the app for release
         run: npm run dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
 
       - name: Upload release assets
         uses: actions/upload-artifact@v3
