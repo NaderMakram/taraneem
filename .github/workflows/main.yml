@@ -31,7 +31,7 @@ jobs:
         with:
           name: release-assets
           path: |
-            find /release/${{ github.ref }} -type f
+            "release/$(basename ${github.ref})"
 
       # - name: Publish the release
       #   uses: actions/create-release@v1
