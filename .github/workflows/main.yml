@@ -1,4 +1,4 @@
-name: Release Builder and Publisher
+name: preRelease
 
 on:
   release:
