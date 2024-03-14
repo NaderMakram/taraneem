@@ -1,0 +1,58 @@
+name: Release Builder
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the app
+        run: npm run dist
+
+      - name: Get version from package.json
+        id: get_version
+        run: echo ::set-output name=VERSION $(node -p "require('./package.json').version")
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            This is an automatic release for version ${{ steps.get_version.outputs.VERSION }}
+
+      - name: Upload release assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-files
+          path: release/{{{ steps.get_version.outputs.VERSION }}}/*
+
+      - name: Download release artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: release-files
+
+      - name: Add release assets
+        uses: svenstaro/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.release.upload_url }}
+          asset_name: ${{ file }}
+          file_path: release-files/{{ file }}
+        continue-on-error: true
