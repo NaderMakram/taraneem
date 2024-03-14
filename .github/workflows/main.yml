@@ -27,32 +27,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
 
-      # - name: Upload release assets
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: release-assets # Replace with a descriptive name if needed
-      #     path: | # Target existing assets in the pre-release
-      #       ./release/${{ github.ref_name }}/*.exe
-      - name: Bump version and create release
-        id: create_release
-        run: |
-          # Bump version (you can use any versioning scheme)
-          npm version patch --no-git-tag-version
-
-          # Get the new version
-          VERSION=$(node -p "require('./package.json').version")
-
-          # Create a release
-          echo "::set-output name=tag::v$VERSION"
-          echo "::set-output name=title::Release $VERSION"
-          echo "::set-output name=body::Automated release created by GitHub Actions"
-          echo "::set-output name=draft::false"
+      - name: Upload release assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-assets # Replace with a descriptive name if needed
+          path: | # Target existing assets in the pre-release
+            ./release/${{ github.ref_name }}/*.exe
 
       - name: Create GitHub release
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.create_release.outputs.tag }}
-          release_name: ${{ steps.create_release.outputs.title }}
-          body: ${{ steps.create_release.outputs.body }}
-          draft: ${{ steps.create_release.outputs.draft }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.sha }} # Use commit SHA for tag
+          release_name: Release ${{ github.sha }}
+          body: "Automatic release triggered by push to master."
+          draft: false # Set to true for draft releases
+          prerelease: false # Set to true for pre-release versions
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: release-assets
+
+      - name: Upload built artifacts as release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.releases.upload_url }} # Provided by create-release
+          content_type: application/octet-stream
+          asset_name: ${{ files.glob('**/*.exe') }} # Upload all .exe files
+          file: "**/*.exe"
