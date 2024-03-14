@@ -6,6 +6,15 @@ on:
       - master
 
 jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
   build:
     runs-on: windows-latest
     steps:
@@ -37,10 +46,6 @@ jobs:
       #     release_name: ${{ github.ref }}
       #     draft: false
       #     prerelease: false
-
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
 
       - name: Echo Output
         run: echo "Current version is ${{ steps.package-version.outputs.current-version }}"
