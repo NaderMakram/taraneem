@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          env:GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          clean: true
 
       - name: Use Node.js (adjust version if needed)
         uses: actions/setup-node@v3
