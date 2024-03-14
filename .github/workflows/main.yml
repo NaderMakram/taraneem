@@ -31,8 +31,7 @@ jobs:
         with:
           name: release-assets
           path: |
-            /release/${{ github.ref_name }}/*
-            !/release/${{ github.ref_name }}/win-unpacked
+            ./release/${{ github.ref_name }}/*
 
       # - name: Publish the release
       #   uses: actions/create-release@v1
