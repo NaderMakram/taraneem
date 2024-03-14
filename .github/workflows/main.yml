@@ -31,8 +31,16 @@ jobs:
         with:
           name: release-assets # Replace with a descriptive name if needed
           path: | # Target existing assets in the pre-release
-            ./release/${{ github.ref_name }}/*
+            ./release/${{ github.ref_name }}/*.exe
+  download:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
 
+      - name: Test download
+        run: ls -R
       - name: Upload new release artifacts
         uses: actions/upload-artifact@v4
         with:
