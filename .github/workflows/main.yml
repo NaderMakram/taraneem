@@ -1,8 +1,9 @@
 name: preRelease
 
 on:
-  release:
-    types: [prereleased]
+  push:
+    branches:
+      - release
 
 jobs:
   build:
@@ -26,24 +27,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Access token with release permissions
 
-      - name: Upload release assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-assets # Replace with a descriptive name if needed
-          path: | # Target existing assets in the pre-release
-            ./release/${{ github.ref_name }}/*.exe
-  download:
-    runs-on: windows-latest
-    needs: build
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
+      # - name: Upload release assets
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: release-assets # Replace with a descriptive name if needed
+      #     path: | # Target existing assets in the pre-release
+      #       ./release/${{ github.ref_name }}/*.exe
+      - name: Bump version and create release
+        id: create_release
+        run: |
+          # Bump version (you can use any versioning scheme)
+          npm version patch --no-git-tag-version
 
-      - name: Test download
-        run: ls -R
-      - name: Upload new release artifacts
-        uses: actions/upload-artifact@v4
+          # Get the new version
+          VERSION=$(node -p "require('./package.json').version")
+
+          # Create a release
+          echo "::set-output name=tag::v$VERSION"
+          echo "::set-output name=title::Release $VERSION"
+          echo "::set-output name=body::Automated release created by GitHub Actions"
+          echo "::set-output name=draft::false"
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
         with:
-          name: release-assets # Use the same name (optional)
-          path: | # Path to your new artifacts
-            ./release/new-artifacts/*
+          tag_name: ${{ steps.create_release.outputs.tag }}
+          release_name: ${{ steps.create_release.outputs.title }}
+          body: ${{ steps.create_release.outputs.body }}
+          draft: ${{ steps.create_release.outputs.draft }}
+          token: ${{ secrets.GITHUB_TOKEN }}
