@@ -38,11 +38,9 @@ jobs:
       #     draft: false
       #     prerelease: false
 
-      - name: Get Package Version
+      - name: get-npm-version
         id: package-version
-        run: |
-          $packageJson = Get-Content -Raw -Path package.json | ConvertFrom-Json
-          echo "current-version=$($packageJson.version)" >> $GITHUB_ENV
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
 
       - name: Echo Output
         run: echo "Current version is ${{ steps.package-version.outputs.current-version }}"
