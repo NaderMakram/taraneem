@@ -28,6 +28,13 @@ jobs:
       - name: List release directory contents
         run: ls ./release
 
+      - name: upload artifacts
+        uses: AButler/upload-release-assets@v3.0
+        with:
+          files: "release/*.exe"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ github.ref }}
+
       # - name: Create Release
       #   id: create_release
       #   uses: comnoco/create-release-action@v2.0.5
