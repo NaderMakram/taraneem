@@ -1,16 +1,24 @@
-name: test
+name: Print Package Version
 
 on:
   push:
-    tags:
-      - '*'
-jobs:
-  build:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          clean: true
+    branches:
+      - master
 
-      - name: Echo a message
-        run: echo ${{github.ref}}
+jobs:
+  print-version:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Print package.json version
+        run: |
+          npm install jq-cli
+          echo "Package version: $(jq -r '.version' package.json)"
