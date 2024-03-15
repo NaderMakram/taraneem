@@ -1,0 +1,16 @@
+name: test
+
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          clean: true
+
+      - name: Echo a message
+        run: echo ${{github.ref}}
