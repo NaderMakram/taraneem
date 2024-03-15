@@ -42,7 +42,7 @@ jobs:
       - name: upload artifacts
         uses: AButler/upload-release-assets@v3.0
         with:
-          files: "release/*.exe"
+          files: "release/${{ github.ref }}/*.exe;release/${{ github.ref }}/latest.yml;release/${{ github.ref }}/*.blockmap"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ github.ref }}
 
