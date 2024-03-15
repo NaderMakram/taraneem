@@ -64,9 +64,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ github.ref }}/*.exe
-          asset_name: my-artifact.exe
-          asset_content_type: application/zip
+          asset_path: ./release/${{ github.ref }}/Taraneem-Windows-${{github.ref}}-Setup.exe
+          asset_name: Taraneem-${{github.ref}}.exe
+          asset_content_type: application/octet-stream
 
       # - name: Upload release assets
       #   uses: actions/upload-release-asset@v1
