@@ -28,23 +28,23 @@ jobs:
       - name: List release directory contents
         run: ls ./release
 
+      - name: Create Release
+        id: create_release
+        uses: comnoco/create-release-action@v2.0.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: true
+
       - name: upload artifacts
         uses: AButler/upload-release-assets@v3.0
         with:
           files: "release/*.exe"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ github.ref }}
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: comnoco/create-release-action@v2.0.5
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: ${{ github.ref }}
-      #     draft: false
-      #     prerelease: true
 
       # - name: Upload release assets
       #   uses: actions/upload-release-asset@v1
