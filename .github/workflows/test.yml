@@ -28,9 +28,27 @@ jobs:
       - name: List release directory contents
         run: ls ./release
 
+      # - name: Create Release
+      #   id: create_release
+      #   uses: comnoco/create-release-action@v2.0.5
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: ${{ github.ref }}
+      #     draft: false
+      #     prerelease: true
+
+      # - name: upload artifacts
+      #   uses: AButler/upload-release-assets@v3.0
+      #   with:
+      #     files: "release/${{ github.ref }}/*.exe;release/${{ github.ref }}/latest.yml;release/${{ github.ref }}/*.blockmap"
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     release-tag: ${{ github.ref }}
+
       - name: Create Release
         id: create_release
-        uses: comnoco/create-release-action@v2.0.5
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -39,12 +57,16 @@ jobs:
           draft: false
           prerelease: true
 
-      - name: upload artifacts
-        uses: AButler/upload-release-assets@v3.0
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: "release/${{ github.ref }}/*.exe;release/${{ github.ref }}/latest.yml;release/${{ github.ref }}/*.blockmap"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ github.ref }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release/${{ github.ref }}/*.exe
+          asset_name: my-artifact.exe
+          asset_content_type: application/zip
 
       # - name: Upload release assets
       #   uses: actions/upload-release-asset@v1
