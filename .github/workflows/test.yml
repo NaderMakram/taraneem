@@ -1,24 +1,24 @@
-name: Print Package Version
+name: Release on Push to Master
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
-  print-version:
+  release:
     runs-on: windows-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: "14"
+          node-version: "20"
 
       - name: Print package.json version
-        run: |
-          npm install jq-cli
-          echo "Package version: $(jq -r '.version' package.json)"
+        run: node -p "require('./package.json').version"
+
+      - name: Create Release
+        uses: justincy/github-action-npm-release@v1.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
