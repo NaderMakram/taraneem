@@ -83,8 +83,8 @@ export function selectSongEventFunction(e) {
 
   if (clickedDelete) {
     let clickedRef = e.target.parentNode.getAttribute("data-ref");
-    // console.log(clickedRef);
-    waiting = waiting.filter((item) => item.refIndex !== parseInt(clickedRef));
+    console.log(clickedRef);
+    waiting = waiting.filter((item) => item.refIndex != (clickedRef));
     displayWaitingList(waiting);
     return;
   }
@@ -101,9 +101,7 @@ export function selectSongEventFunction(e) {
     if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
       waiting.push({
         item: foundItem.item,
-        refIndex: clickedChapter
-          ? `b-${foundItem.refIndex}`
-          : foundItem.refIndex,
+        refIndex: foundItem.refIndex,
       });
       console.log(foundItem.refIndex);
       console.log(clickedChapter);

@@ -15,13 +15,17 @@ html {
   overflow-y: auto;
 }
 
+h2 {
+  margin: 8px;
+}
+
 #tools_bar {
   display: flex;
   align-items: center;
   position: sticky;
   background: white;
   top: -1px;
-  padding: 10px;
+  padding: 10px 14px;
   border-bottom: 1px solid #e0e0e0;
   z-index: 100;
 }
@@ -119,11 +123,12 @@ html {
 
 #title-input {
   padding: 10px;
+  width: calc(100% - 35px);
   font-size: 16px;
   border: 2px solid #ccc;
   border-radius: 8px;
-  margin-right: 10px;
-  width: 93%;
+  margin-right: 5px;
+  /* width: 93%; */
   text-align: right;
   direction: rtl;
 }
@@ -249,7 +254,7 @@ label#dark_mode_label:active:after {
 
 #version {
   margin-bottom: 1rem;
-  padding: 0 10px;
+  padding: 0 14px;
   font-size: 0.7rem;
   font-weight: 500;
   display: flex;
