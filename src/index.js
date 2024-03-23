@@ -361,7 +361,7 @@ autoUpdater.on("error", (err) => {
 });
 
 autoUpdater.on("download-progress", (progressObj) => {
-  let log_message = "<div class='loader'></div> Downloading: " + Math.floor(progressObj.percent) + "%";
+  let log_message = "Downloading: " + Math.floor(progressObj.percent) + "%";
   updateVersionMessage(log_message);
 });
 autoUpdater.on("update-downloaded", (info) => {
