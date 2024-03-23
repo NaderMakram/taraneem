@@ -249,6 +249,7 @@ label#dark_mode_label:active:after {
 
 #version {
   margin-bottom: 1rem;
+  padding: 0 10px;
   font-size: 0.7rem;
   font-weight: 500;
   display: flex;

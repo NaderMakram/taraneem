@@ -346,14 +346,14 @@ app.on("ready", function () {
   autoUpdater.checkForUpdates();
 });
 autoUpdater.on("checking-for-update", () => {
-  updateVersionMessage("<span class='loader'></span>Checking for new version");
+  updateVersionMessage("Checking for new version...");
 });
 autoUpdater.on("update-available", (info) => {
-  updateVersionMessage("There is a new version");
+  updateVersionMessage("New version available");
 });
 autoUpdater.on("update-not-available", (info) => {
   let currentVersion = app.getVersion();
-  updateVersionMessage(`Up to date. Version: ${currentVersion}`);
+  updateVersionMessage(`Up to date | Version: ${currentVersion}`);
 });
 autoUpdater.on("error", (err) => {
   let currentVersion = app.getVersion();
@@ -361,7 +361,7 @@ autoUpdater.on("error", (err) => {
 });
 
 autoUpdater.on("download-progress", (progressObj) => {
-  let log_message = "Downloading: " + Math.floor(progressObj.percent) + "%";
+  let log_message = "<div class='loader'></div> Downloading: " + Math.floor(progressObj.percent) + "%";
   updateVersionMessage(log_message);
 });
 autoUpdater.on("update-downloaded", (info) => {
