@@ -48,7 +48,7 @@ console.timeEnd("creating content time:");
 
 const deepFuse = new Fuse(songsWithSearchableContent, {
   // includeScore: true,
-  threshold: 0.2, // Adjust as needed
+  threshold: 0.25, // Adjust as needed
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
@@ -74,16 +74,29 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
   keys: ["searchableContent"],
 });
 
-const bibleFuse = new Fuse(bibleDB, {
+const bibleShortFuse = new Fuse(bibleDB, {
   includeScore: true,
-  threshold: 0.1,
+  threshold: 0.0,
+  // location: 200,
+  // distance: 1000,
+  ignoreLocation: true,
+  minMatchCharLength: 0,
+  useExtendedSearch: true,
+  // includeMatches: true,
+  shouldSort: true,
+  keys: ["chapter_book_short"],
+});
+
+const bibleLongFuse = new Fuse(bibleDB, {
+  includeScore: true,
+  threshold: 0.15,
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
   minMatchCharLength: 0,
   // includeMatches: true,
   shouldSort: true,
-  keys: ["chapter_book_short", "chapter_book_normalized"],
+  keys: ["chapter_book_normalized"],
 });
 
 // Function to create a searchable content string for each song
@@ -135,8 +148,10 @@ function searchSongs(event, term) {
     );
     if (book_and_chapter) {
       // console.log("text in term", book_and_chapter[0]);
-      results = bibleFuse.search(book_and_chapter[0]);
-      // console.log(results);
+      results = bibleShortFuse.search('=' + book_and_chapter[0]);
+      if (results.length === 0) {
+        results = bibleLongFuse.search(book_and_chapter[0]);
+      }
     }
   } else {
     // do song search
@@ -166,8 +181,12 @@ function readJson() {
 app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
   ipcMain.handle("search-songs", searchSongs);
-  ipcMain.on("flip-searching-mode", () => (fastSearch = !fastSearch));
+  ipcMain.on("flip-searching-mode", () => {
+
+    (fastSearch = !fastSearch)
+  });
   ipcMain.handle("read-json", readJson);
+  console.log(fastSearch)
   // const container = document.getElementById("jsoneditor");
   // const options = {};
   // const editor = new JSONEditor(container, options);

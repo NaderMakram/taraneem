@@ -73,6 +73,10 @@ h2 {
 .song-preview .active {
   border: 2px solid var(--primary);
 }
+
+.song-preview .bible-verse div {
+  text-align: right;
+}
 .song-title {
   text-align: center;
   margin-bottom: 35px;
@@ -88,6 +92,10 @@ h2 {
   border-radius: 8px;
   text-align: center;
   box-shadow: #9090901a 0px 1px 3px 0px, #9090901a 0px 1px 2px 0px;
+}
+
+.big.chapter .verses {
+  text-align: right;
 }
 
 .big h2 {

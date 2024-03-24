@@ -48,7 +48,7 @@ export function debounce(func, delay) {
 }
 
 // Use debounce to delay the search function
-export const debouncedSearch = debounce(searchAndDisplayResults, delay);
+export let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 let toggleFontSizeInput = (isBible) => {
   if (isBible) {
