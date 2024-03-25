@@ -50,7 +50,7 @@ export function debounce(func, delay) {
 }
 
 // Use debounce to delay the search function
-export const debouncedSearch = debounce(searchAndDisplayResults, delay);
+export let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 let toggleFontSizeInput = (isBible) => {
   if (isBible) {
@@ -105,8 +105,8 @@ export function selectSongEventFunction(e) {
 
   if (clickedDelete) {
     let clickedRef = e.target.parentNode.getAttribute("data-ref");
-    // console.log(clickedRef);
-    waiting = waiting.filter((item) => item.refIndex !== parseInt(clickedRef));
+    console.log(clickedRef);
+    waiting = waiting.filter((item) => item.refIndex != (clickedRef));
     displayWaitingList(waiting);
     return;
   }
@@ -123,9 +123,7 @@ export function selectSongEventFunction(e) {
     if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
       waiting.push({
         item: foundItem.item,
-        refIndex: clickedChapter
-          ? `b-${foundItem.refIndex}`
-          : foundItem.refIndex,
+        refIndex: foundItem.refIndex,
       });
       console.log(foundItem.refIndex);
       console.log(clickedChapter);
@@ -160,7 +158,10 @@ export function selectSongEventFunction(e) {
     if (ref && currentSongRef && ref == currentSongRef) {
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
-        document.querySelector(".active").classList.remove("active");
+        // if there is an active element remove it
+        if (document.querySelector(".active")) {
+          document.querySelector(".active").classList.remove("active");
+        }
         firstSlide.classList.add("active");
         newSlide(firstSlide.innerHTML);
       }
@@ -208,7 +209,10 @@ export function selectSongEventFunction(e) {
     if (ref && currentSongRef && ref == currentSongRef) {
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
-        document.querySelector(".active").classList.remove("active");
+        // if there is an active element remove it
+        if (document.querySelector(".active")) {
+          document.querySelector(".active").classList.remove("active");
+        }
         firstSlide.classList.add("active");
         newSlide(firstSlide.innerHTML);
       }

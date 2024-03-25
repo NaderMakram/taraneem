@@ -24,6 +24,7 @@ import {
   selectSongEventFunction,
   debounce,
   debouncedSearch,
+  searchAndDisplayResults
 } from "./helpers/handleSelectedSong.js";
 
 document.addEventListener("keydown", () => handleKeyDown(event));
@@ -39,17 +40,17 @@ darkModeToggle.addEventListener("change", () => {
 });
 
 deepModeToggle.addEventListener("change", (e) => {
-  console.log(e.target.checked);
-  if (e.target.checked) {
-    // delay = 350;
-    debouncedSearch = debounce(searchAndDisplayResults, 350);
-  } else {
-    // delay = 100;
-    debouncedSearch = debounce(searchAndDisplayResults, 50);
-  }
-  console.log(delay);
-  debouncedSearch(input.value);
+  // console.log(e.target.checked);
+  // if (e.target.checked) {
+  //   // delay = 350;
+  //   debouncedSearch = debounce(searchAndDisplayResults, 350);
+  // } else {
+  //   // delay = 100;
+  //   debouncedSearch = debounce(searchAndDisplayResults, 50);
+  // }
+  // console.log(delay);
   window.myCustomAPI.flipSearchingMode();
+  debouncedSearch(input.value);
 });
 
 fontWeightBtn.addEventListener("click", () => {
@@ -85,22 +86,22 @@ waitingModeToggle.addEventListener("change", (e) => {
 // let waiting = [];
 
 // for testing
-// setTimeout(() => {
-//   input.value = "تك 19";
+setTimeout(() => {
+  input.value = "لا1";
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
 
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
+  input.dispatchEvent(inputEvent);
+}, 1000);
 
-// let clickDev = new Event("click", {
-//   bubbles: true,
-//   cancelable: true,
-// });
+let clickDev = new Event("click", {
+  bubbles: true,
+  cancelable: true,
+});
 
 // setTimeout(() => {
 //   let son = document.querySelector(".big");

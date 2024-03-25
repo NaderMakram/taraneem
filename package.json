@@ -1,7 +1,7 @@
 {
   "name": "taraneem",
   "productName": "Taraneem",
-  "version": "2.3.1",
+  "version": "2.4.3",
   "main": "src/index.js",
   "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
   "repository": {
@@ -16,7 +16,7 @@
     "lint": "echo \"No linting configured\"",
     "build": "electron-builder",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "dist": "electron-builder -p never",
     "publish": "electron-builder -p always"
   },
   "keywords": [],
