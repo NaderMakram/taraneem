@@ -128,9 +128,9 @@ html {
   direction: rtl;
 }
 
+/* input#fontSize, */
 button#white,
-button#bold,
-input#fontSize {
+button#bold {
   padding: 10px 15px;
   font-size: 16px;
   background-color: #ffffff;
@@ -141,16 +141,61 @@ input#fontSize {
   transition: all 0.2s ease;
 }
 
-input#fontSize {
+/* input#fontSize {
   width: 44px;
+  padding: 10px;
+} */
+
+#fontSizeContainer{
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    border: 2px solid var(--primary);
+    border-radius: 5px;
+    font-weight: 500;
+}
+  
+#fontSizeButtons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#fontSizePlus{
+  border: 0px;
+  border-bottom: 1px solid var(--primary);
+}
+
+#fontSizeMinus{
+  border: 0px;
+}
+
+#fontSizeButtons button{
+  background: none;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+#fontSizeButtons button.hover-bg:hover{
+  color: transparent;  
+  text-shadow: 0 0 0 whitesmoke;
+  background-color: var(--primary);
+}
+
+#fontSizeContainer #fontSize {
+  border-right: 1px solid var(--primary);
+  /* height: 100%; */
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
 }
 
 input[type="number"]::-webkit-inner-spin-button {
   opacity: 1;
-}
-
-input#fontSize {
-  padding: 10px;
 }
 
 button#white:hover,
@@ -302,4 +347,8 @@ label#dark_mode_label:active:after {
 
 #waiting-wrapper {
   background: #d2efff29;
+}
+
+#waiting_mode_input{
+  cursor: pointer;
 }

@@ -6,6 +6,8 @@ import {
 import { newSlide } from "./newSlide.js";
 import { displayWaitingList } from "./displayWaitingList.js";
 const fontSizeInput = document.querySelector("#fontSize");
+const fontSizePlus = document.querySelector("#fontSizePlus");
+const fontSizeMinus = document.querySelector("#fontSizeMinus");
 
 let res;
 let searchResults;
@@ -54,21 +56,41 @@ let toggleFontSizeInput = (isBible) => {
   if (isBible) {
     // Disable the input field
     fontSizeInput.disabled = true;
+    fontSizePlus.disabled = true;
+    fontSizeMinus.disabled = true;
 
     // Change cursor style to not-allowed
     fontSizeInput.style.cursor = "not-allowed";
+    fontSizePlus.style.cursor = "not-allowed";
+    fontSizeMinus.style.cursor = "not-allowed";
 
     // Adjust opacity to visually indicate disabled state
-    fontSizeInput.style.opacity = "0.5"; // Example: Reduced opacity (50%)
+    fontSizeInput.style.opacity = "0.5";
+    fontSizePlus.style.opacity = "0.5";
+    fontSizeMinus.style.opacity = "0.5";
+
+    // remove hover effect from buttons
+    fontSizePlus.classList.remove("hover-bg");
+    fontSizeMinus.classList.remove("hover-bg");
   } else {
     // Enable the input field
     fontSizeInput.disabled = false;
+    fontSizePlus.disabled = false;
+    fontSizeMinus.disabled = false;
 
     // Reset cursor style
     fontSizeInput.style.cursor = "pointer";
+    fontSizePlus.style.cursor = "pointer";
+    fontSizeMinus.style.cursor = "pointer";
 
     // Reset opacity
-    fontSizeInput.style.opacity = "1"; // Reset opacity to normal
+    fontSizeInput.style.opacity = "1";
+    fontSizePlus.style.opacity = "1";
+    fontSizeMinus.style.opacity = "1";
+
+    // reset hover effect from buttons
+    fontSizePlus.classList.add("hover-bg");
+    fontSizeMinus.classList.add("hover-bg");
   }
 };
 

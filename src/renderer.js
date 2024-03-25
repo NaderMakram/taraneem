@@ -4,6 +4,8 @@ const waiting_output = document.querySelector("#waiting_output");
 const preview_output = document.querySelector("#preview_output");
 const whiteButton = document.querySelector("#white");
 const fontSizeInput = document.querySelector("#fontSize");
+const fontSizePlus = document.querySelector("#fontSizePlus");
+const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const fontWeightBtn = document.querySelector("#bold");
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
@@ -55,9 +57,24 @@ fontWeightBtn.addEventListener("click", () => {
   fontWeightBtn.classList.toggle("bold");
 });
 
-fontSizeInput.addEventListener("change", (e) => {
-  window.myCustomAPI.updateFontSize(e.target.value);
-  fontSizeInput.blur();
+// fontSizeInput.addEventListener("change", (e) => {
+//   window.myCustomAPI.updateFontSize(e.target.value);
+//   fontSizeInput.blur();
+// });
+
+fontSizePlus.addEventListener("click", () => {
+  let currentValue = parseInt(fontSizeInput.textContent);
+  console.log(currentValue);
+  if (currentValue == 50) return;
+  fontSizeInput.textContent = currentValue + 1;
+  window.myCustomAPI.updateFontSize(currentValue + 1);
+});
+
+fontSizeMinus.addEventListener("click", () => {
+  let currentValue = parseInt(fontSizeInput.textContent);
+  if (currentValue == 2) return;
+  fontSizeInput.textContent = currentValue - 1;
+  window.myCustomAPI.updateFontSize(currentValue - 1);
 });
 
 waitingModeToggle.addEventListener("change", (e) => {
