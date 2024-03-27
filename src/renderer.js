@@ -24,7 +24,7 @@ import {
   selectSongEventFunction,
   debounce,
   debouncedSearch,
-  searchAndDisplayResults
+  searchAndDisplayResults,
 } from "./helpers/handleSelectedSong.js";
 
 document.addEventListener("keydown", () => handleKeyDown(event));

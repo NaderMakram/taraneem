@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
     <title>Taraneem - ترانيم</title>
     <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="switch.css" />
     <link rel="stylesheet" href="index.css" />
     <link rel="stylesheet" href="loader.css" />
   </head>
@@ -12,8 +13,8 @@
     <!-- <div id="jsoneditor" style="width: 400px; height: 400px"></div> -->
     <div id="version"></div>
     <div id="tools_bar">
-      <button class="gray-hover" id="white" title="Blank (Ctrl + W)">
-        Pause
+      <button class="gray-hover" id="white" title="Pause (Ctrl + W)">
+        <img src="./img/pause_play_cropped.png" />
       </button>
       <!-- bold font button -->
       <button class="gray-hover" id="bold" title="Bold">Bold</button>
@@ -41,7 +42,7 @@
         for="deep_mode_input"
         id="deep_mode_label"
         name="deep"
-        title="Fast/Deep Mode"
+        title="Fast/Slow Mode"
       ></label>
       <!-- new test for font size -->
       <!-- <div id="fontSizeContainer">
@@ -52,10 +53,23 @@
         </div>
       </div> -->
       <!-- dark mode switch -->
-      <input type="checkbox" id="dark_mode_input" />
-      <label for="dark_mode_input" title="Dark Mode" id="dark_mode_label"
+      <!-- <input type="checkbox" id="dark_mode_input" /> -->
+      <!-- <label for="dark_mode_input" title="Dark Mode" id="dark_mode_label"
         >Toggle</label
+        > -->
+
+      <!-- dark mode switch #2 -->
+      <label
+        class="switch"
+        for="dark_mode_input"
+        title="Dark/Light Mode"
+        id="dark_mode_label"
       >
+        <input class="switch-input" type="checkbox" id="dark_mode_input" />
+        <span class="switch-label" data-on="Dark" data-off="Light"></span>
+        <span class="switch-handle"></span>
+      </label>
+
       <!-- waiting toggle -->
       <div id="list-toggle-group">
         📄

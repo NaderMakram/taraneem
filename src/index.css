@@ -31,7 +31,7 @@ h2 {
 }
 
 #tools_bar > * {
-  margin-right: 5px;
+  margin-right: 7px;
 }
 
 #main-wrapper {
@@ -145,13 +145,22 @@ h2 {
 button#white,
 button#bold {
   padding: 10px 15px;
-  font-size: 16px;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
   background-color: #ffffff;
+  align-self: stretch;
   color: var(--primary);
   border: 2px solid var(--primary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+#white img {
+  width: 26px;
+}
+.gray-hover:active {
+  transform: scale(0.96);
 }
 
 /* input#fontSize {
@@ -166,6 +175,7 @@ button#bold {
   border: 2px solid var(--primary);
   border-radius: 5px;
   font-weight: 500;
+  font-size: 20px;
 }
 
 #fontSizeButtons {
@@ -192,7 +202,7 @@ button#bold {
 }
 
 .gray-hover {
-  transition: background-color 0.2s ease !important;
+  transition: all 0.2s ease;
 }
 .gray-hover:hover {
   /* color: transparent; */
@@ -229,53 +239,6 @@ button.bold {
 }
 
 /* dark mode switch */
-input#dark_mode_input {
-  height: 0;
-  width: 0;
-  visibility: hidden;
-}
-
-label#dark_mode_label {
-  cursor: pointer;
-  text-indent: -9999px;
-  width: 60px;
-  height: 30px;
-  background: var(--gray-1);
-  display: inline-block;
-  border-radius: 100px;
-  position: relative;
-  transition: background-color 0.2s;
-}
-
-label#dark_mode_label:hover {
-  background: var(--gray-2);
-}
-
-label#dark_mode_label:after {
-  content: "";
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 90px;
-  transition: 0.2s;
-}
-
-input#dark_mode_input:checked + label {
-  /* background: rgba(0, 0, 0, 0.95); */
-  background: var(--dark);
-}
-
-input#dark_mode_input:checked + label:after {
-  left: calc(100% - 5px);
-  transform: translateX(-100%);
-}
-
-label#dark_mode_label:active:after {
-  width: 50px;
-}
 
 .chorusSymbol,
 .verseNumber {
@@ -300,7 +263,7 @@ label#dark_mode_label:active:after {
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 5px;
   width: 30px;
   height: 30px;
   content: "";
