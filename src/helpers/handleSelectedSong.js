@@ -8,6 +8,7 @@ import { displayWaitingList } from "./displayWaitingList.js";
 const fontSizeInput = document.querySelector("#fontSize");
 const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
+const darkModeInput = document.querySelector('#deep_mode_label')
 
 let res;
 let searchResults;
@@ -58,16 +59,19 @@ let toggleFontSizeInput = (isBible) => {
     fontSizeInput.disabled = true;
     fontSizePlus.disabled = true;
     fontSizeMinus.disabled = true;
+    darkModeInput.disabled = true;
 
     // Change cursor style to not-allowed
     fontSizeInput.style.cursor = "not-allowed";
     fontSizePlus.style.cursor = "not-allowed";
     fontSizeMinus.style.cursor = "not-allowed";
+    darkModeInput.style.cursor = "not-allowed";
 
     // Adjust opacity to visually indicate disabled state
     fontSizeInput.style.opacity = "0.5";
     fontSizePlus.style.opacity = "0.5";
     fontSizeMinus.style.opacity = "0.5";
+    darkModeInput.style.opacity = "0.5";
 
     // remove hover effect from buttons
     fontSizePlus.classList.remove("hover-bg");
@@ -77,16 +81,19 @@ let toggleFontSizeInput = (isBible) => {
     fontSizeInput.disabled = false;
     fontSizePlus.disabled = false;
     fontSizeMinus.disabled = false;
+    darkModeInput.disabled = false;
 
     // Reset cursor style
     fontSizeInput.style.cursor = "pointer";
     fontSizePlus.style.cursor = "pointer";
     fontSizeMinus.style.cursor = "pointer";
+    darkModeInput.style.cursor = "pointer";
 
     // Reset opacity
     fontSizeInput.style.opacity = "1";
     fontSizePlus.style.opacity = "1";
     fontSizeMinus.style.opacity = "1";
+    darkModeInput.style.opacity = "1";
 
     // reset hover effect from buttons
     fontSizePlus.classList.add("hover-bg");
