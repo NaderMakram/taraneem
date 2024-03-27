@@ -159,42 +159,49 @@ button#bold {
   padding: 10px;
 } */
 
-#fontSizeContainer{
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    border: 2px solid var(--primary);
-    border-radius: 5px;
-    font-weight: 500;
+#fontSizeContainer {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  border: 2px solid var(--primary);
+  border-radius: 5px;
+  font-weight: 500;
 }
-  
-#fontSizeButtons{
+
+#fontSizeButtons {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-#fontSizePlus{
+#fontSizePlus {
   border: 0px;
   border-bottom: 1px solid var(--primary);
 }
 
-#fontSizeMinus{
+#fontSizeMinus {
   border: 0px;
 }
 
-#fontSizeButtons button{
+#fontSizeButtons button {
   background: none;
   cursor: pointer;
   width: 100%;
   transition: background-color 0.2s ease;
 }
 
-#fontSizeButtons button.hover-bg:hover{
-  color: transparent;  
-  text-shadow: 0 0 0 whitesmoke;
-  background-color: var(--primary);
+.gray-hover {
+  transition: background-color 0.2s ease !important;
+}
+.gray-hover:hover {
+  /* color: transparent; */
+  /* text-shadow: 0 0 0 whitesmoke; */
+  background-color: var(--gray-hover) !important;
+}
+
+.bold.gray-hover:hover {
+  background-color: #ce3d42 !important;
 }
 
 #fontSizeContainer #fontSize {
@@ -211,10 +218,8 @@ input[type="number"]::-webkit-inner-spin-button {
   opacity: 1;
 }
 
-button#white:hover,
-button#bold:hover {
-  background-color: var(--primary);
-  color: white;
+button#bold {
+  width: 70px;
 }
 
 button.bold {
@@ -363,6 +368,6 @@ label#dark_mode_label:active:after {
   background: #d2efff29;
 }
 
-#waiting_mode_input{
+#waiting_mode_input {
   cursor: pointer;
 }
