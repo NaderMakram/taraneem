@@ -65,9 +65,9 @@ let toggleFontSizeInput = (isBible) => {
     fontSizeMinus.style.cursor = "not-allowed";
 
     // Adjust opacity to visually indicate disabled state
-    fontSizeInput.style.opacity = "0.5";
-    fontSizePlus.style.opacity = "0.5";
-    fontSizeMinus.style.opacity = "0.5";
+    fontSizeInput.style.opacity = "0.3";
+    fontSizePlus.style.opacity = "0.3";
+    fontSizeMinus.style.opacity = "0.3";
 
     // remove hover effect from buttons
     fontSizePlus.classList.remove("hover-bg");
