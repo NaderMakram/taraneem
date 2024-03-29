@@ -16,7 +16,7 @@
     "lint": "echo \"No linting configured\"",
     "build": "electron-builder",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win --ia32 -p never",
+    "dist": "electron-builder --win --x64 --ia32 -p never",
     "publish": "electron-builder -p always"
   },
   "keywords": [],
