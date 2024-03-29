@@ -33,6 +33,7 @@ let delay = 50;
 whiteButton.addEventListener("click", () => {
   // newSlide("");
   pause();
+  whiteButton.blur();
 });
 
 darkModeToggle.addEventListener("change", () => {
@@ -56,6 +57,7 @@ deepModeToggle.addEventListener("change", (e) => {
 fontWeightBtn.addEventListener("click", () => {
   window.myCustomAPI.updateFontWeight();
   fontWeightBtn.classList.toggle("bold");
+  fontWeightBtn.blur();
 });
 
 // fontSizeInput.addEventListener("change", (e) => {
@@ -81,27 +83,28 @@ fontSizeMinus.addEventListener("click", () => {
 waitingModeToggle.addEventListener("change", (e) => {
   // Toggle a class on the body based on checkbox state
   document.body.classList.toggle("waiting-mode", !e.target.checked);
+  waitingModeToggle.blur();
 });
 
 // let waiting = [];
 
 // for testing
-setTimeout(() => {
-  input.value = "لا1";
+// setTimeout(() => {
+//   input.value = "لا1";
 
-  // Create a new event
-  const inputEvent = new Event("input", {
-    bubbles: true,
-    cancelable: true,
-  });
+//   // Create a new event
+//   const inputEvent = new Event("input", {
+//     bubbles: true,
+//     cancelable: true,
+//   });
 
-  input.dispatchEvent(inputEvent);
-}, 1000);
+//   input.dispatchEvent(inputEvent);
+// }, 1000);
 
-let clickDev = new Event("click", {
-  bubbles: true,
-  cancelable: true,
-});
+// let clickDev = new Event("click", {
+//   bubbles: true,
+//   cancelable: true,
+// });
 
 // setTimeout(() => {
 //   let son = document.querySelector(".big");

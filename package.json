@@ -1,7 +1,7 @@
 {
   "name": "taraneem",
   "productName": "Taraneem",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "main": "src/index.js",
   "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
   "repository": {
@@ -39,7 +39,7 @@
     "@electron-forge/maker-squirrel": "^6.4.2",
     "@electron-forge/maker-zip": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-    "electron": "27.0.4",
+    "electron": "22.3.27",
     "electron-builder": "^24.13.3",
     "electron-notarize": "^1.1.1"
   }

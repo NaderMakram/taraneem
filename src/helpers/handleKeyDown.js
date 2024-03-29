@@ -63,13 +63,14 @@ export function handleKeyDown(e) {
   }
 
   if (key === "End") {
-    let AllSlides = document.querySelectorAll(
+    let AllSlides = document.querySelectorAll(".slide");
+    let AllEffectiveSlides = document.querySelectorAll(
       '[data-verseNumber]:not([data-verseNumber=""])'
     );
 
     if (AllSlides) {
-      let lastSlide = AllSlides[AllSlides.length - 1];
-      let elements = document.querySelector(".song-preview").children;
+      let lastSlide = AllEffectiveSlides[AllEffectiveSlides.length - 1];
+      // let elements = document.querySelector(".song-preview").children;
 
       for (let i = 0; i < AllSlides.length; i++) {
         AllSlides[i].classList.remove("active");
@@ -82,10 +83,11 @@ export function handleKeyDown(e) {
     return;
   }
   if (key === "Home") {
-    let AllSlides = document.querySelectorAll(`[data-verseNumber]`);
+    let AllSlides = document.querySelectorAll(`.slide`);
+    // let AllEffectiveSlides = document.querySelectorAll(`[data-verseNumber]`);
     if (AllSlides) {
       let firstSlide = AllSlides[0];
-      let elements = document.querySelector(".song-preview").children;
+      // let elements = document.querySelector(".song-preview").children;
 
       for (let i = 0; i < AllSlides.length; i++) {
         AllSlides[i].classList.remove("active");
