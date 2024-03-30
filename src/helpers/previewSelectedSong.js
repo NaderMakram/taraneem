@@ -34,10 +34,11 @@ export function previewSelectedChapter(
 
 // preview selected song
 export function previewSelectedSong(
-  { title, chorus, verses, chorusFirst },
+  { title, chorus, verses, chorusFirst, scale },
   refIndex
 ) {
   let html = `<h4 class="song-title" data-ref="${refIndex}">${title}</h4>`;
+  html += `<h5 class="song-info">scale: ${scale ? scale : "??"}</h5>`;
   html += `<div class="song-preview">`;
   const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
 

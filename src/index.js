@@ -28,7 +28,7 @@ if (require("electron-squirrel-startup")) {
 }
 
 const songsDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "tasbe7naDB.json"), "utf-8")
+  fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 );
 
 const bibleDB = JSON.parse(
@@ -175,7 +175,7 @@ const handleSetTitle = (event, title) => {
 
 function readJson() {
   return JSON.parse(
-    fs.readFileSync(path.join(__dirname, "tasbe7naDB.json"), "utf-8")
+    fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
   );
 }
 app.on("ready", () => {
