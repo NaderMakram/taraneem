@@ -148,7 +148,7 @@ function searchSongs(event, term) {
     );
     if (book_and_chapter) {
       // console.log("text in term", book_and_chapter[0]);
-      results = bibleShortFuse.search('=' + book_and_chapter[0]);
+      results = bibleShortFuse.search("=" + book_and_chapter[0]);
       if (results.length === 0) {
         results = bibleLongFuse.search(book_and_chapter[0]);
       }
@@ -182,11 +182,10 @@ app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
   ipcMain.handle("search-songs", searchSongs);
   ipcMain.on("flip-searching-mode", () => {
-
-    (fastSearch = !fastSearch)
+    fastSearch = !fastSearch;
   });
   ipcMain.handle("read-json", readJson);
-  console.log(fastSearch)
+  console.log(fastSearch);
   // const container = document.getElementById("jsoneditor");
   // const options = {};
   // const editor = new JSONEditor(container, options);

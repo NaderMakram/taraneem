@@ -1,11 +1,11 @@
 export function previewSelectedChapter(
-  { chapter_name, chapter_book, chapter_number, verses },
+  { chapter_name, chapter_en, chapter_book, chapter_number, verses },
   refIndex
 ) {
   let chapter_number_ar = new Intl.NumberFormat("ar-EG").format(chapter_number);
 
   let html = `<h4 class="song-title" data-ref="${refIndex}">${
-    chapter_book + "  " + chapter_number_ar
+    chapter_book + "  " + chapter_number_ar + "  |  " + chapter_en
   }</h4>`;
   html += `<div class="song-preview">`;
   // console.log(verses);
