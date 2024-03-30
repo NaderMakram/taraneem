@@ -1,10 +1,27 @@
-@import url("https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400..700&display=swap");
-
+/* @import url("https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap"); */
+/* @import url("https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400..700&display=swap"); */
+@font-face {
+  font-family: MyTimesNewRoman;
+  src: url(./fonts/times-new-roman.ttf);
+}
+@font-face {
+  font-family: MyTimesNewRoman;
+  src: url(./fonts/times-new-roman-bold.ttf);
+  font-weight: bold;
+}
+@font-face {
+  font-family: MyCalibri;
+  src: url(./fonts/calibri.ttf);
+}
+@font-face {
+  font-family: MyCalibri;
+  src: url(./fonts/calibri-bold.ttf);
+  font-weight: bold;
+}
 html {
   height: 100%;
   direction: rtl !important;
-  font-family: calibri;
+  font-family: MyCalibri;
   cursor: none;
 }
 body {
@@ -59,8 +76,8 @@ body::-webkit-scrollbar {
 
 /* bible style */
 .bible-container {
-  font-family: "Scheherazade New";
-  font-family: "Times New Roman";
+  /* font-family: "Scheherazade New"; */
+  font-family: MyTimesNewRoman;
 
   /* font-family: "Noto Naskh Arabic", serif; */
   /* font-optical-sizing: auto; */
@@ -78,8 +95,8 @@ body::-webkit-scrollbar {
 
 .bible-body {
   padding-right: 4vw;
-  font-size: 7vw;
-  line-height: 1.4em;
+  font-size: 6.5vw;
+  line-height: 1.45em;
   height: 82.5vh;
 }
 
@@ -131,7 +148,7 @@ body::-webkit-scrollbar {
 }
 
 .bold {
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .chorusSymbol,
