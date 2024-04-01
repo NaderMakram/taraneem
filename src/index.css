@@ -212,6 +212,14 @@ button#bold {
   cursor: pointer;
   width: 100%;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+}
+
+#fontSizeButtons button img {
+  width: 14px;
 }
 
 .gray-hover {
