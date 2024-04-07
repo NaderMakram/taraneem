@@ -29,7 +29,7 @@
     oneClick: true,
     perMachine: false,
     allowToChangeInstallationDirectory: false,
-    deleteAppDataOnUninstall: false,
+    deleteAppDataOnUninstall: true,
   },
   linux: {
     target: ["AppImage"],
