@@ -45,8 +45,8 @@ const songsWithSearchableContent = songsDB.map((song) => {
 });
 console.timeEnd("creating content time:");
 // console.timeEnd("MappingSongs");
-const filename = 'songs-with-searchable-content.json';
-writeSongsToJSON(songsWithSearchableContent, filename);
+// const filename = 'songs-with-searchable-content.json';
+// writeSongsToJSON(songsWithSearchableContent, filename);
 
 
 // Function to write the songs data to a JSON file
