@@ -309,8 +309,8 @@ function updateVersionMessage(message) {
   mainWindow.webContents.send("log", message);
 }
 
-app.on("ready", createMainWindow);
 app.on("ready", createSongWindow);
+app.on("ready", createMainWindow);
 app.on("ready", addIPCs);
 // app.on("ready", () => {
 //   let currentVersion = app.getVersion();
@@ -403,7 +403,7 @@ autoUpdater.on("update-not-available", (info) => {
 });
 autoUpdater.on("error", (err) => {
   let currentVersion = app.getVersion();
-  updateVersionMessage(`Version: ${currentVersion}`);
+  updateVersionMessage(`Version: ${currentVersion} !`);
 });
 
 autoUpdater.on("download-progress", (progressObj) => {
