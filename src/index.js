@@ -45,6 +45,22 @@ const songsWithSearchableContent = songsDB.map((song) => {
 });
 console.timeEnd("creating content time:");
 // console.timeEnd("MappingSongs");
+// const filename = 'songs-with-searchable-content.json';
+// writeSongsToJSON(songsWithSearchableContent, filename);
+
+
+// Function to write the songs data to a JSON file
+function writeSongsToJSON(data, filename) {
+  const jsonData = JSON.stringify(data, null, 2); // Stringify with indentation for readability
+
+  try {
+    fs.writeFileSync(filename, jsonData);
+    console.log(`Songs data successfully exported to ${filename}`);
+  } catch (error) {
+    console.error('Error writing songs data to JSON file:', error);
+  }
+}
+
 
 const deepFuse = new Fuse(songsWithSearchableContent, {
   // includeScore: true,
@@ -116,20 +132,32 @@ function createSearchableContent(song) {
   return uniqueContent;
 }
 
-// normalize text
+// normalize song text
 function normalize(text) {
   return (
     text
-      .replace(/أ|آ|إ|ا/g, "ا") // Treat أ, إ, and ا as the same
-      .replace(/ى|ي/g, "ي")
-      .replace(/س|ث/g, "س")
-      .replace(/ق|ك/g, "ك")
-      .replace(/ه|ة/g, "ه")
-      .replace(/ذ|ظ|ز/g, "ز")
-      .replace(/ء|ؤ|ئ/g, "ء")
-      // .replace(/َ|ً|ُ|ٌ|ِ|ٍ|ّ/g, "");
+      .replace(/أ|آ|إ/g, "ا") // Treat أ, إ, and ا as the same
+      .replace(/ى/g, "ي")
+      .replace(/ث/g, "س")
+      .replace(/ق/g, "ك")
+      .replace(/ه/g, "ة")
+      .replace(/ذ|ظ/g, "ز")
+      .replace(/ؤ|ئ/g, "ء")
+      // remove tashkeel
       .replace(/[ًٌٍَُِّْ~ـٰ]/g, "")
-  ); // Remove Arabic diacritics
+      // remove \n
+      .replace(/\n/g, " ")
+  );
+}
+
+function normalizeBibleVerse(text) {
+  return (
+    text
+      .replace(/أ|آ|إ/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ه/g, "ة")
+      .replace(/ؤ|ئ/g, "ء")
+  );
 }
 
 // Function to search for songs
@@ -145,12 +173,12 @@ function searchSongs(event, term) {
     let termWithoutSpaces = term.replace(/\s+/g, "");
     let book_and_chapter = termWithoutSpaces.match(
       /(?:\b\d+)?[\u0600-\u06FF]+/
-    );
+    )
     if (book_and_chapter) {
-      // console.log("text in term", book_and_chapter[0]);
-      results = bibleShortFuse.search("=" + book_and_chapter[0]);
+      let normalizedVerse = normalizeBibleVerse(book_and_chapter[0])
+      results = bibleShortFuse.search("=" + normalizeBibleVerse(book_and_chapter[0]));
       if (results.length === 0) {
-        results = bibleLongFuse.search(book_and_chapter[0]);
+        results = bibleLongFuse.search(normalizeBibleVerse(book_and_chapter[0]));
       }
     }
   } else {
