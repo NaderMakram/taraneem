@@ -48,7 +48,6 @@ console.timeEnd("creating content time:");
 // const filename = 'songs-with-searchable-content.json';
 // writeSongsToJSON(songsWithSearchableContent, filename);
 
-
 // Function to write the songs data to a JSON file
 function writeSongsToJSON(data, filename) {
   const jsonData = JSON.stringify(data, null, 2); // Stringify with indentation for readability
@@ -57,10 +56,9 @@ function writeSongsToJSON(data, filename) {
     fs.writeFileSync(filename, jsonData);
     console.log(`Songs data successfully exported to ${filename}`);
   } catch (error) {
-    console.error('Error writing songs data to JSON file:', error);
+    console.error("Error writing songs data to JSON file:", error);
   }
 }
-
 
 const deepFuse = new Fuse(songsWithSearchableContent, {
   // includeScore: true,
@@ -151,13 +149,11 @@ function normalize(text) {
 }
 
 function normalizeBibleVerse(text) {
-  return (
-    text
-      .replace(/أ|آ|إ/g, "ا")
-      .replace(/ى/g, "ي")
-      .replace(/ه/g, "ة")
-      .replace(/ؤ|ئ/g, "ء")
-  );
+  return text
+    .replace(/أ|آ|إ/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/ه/g, "ة")
+    .replace(/ؤ|ئ/g, "ء");
 }
 
 // Function to search for songs
@@ -173,12 +169,16 @@ function searchSongs(event, term) {
     let termWithoutSpaces = term.replace(/\s+/g, "");
     let book_and_chapter = termWithoutSpaces.match(
       /(?:\b\d+)?[\u0600-\u06FF]+/
-    )
+    );
     if (book_and_chapter) {
-      let normalizedVerse = normalizeBibleVerse(book_and_chapter[0])
-      results = bibleShortFuse.search("=" + normalizeBibleVerse(book_and_chapter[0]));
+      let normalizedVerse = normalizeBibleVerse(book_and_chapter[0]);
+      results = bibleShortFuse.search(
+        "=" + normalizeBibleVerse(book_and_chapter[0])
+      );
       if (results.length === 0) {
-        results = bibleLongFuse.search(normalizeBibleVerse(book_and_chapter[0]));
+        results = bibleLongFuse.search(
+          normalizeBibleVerse(book_and_chapter[0])
+        );
       }
     }
   } else {
