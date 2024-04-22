@@ -27,14 +27,16 @@ html {
 body {
   color: rgb(25, 25, 25);
   /* color: rgb(21, 23, 29); */
-  background-color: hsl(0, 0%, 99%);
+  /* background-color: #fcfcfc; */
+  background-color: #fcfcfc;
+
   min-height: 90vh;
   padding: 5vh 6vw;
   margin: 0;
   /* display: flex;
   align-items: center;
   justify-content: center; */
-  background-image: url("./img/clean-gray-paper-40.png");
+  /* background-image: url("./img/clean-gray-paper-40.png"); */
   /* background-image: url("./img/cream-paper.png"); */
   background-repeat: repeat;
   transition: 0.3s;
@@ -95,7 +97,7 @@ body::-webkit-scrollbar {
 
 .bible-body {
   padding-right: 4vw;
-  font-size: 6.5vw;
+  font-size: 6.6vw;
   line-height: 1.45em;
   height: 82.5vh;
 }
@@ -113,7 +115,7 @@ body::-webkit-scrollbar {
 
 .song-body {
   padding-right: 3rem;
-  font-size: 6rem;
+  font-size: 5.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
