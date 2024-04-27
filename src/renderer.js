@@ -94,17 +94,17 @@ waitingModeToggle.addEventListener("change", (e) => {
 // let waiting = [];
 
 // for testing
-// setTimeout(() => {
-//   input.value = "لا1";
+setTimeout(() => {
+  input.value = "ماتعولش الهم ومتخافشي";
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
 
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
+  input.dispatchEvent(inputEvent);
+}, 1000);
 
 // let clickDev = new Event("click", {
 //   bubbles: true,

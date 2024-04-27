@@ -62,7 +62,7 @@ function writeSongsToJSON(data, filename) {
 
 const deepFuse = new Fuse(songsWithSearchableContent, {
   // includeScore: true,
-  threshold: 0.25, // Adjust as needed
+  threshold: 0.20, // Adjust as needed
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
@@ -186,6 +186,9 @@ function searchSongs(event, term) {
     let normalizedTerm = normalize(term);
     if (fastSearch) {
       results = fastFuse.search(normalizedTerm);
+      if (results.length === 0) {
+        results = deepFuse.search(normalizedTerm);
+      }
     } else {
       results = deepFuse.search(normalizedTerm);
     }

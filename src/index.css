@@ -281,10 +281,12 @@ button.bold {
 #deep_mode_input {
   display: none;
   width: 10px;
+  display: none;
 }
 
 #deep_mode_label {
   cursor: pointer;
+  display: none;
 }
 
 #deep_mode_input + label:before {
