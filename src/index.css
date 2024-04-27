@@ -177,6 +177,7 @@ button#bold {
 }
 
 button#extendSongWindowButton {
+  display: flex;
   margin-left: auto;
   background: none;
   border: none;
