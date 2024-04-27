@@ -11,7 +11,16 @@ const fontSizeMinus = document.querySelector("#fontSizeMinus");
 
 let res;
 let searchResults;
-let waiting = [];
+let waiting = []
+let storedWaiting = localStorage.getItem('waiting')
+if (storedWaiting && storedWaiting != undefined) {
+
+  console.log('local', storedWaiting)
+  waiting = JSON.parse(storedWaiting)
+  displayWaitingList(waiting)
+  // displayWaitingList(waiting)
+}
+console.log('waiting', waiting)
 let delay = 50;
 
 export async function searchAndDisplayResults(term) {
