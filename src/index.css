@@ -178,10 +178,11 @@ button#installBtn {
 }
 
 button#installBtn {
-  margin-left: 14px;
-  font-size: 14px;
-  padding: 5px 8px;
+  /* margin-left: 14px; */
+  font-size: 0.8rem;
+  padding: 7px 8px;
   display: none;
+  font-weight: bold;
 }
 button#extendSongWindowButton {
   display: flex;
@@ -316,11 +317,12 @@ button.bold {
 
 #version {
   /* margin-bottom: 1rem; */
-  display: inline;
-  padding: 0 14px;
-  font-size: 0.7rem;
+  display: inline-block !important;
+  padding: 9px 14px;
+  font-size: 0.75rem;
   font-weight: 700;
-  display: flex;
+  /* display: flex; */
+  /* margin: 24px 0px; */
   align-items: center;
 }
 
