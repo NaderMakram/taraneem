@@ -314,6 +314,14 @@ function updateVersionMessage(message) {
   mainWindow.webContents.send("log", message);
 }
 
+function appendRestartButton() {
+  mainWindow.webContents.executeJavaScript(
+    `
+    console.log("hi")
+    `
+  );
+}
+
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
 app.on("ready", addIPCs);
@@ -465,5 +473,13 @@ autoUpdater.on("update-downloaded", (info) => {
   updateVersionMessage(
     "✅ Finished downloading, Restart the app to install updates."
   );
+  mainWindow.webContents
+    .executeJavaScript(`document.querySelector('#installBtn').style.display = 'inline-block'
+  `);
   // autoUpdater.quitAndInstall();
+});
+
+ipcMain.on("quit-and-install", () => {
+  console.log("closing");
+  autoUpdater.quitAndInstall();
 });

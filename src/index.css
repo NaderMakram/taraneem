@@ -156,7 +156,8 @@ h2 {
 
 /* input#fontSize, */
 button#white,
-button#bold {
+button#bold,
+button#installBtn {
   padding: 10px 15px;
   font-size: 17px;
   display: flex;
@@ -176,6 +177,12 @@ button#bold {
   transform: scale(0.96);
 }
 
+button#installBtn {
+  margin-left: 14px;
+  font-size: 14px;
+  padding: 5px 8px;
+  display: none;
+}
 button#extendSongWindowButton {
   display: flex;
   /* auto extend enabled */
@@ -309,6 +316,7 @@ button.bold {
 
 #version {
   /* margin-bottom: 1rem; */
+  display: inline;
   padding: 0 14px;
   font-size: 0.7rem;
   font-weight: 700;
