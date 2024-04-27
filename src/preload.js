@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   },
   updateFontSize: (content) => ipcRenderer.send("update-font-size", content),
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
+  extendSongWindow: () => ipcRenderer.send("extend-song-window"),
   toggleDarkMode: () => ipcRenderer.send("toggle-dark-mode"),
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),

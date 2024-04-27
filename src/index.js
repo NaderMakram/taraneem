@@ -257,7 +257,7 @@ const createMainWindow = () => {
 let songWindow;
 
 const createSongWindow = () => {
-  const displays = screen.getAllDisplays();
+  let displays = screen.getAllDisplays();
   if (displays.length > 1) {
     const secondScreen = displays[1];
     songWindow = new BrowserWindow({
@@ -349,6 +349,23 @@ ipcMain.on("update-font-weight", (event) => {
 ipcMain.on("toggle-dark-mode", (event) => {
   songWindow.webContents.send("toggle-dark-mode");
 });
+
+ipcMain.on('extend-song-window', (event) => {
+  let displays = screen.getAllDisplays();
+  if (displays.length > 1) {
+    let secondScreen = displays[1];
+    songWindow.setBounds({
+      width: secondScreen.size.width,
+      height: secondScreen.size.height,
+      icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
+      x: secondScreen.bounds.x,
+      y: secondScreen.bounds.y,
+    })
+    songWindow.setFullScreen(true);
+
+  }
+
+})
 
 // verse number shortcut
 ipcMain.on("shift-to-slide", (event, message) => {

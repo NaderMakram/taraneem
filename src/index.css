@@ -176,6 +176,14 @@ button#bold {
   transform: scale(0.96);
 }
 
+button#extendSongWindowButton {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 5px;
+}
 /* input#fontSize {
   width: 44px;
   padding: 10px;

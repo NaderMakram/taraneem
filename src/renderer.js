@@ -7,6 +7,7 @@ const fontSizeInput = document.querySelector("#fontSize");
 const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const fontWeightBtn = document.querySelector("#bold");
+const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
 const waitingModeToggle = document.querySelector("input#waiting_mode_input");
@@ -39,6 +40,10 @@ whiteButton.addEventListener("click", () => {
 darkModeToggle.addEventListener("change", () => {
   window.myCustomAPI.toggleDarkMode();
 });
+
+extendSongWindowBtn.addEventListener('click', () => {
+  window.myCustomAPI.extendSongWindow()
+})
 
 deepModeToggle.addEventListener("change", (e) => {
   // console.log(e.target.checked);
