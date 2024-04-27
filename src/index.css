@@ -178,6 +178,8 @@ button#bold {
 
 button#extendSongWindowButton {
   display: flex;
+  /* auto extend enabled */
+  display: none;
   margin-left: auto;
   background: none;
   border: none;

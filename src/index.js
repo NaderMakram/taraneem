@@ -241,6 +241,7 @@ const createMainWindow = () => {
   mainWindow.loadFile(path.join(__dirname, "index.html"));
   mainWindow.maximize();
   mainWindow.show();
+  mainWindow.focus();
 
   // mainWindow.maximize();
 
@@ -289,6 +290,7 @@ const createSongWindow = () => {
         preload: path.join(__dirname, "songPreload.js"),
       },
     });
+    songWindow.hide();
   }
 
   songWindow.removeMenu();
@@ -351,6 +353,38 @@ ipcMain.on("update-font-weight", (event) => {
 });
 ipcMain.on("toggle-dark-mode", (event) => {
   songWindow.webContents.send("toggle-dark-mode");
+});
+
+app.on("ready", () => {
+  screen.on("display-added", (event, newDisplay) => {
+    let displays = screen.getAllDisplays();
+    if (displays.length > 1) {
+      let secondScreen = displays[1];
+      songWindow.setBounds({
+        width: secondScreen.size.width,
+        height: secondScreen.size.height,
+        x: secondScreen.bounds.x,
+        y: secondScreen.bounds.y,
+      });
+      songWindow.setFullScreen(true);
+      songWindow.show();
+      mainWindow.focus();
+    }
+  });
+  screen.on("display-removed", () => {
+    let displays = screen.getAllDisplays();
+    if (displays.length == 1) {
+      songWindow.setBounds({
+        width: 500,
+        height: 400,
+        x: 0,
+        y: 0,
+      });
+      songWindow.setFullScreen(false);
+      songWindow.minimize();
+      songWindow.hide();
+    }
+  });
 });
 
 ipcMain.on("extend-song-window", (event) => {
