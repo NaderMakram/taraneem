@@ -62,7 +62,7 @@ function writeSongsToJSON(data, filename) {
 
 const deepFuse = new Fuse(songsWithSearchableContent, {
   // includeScore: true,
-  threshold: 0.20, // Adjust as needed
+  threshold: 0.2, // Adjust as needed
   // location: 200,
   // distance: 1000,
   ignoreLocation: true,
@@ -353,22 +353,19 @@ ipcMain.on("toggle-dark-mode", (event) => {
   songWindow.webContents.send("toggle-dark-mode");
 });
 
-ipcMain.on('extend-song-window', (event) => {
+ipcMain.on("extend-song-window", (event) => {
   let displays = screen.getAllDisplays();
   if (displays.length > 1) {
     let secondScreen = displays[1];
     songWindow.setBounds({
       width: secondScreen.size.width,
       height: secondScreen.size.height,
-      icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
       x: secondScreen.bounds.x,
       y: secondScreen.bounds.y,
-    })
+    });
     songWindow.setFullScreen(true);
-
   }
-
-})
+});
 
 // verse number shortcut
 ipcMain.on("shift-to-slide", (event, message) => {
