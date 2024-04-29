@@ -37,7 +37,7 @@ const bibleDB = JSON.parse(
 
 const prevNextIndices = bibleDB.map((_, index) => ({
   prevIndex: index - 1 >= 0 ? index - 1 : null,
-  nextIndex: index + 1 < bibleDB.length ? index + 1 : null
+  nextIndex: index + 1 < bibleDB.length ? index + 1 : null,
 }));
 
 const bibleDBIndexed = bibleDB.map((item, index) => {
@@ -51,7 +51,6 @@ const bibleDBIndexed = bibleDB.map((item, index) => {
     nextNum: bibleDB[nextIndex]?.chapter_number,
   };
 });
-
 
 // Map your songs array and create searchable content for each song
 console.time("creating content time:");
@@ -384,22 +383,26 @@ ipcMain.on("toggle-dark-mode", (event) => {
 
 app.on("ready", () => {
   screen.on("display-added", (event, newDisplay) => {
-    let displays = screen.getAllDisplays();
-    if (displays.length > 1) {
-      let secondScreen = displays[1];
-      songWindow.setBounds({
-        width: secondScreen.size.width,
-        height: secondScreen.size.height,
-        x: secondScreen.bounds.x,
-        y: secondScreen.bounds.y,
-      });
-      songWindow.setFullScreen(true);
-      songWindow.show();
-      mainWindow.focus();
-    }
+    setTimeout(() => {
+      let displays = screen.getAllDisplays();
+      if (displays.length > 1) {
+        let secondScreen = displays[1];
+        console.log("secondScreen", displays[1]);
+        songWindow.setBounds({
+          width: secondScreen.size.width,
+          height: secondScreen.size.height,
+          x: secondScreen.bounds.x,
+          y: secondScreen.bounds.y,
+        });
+        songWindow.setFullScreen(true);
+        songWindow.show();
+        mainWindow.focus();
+      }
+    }, 500);
   });
   screen.on("display-removed", () => {
     let displays = screen.getAllDisplays();
+    console.log("all after remove", displays);
     if (displays.length == 1) {
       songWindow.setBounds({
         width: 500,
@@ -453,10 +456,10 @@ ipcMain.handle("get-sibling-chapter", (event, message) => {
   // let next = message[1]
   // console.log('prev chapter', bibleDB[prev])
   // console.log('next chapter', bibleDB[next])
-  console.log('get-sibling-chapter', message)
-  console.log('get-sibling-chapter', bibleDBIndexed[message])
-  return bibleDBIndexed[message]
-})
+  // console.log('get-sibling-chapter', message)
+  // console.log('get-sibling-chapter', bibleDBIndexed[message])
+  return bibleDBIndexed[message];
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

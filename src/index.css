@@ -188,7 +188,7 @@ button#installBtn {
 button#extendSongWindowButton {
   display: flex;
   /* auto extend enabled */
-  display: none;
+  /* display: none; */
   margin-left: auto;
   background: none;
   border: none;
