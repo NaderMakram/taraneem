@@ -11,7 +11,7 @@ body {
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: auto;
   /* max-width: 38rem; */
-  padding: 0.7rem 2rem;
+  padding: 0.7rem 3rem;
   min-height: calc(100vh - 4rem);
   position: relative;
   user-select: none;
@@ -86,6 +86,7 @@ h2 {
   text-align: right;
 }
 .song-title {
+  direction: rtl;
   text-align: center;
   margin-bottom: 10px;
 }
@@ -420,4 +421,30 @@ button.bold {
   transform: scale(0, 0);
   opacity: 0.3;
   transition: 0s;
+}
+
+#siblingChaptersBtns {
+  position: sticky;
+  top: 50vh;
+  right: 5px;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  transform: translateX(45px);
+}
+
+#siblingChaptersBtns button {
+  width: 45px;
+  height: 45px;
+  margin-bottom: 5px;
+  border-radius: 50%;
+  border: 1px solid var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+#siblingChaptersBtns button:hover {
+  transform: scale(1.1);
+  opacity: 1;
 }

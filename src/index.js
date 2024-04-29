@@ -35,6 +35,24 @@ const bibleDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "chapters_only.json"), "utf-8")
 );
 
+const prevNextIndices = bibleDB.map((_, index) => ({
+  prevIndex: index - 1 >= 0 ? index - 1 : null,
+  nextIndex: index + 1 < bibleDB.length ? index + 1 : null
+}));
+
+const bibleDBIndexed = bibleDB.map((item, index) => {
+  const { prevIndex, nextIndex } = prevNextIndices[index];
+  return {
+    ...item,
+    siblings: [prevIndex, nextIndex],
+    prevShort: bibleDB[prevIndex]?.chapter_book_short,
+    prevNum: bibleDB[prevIndex]?.chapter_number,
+    nextShort: bibleDB[nextIndex]?.chapter_book_short,
+    nextNum: bibleDB[nextIndex]?.chapter_number,
+  };
+});
+
+
 // Map your songs array and create searchable content for each song
 console.time("creating content time:");
 const songsWithSearchableContent = songsDB.map((song) => {
@@ -88,7 +106,7 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
   keys: ["searchableContent"],
 });
 
-const bibleShortFuse = new Fuse(bibleDB, {
+const bibleShortFuse = new Fuse(bibleDBIndexed, {
   includeScore: true,
   threshold: 0.0,
   // location: 200,
@@ -101,7 +119,7 @@ const bibleShortFuse = new Fuse(bibleDB, {
   keys: ["chapter_book_short"],
 });
 
-const bibleLongFuse = new Fuse(bibleDB, {
+const bibleLongFuse = new Fuse(bibleDBIndexed, {
   includeScore: true,
   threshold: 0.15,
   // location: 200,
@@ -429,6 +447,16 @@ ipcMain.on("scroll-to-active", (event, message) => {
 ipcMain.on("update-version-message", (event, message) => {
   mainWindow.webContents.send("update-version-message", message);
 });
+
+ipcMain.handle("get-sibling-chapter", (event, message) => {
+  // let prev = message[0]
+  // let next = message[1]
+  // console.log('prev chapter', bibleDB[prev])
+  // console.log('next chapter', bibleDB[next])
+  console.log('get-sibling-chapter', message)
+  console.log('get-sibling-chapter', bibleDBIndexed[message])
+  return bibleDBIndexed[message]
+})
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

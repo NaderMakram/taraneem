@@ -8,6 +8,7 @@ import { displayWaitingList } from "./displayWaitingList.js";
 const fontSizeInput = document.querySelector("#fontSize");
 const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
+const siblingChaptersBtns = document.querySelector('#siblingChaptersBtns')
 
 let res;
 let searchResults;
@@ -63,6 +64,8 @@ export let debouncedSearch = debounce(searchAndDisplayResults, delay);
 
 let toggleFontSizeInput = (isBible) => {
   if (isBible) {
+    // show sibling chapter buttons
+    siblingChaptersBtns.style.display = 'flex'
     // Disable the input field
     fontSizeInput.disabled = true;
     fontSizePlus.disabled = true;
@@ -82,6 +85,9 @@ let toggleFontSizeInput = (isBible) => {
     fontSizePlus.classList.remove("hover-bg");
     fontSizeMinus.classList.remove("hover-bg");
   } else {
+    // hide sibling chapter buttons
+    siblingChaptersBtns.style.display = 'none'
+
     // Enable the input field
     fontSizeInput.disabled = false;
     fontSizePlus.disabled = false;
