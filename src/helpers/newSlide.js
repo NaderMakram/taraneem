@@ -2,7 +2,6 @@ export function newSlide(html) {
   // console.log(html);
   let paused = document.querySelector(".pause");
   if (paused) paused.classList.remove("pause");
-  // console.log(html.length);
   // if it's a bible verse, add the chapter title
   if (
     (document.querySelector(".slide").classList.contains("bible-verse") &&
@@ -12,7 +11,7 @@ export function newSlide(html) {
     let chapter_title = document.querySelector(".song-title").outerHTML;
     let combined_html = `<div class="container bible-container">
       <div class="head bible-head">
-      ${chapter_title}
+      ${html.length > 53 ? chapter_title : ""}
       </div>
       
       <div class="body bible-body">

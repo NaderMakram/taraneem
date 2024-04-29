@@ -1,5 +1,16 @@
 export function previewSelectedChapter(
-  { chapter_name, chapter_en, chapter_book, chapter_number, verses, siblings, prevShort, prevNum, nextShort, nextNum },
+  {
+    chapter_name,
+    chapter_en,
+    chapter_book,
+    chapter_number,
+    verses,
+    siblings,
+    prevShort,
+    prevNum,
+    nextShort,
+    nextNum,
+  },
   refIndex
 ) {
   let chapter_number_ar = new Intl.NumberFormat("ar-EG").format(chapter_number);
@@ -10,14 +21,15 @@ export function previewSelectedChapter(
   prevChapterBtn.setAttribute("data-chapterIndex", siblings[0]);
   nextChapterBtn.setAttribute("data-chapterIndex", siblings[1]);
 
-  prevChapterBtn.innerHTML = `${prevShort}<br/>${prevNum}`
-  nextChapterBtn.innerHTML = `${nextShort}<br/>${nextNum}`
+  prevChapterBtn.innerHTML = `${prevShort}<br/>${prevNum}`;
+  nextChapterBtn.innerHTML = `${nextShort}<br/>${nextNum}`;
 
   // window.myCustomAPI.getSiblingChapters(siblings)
   // console.log(siblings)
 
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${chapter_book + "  " + chapter_number_ar + "    |    " + chapter_en
-    }</h4>`;
+  let html = `<h4 class="song-title" data-ref="${refIndex}">${
+    chapter_book + "  " + chapter_number_ar + "    |    " + chapter_en
+  }</h4>`;
   html += `<div class="song-preview">`;
   // console.log(verses);
 
@@ -31,14 +43,19 @@ export function previewSelectedChapter(
     // add verse number for the first line in a verse
     html += `<div class="bible-verse slide" data-verseNumber="${key}">
             <span class="verseNumber">${new Intl.NumberFormat("ar-EG").format(
-      key
-    )}</span>
+              key
+            )}</span>
             <div>
             ${value}
             </div>
             </div>`;
   }
 
+  // add empty slide
+  html += `<div class="bible-verse slide">
+  <span class="verseNumber"></span>
+  <div></div>
+  </div>`;
   html += `</div>`;
   return html;
 }
