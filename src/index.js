@@ -281,6 +281,8 @@ const createSongWindow = () => {
     songWindow.setFullScreen(true);
   } else {
     songWindow = new BrowserWindow({
+      show: false,
+      frame: false,
       width: 500,
       height: 400,
       icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
@@ -290,7 +292,6 @@ const createSongWindow = () => {
         preload: path.join(__dirname, "songPreload.js"),
       },
     });
-    songWindow.hide();
   }
 
   songWindow.removeMenu();
