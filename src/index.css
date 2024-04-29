@@ -45,7 +45,7 @@ h2 {
 #main-wrapper {
   display: flex;
   flex-direction: row;
-  min-height: 75vh;
+  min-height: 82vh;
 }
 
 #main-wrapper > div {
@@ -341,7 +341,7 @@ button.bold {
   position: sticky;
   bottom: 30px;
   font-size: 18px;
-  left: 37px;
+  left: 60px;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -424,27 +424,53 @@ button.bold {
 }
 
 #siblingChaptersBtns {
+  display: none;
+  direction: rtl;
+  width: 49px;
   position: sticky;
+  height: 0;
   top: 50vh;
   right: 5px;
-  display: flex;
-  align-items: flex-end;
+  align-items: center;
   flex-direction: column;
+  margin-left: auto;
   transform: translateX(45px);
 }
 
 #siblingChaptersBtns button {
   width: 45px;
-  height: 45px;
+  height: 40px;
   margin-bottom: 5px;
-  border-radius: 50%;
   border: 1px solid var(--primary);
   cursor: pointer;
   transition: all 0.2s;
-  opacity: 0.7;
+  opacity: 0.65;
+  font-weight: bold;
+}
+
+#siblingChaptersBtns #prevChapter {
+  position: absolute;
+  top: 0;
+  border-radius: 50px 50px 1px 1px;
+}
+#siblingChaptersBtns #prevChapter:hover {
+  transform: translateY(-3px);
+}
+
+#siblingChaptersBtns #nextChapter {
+  position: absolute;
+  top: 50px;
+  border-radius: 1px 1px 50px 50px;
+}
+#siblingChaptersBtns #nextChapter:hover {
+  transform: translateY(3px);
 }
 
 #siblingChaptersBtns button:hover {
-  transform: scale(1.1);
+  /* transform: scale(1.1); */
   opacity: 1;
+}
+
+[data-chapterindex="null"] {
+  display: none;
 }

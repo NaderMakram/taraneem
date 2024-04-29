@@ -14,7 +14,6 @@ const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
 
-
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
 const waitingModeToggle = document.querySelector("input#waiting_mode_input");
@@ -37,7 +36,6 @@ import {
 
 import { previewSelectedChapter } from "./helpers/previewSelectedSong.js";
 
-
 document.addEventListener("keydown", () => handleKeyDown(event));
 
 let delay = 50;
@@ -59,24 +57,30 @@ quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
 });
 
-
 const previewSiblingChapter = async function (event) {
-  let index = parseInt(event.target.dataset.chapterindex)
-  let siblingChapter = await window.myCustomAPI.getSiblingChapter(index)
-  console.log(siblingChapter)
+  let index = parseInt(event.target.dataset.chapterindex);
+  let siblingChapter = await window.myCustomAPI.getSiblingChapter(index);
+  console.log(siblingChapter);
 
   // should clear current slide
-  window.myCustomAPI.updateSongWindow("")
+  window.myCustomAPI.updateSongWindow("");
   // should remove any active slides
-  let activeSong = document.querySelector('.selectedSong')
+  let activeSong = document.querySelector(".selectedSong");
   if (activeSong) {
-    activeSong.classList.remove('selectedSong')
+    activeSong.classList.remove("selectedSong");
   }
-  document.querySelector("#preview_output").innerHTML = previewSelectedChapter(siblingChapter)
-}
+  document.querySelector("#preview_output").innerHTML =
+    previewSelectedChapter(siblingChapter);
+};
 
-prevChapterBtn.addEventListener('click', (event) => previewSiblingChapter(event))
-nextChapterBtn.addEventListener('click', (event) => previewSiblingChapter(event))
+prevChapterBtn.addEventListener("click", (event) => {
+  previewSiblingChapter(event);
+  prevChapterBtn.blur();
+});
+nextChapterBtn.addEventListener("click", (event) => {
+  previewSiblingChapter(event);
+  nextChapterBtn.blur();
+});
 
 deepModeToggle.addEventListener("change", (e) => {
   // console.log(e.target.checked);
