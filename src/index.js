@@ -383,36 +383,36 @@ ipcMain.on("toggle-dark-mode", (event) => {
 
 app.on("ready", () => {
   screen.on("display-added", (event, newDisplay) => {
-    setTimeout(() => {
-      let displays = screen.getAllDisplays();
-      if (displays.length > 1) {
-        let secondScreen = displays[1];
-        console.log("secondScreen", displays[1]);
-        songWindow.setBounds({
-          width: secondScreen.size.width,
-          height: secondScreen.size.height,
-          x: secondScreen.bounds.x,
-          y: secondScreen.bounds.y,
-        });
-        songWindow.setFullScreen(true);
-        songWindow.show();
-        mainWindow.focus();
-      }
-    }, 500);
+    let displays = screen.getAllDisplays();
+    if (displays.length > 1) {
+      let secondScreen = displays[1];
+      console.log("secondScreen", displays[1]);
+      songWindow.setBounds({
+        width: secondScreen.size.width,
+        height: secondScreen.size.height,
+        x: secondScreen.bounds.x,
+        y: secondScreen.bounds.y,
+      });
+      songWindow.show();
+      songWindow.setFullScreen(true);
+      songWindow.maximize();
+      mainWindow.focus();
+    }
   });
   screen.on("display-removed", () => {
     let displays = screen.getAllDisplays();
     console.log("all after remove", displays);
     if (displays.length == 1) {
-      songWindow.setBounds({
-        width: 500,
-        height: 400,
-        x: 0,
-        y: 0,
-      });
+      firstScreen = displays[0];
       songWindow.setFullScreen(false);
       songWindow.minimize();
       songWindow.hide();
+      // songWindow.setBounds({
+      //   width: 500,
+      //   height: 400,
+      //   x: firstScreen.bounds.x,
+      //   y: firstScreen.bounds.y,
+      // });
     }
   });
 });
