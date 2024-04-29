@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
   extendSongWindow: () => ipcRenderer.send("extend-song-window"),
   toggleDarkMode: () => ipcRenderer.send("toggle-dark-mode"),
+  getSiblingChapter: (content) => ipcRenderer.invoke("get-sibling-chapter", content),
   quitAndInstall: () => ipcRenderer.send("quit-and-install"),
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),

@@ -6,9 +6,15 @@ const whiteButton = document.querySelector("#white");
 const fontSizeInput = document.querySelector("#fontSize");
 const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
+
+// buttons
 const fontWeightBtn = document.querySelector("#bold");
 const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
 const quitAndInstallBtn = document.querySelector("#installBtn");
+const prevChapterBtn = document.querySelector("#prevChapter");
+const nextChapterBtn = document.querySelector("#nextChapter");
+
+
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
 const waitingModeToggle = document.querySelector("input#waiting_mode_input");
@@ -28,6 +34,9 @@ import {
   debouncedSearch,
   searchAndDisplayResults,
 } from "./helpers/handleSelectedSong.js";
+
+import { previewSelectedChapter } from "./helpers/previewSelectedSong.js";
+
 
 document.addEventListener("keydown", () => handleKeyDown(event));
 
@@ -49,6 +58,25 @@ extendSongWindowBtn.addEventListener("click", () => {
 quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
 });
+
+
+const previewSiblingChapter = async function (event) {
+  let index = parseInt(event.target.dataset.chapterindex)
+  let siblingChapter = await window.myCustomAPI.getSiblingChapter(index)
+  console.log(siblingChapter)
+
+  // should clear current slide
+  window.myCustomAPI.updateSongWindow("")
+  // should remove any active slides
+  let activeSong = document.querySelector('.selectedSong')
+  if (activeSong) {
+    activeSong.classList.remove('selectedSong')
+  }
+  document.querySelector("#preview_output").innerHTML = previewSelectedChapter(siblingChapter)
+}
+
+prevChapterBtn.addEventListener('click', (event) => previewSiblingChapter(event))
+nextChapterBtn.addEventListener('click', (event) => previewSiblingChapter(event))
 
 deepModeToggle.addEventListener("change", (e) => {
   // console.log(e.target.checked);
@@ -99,22 +127,22 @@ waitingModeToggle.addEventListener("change", (e) => {
 // let waiting = [];
 
 // for testing
-// setTimeout(() => {
-//   input.value = "ماتعولش الهم ومتخافشي";
+setTimeout(() => {
+  input.value = "مز12";
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
 
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
+  input.dispatchEvent(inputEvent);
+}, 1000);
 
-// let clickDev = new Event("click", {
-//   bubbles: true,
-//   cancelable: true,
-// });
+let clickDev = new Event("click", {
+  bubbles: true,
+  cancelable: true,
+});
 
 // setTimeout(() => {
 //   let son = document.querySelector(".big");
