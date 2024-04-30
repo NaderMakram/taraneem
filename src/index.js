@@ -189,12 +189,16 @@ function searchSongs(event, term) {
     );
     if (book_and_chapter) {
       let normalizedVerse = normalizeBibleVerse(book_and_chapter[0]);
+      // fix for searching with common spelling
+      if (normalizedVerse === 'مزمور') {
+        normalizedVerse = 'مز'
+      }
       results = bibleShortFuse.search(
-        "=" + normalizeBibleVerse(book_and_chapter[0])
+        "=" + normalizedVerse
       );
       if (results.length === 0) {
         results = bibleLongFuse.search(
-          normalizeBibleVerse(book_and_chapter[0])
+          normalizedVerse
         );
       }
     }
