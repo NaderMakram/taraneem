@@ -89,6 +89,12 @@ h2 {
   direction: rtl;
   text-align: center;
   margin-bottom: 10px;
+  position: sticky;
+  top: 68px;
+  background: white;
+  border-bottom: 1px solid var(--gray-1);
+  padding: 1em 0px;
+  margin-top: 0;
 }
 
 .song-info {
