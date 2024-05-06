@@ -8,20 +8,19 @@ import { displayWaitingList } from "./displayWaitingList.js";
 const fontSizeInput = document.querySelector("#fontSize");
 const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
-const siblingChaptersBtns = document.querySelector('#siblingChaptersBtns')
+const siblingChaptersBtns = document.querySelector("#siblingChaptersBtns");
 
 let res;
 let searchResults;
-let waiting = []
-let storedWaiting = localStorage.getItem('waiting')
+let waiting = [];
+let storedWaiting = localStorage.getItem("waiting");
 if (storedWaiting && storedWaiting != undefined) {
-
-  console.log('local', storedWaiting)
-  waiting = JSON.parse(storedWaiting)
-  displayWaitingList(waiting)
+  console.log("local", storedWaiting);
+  waiting = JSON.parse(storedWaiting);
+  displayWaitingList(waiting);
   // displayWaitingList(waiting)
 }
-console.log('waiting', waiting)
+console.log("waiting", waiting);
 let delay = 50;
 
 export async function searchAndDisplayResults(term) {
@@ -65,7 +64,7 @@ export let debouncedSearch = debounce(searchAndDisplayResults, delay);
 let toggleFontSizeInput = (isBible) => {
   if (isBible) {
     // show sibling chapter buttons
-    siblingChaptersBtns.style.display = 'flex'
+    siblingChaptersBtns.style.display = "flex";
     // Disable the input field
     fontSizeInput.disabled = true;
     fontSizePlus.disabled = true;
@@ -86,7 +85,7 @@ let toggleFontSizeInput = (isBible) => {
     fontSizeMinus.classList.remove("hover-bg");
   } else {
     // hide sibling chapter buttons
-    siblingChaptersBtns.style.display = 'none'
+    siblingChaptersBtns.style.display = "none";
 
     // Enable the input field
     fontSizeInput.disabled = false;
@@ -122,7 +121,18 @@ export function selectSongEventFunction(e) {
     let clickedRef = e.target.parentNode.getAttribute("data-ref");
     console.log(clickedRef);
     waiting = waiting.filter((item) => item.refIndex != clickedRef);
-    displayWaitingList(waiting);
+
+    // remove the deleted song/chapter from the dom
+    let currentWaitingDivs = document.querySelectorAll("#waiting_output div");
+    for (let div of currentWaitingDivs) {
+      // Check if the data-ref attribute value matches your criteria
+      if (div.dataset.ref === clickedRef) {
+        // Remove the div from the DOM
+        div.parentNode.removeChild(div);
+      }
+    }
+
+    // displayWaitingList(waiting);
     return;
   }
   if (clickedPlus) {
