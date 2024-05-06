@@ -123,15 +123,10 @@ export function selectSongEventFunction(e) {
     waiting = waiting.filter((item) => item.refIndex != clickedRef);
 
     // remove the deleted song/chapter from the dom
-    let currentWaitingDivs = document.querySelectorAll("#waiting_output div");
-    for (let div of currentWaitingDivs) {
-      // Check if the data-ref attribute value matches your criteria
-      if (div.dataset.ref === clickedRef) {
-        // Remove the div from the DOM
-        div.parentNode.removeChild(div);
-      }
+    let deletedDiv = document.querySelector(`div[data-ref="${clickedRef}"]`);
+    if (deletedDiv) {
+      deletedDiv.parentNode.removeChild(deletedDiv);
     }
-
     // displayWaitingList(waiting);
     return;
   }
