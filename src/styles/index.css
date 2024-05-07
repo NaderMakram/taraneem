@@ -487,4 +487,18 @@ button.bold {
 
 .handle {
   cursor: grab;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: block;
+  background-image: url(../img/drag.png);
+  background-position: center;
+  background-size: contain;
+  padding: 2px;
+  background-repeat: no-repeat;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+}
+.handle:hover {
+  border: 1px solid var(--gray-2);
 }
