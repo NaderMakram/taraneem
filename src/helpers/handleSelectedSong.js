@@ -10,12 +10,80 @@ const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const siblingChaptersBtns = document.querySelector("#siblingChaptersBtns");
 
+let dragingContainer = document.querySelector("#waiting_output");
+
+dragingContainer.addEventListener("drag", () => {
+  console.log("draggggging");
+  // Trigger a reflow to update the transition
+  dragingContainer.style.transform = "translateZ(0)";
+});
+
+let drake = dragula([dragingContainer], {
+  moves: function (el, container, handle) {
+    return handle.classList.contains("handle");
+  },
+});
+
+drake.on("drop", (el, target, source, sibling) => {
+  // console.log(sibling);
+  // console.log("el.ref", el.dataset.ref);
+  // console.log("old waiting", waiting);
+  let newIndex = waiting.length - 1;
+  // // console.log("el ref", el.dataset.ref);
+  let oldIndex = findIndexByKeyValue(waiting, "refIndex", el.dataset.ref);
+  // let oldIndex = waiting.map((e) => e.refIndex).indexOf(el.dataset.ref);
+  if (oldIndex == -1) oldIndex = waiting.length - 1;
+  if (sibling) {
+    console.log("sibling.ref", sibling.dataset.ref);
+    let siblingIndex = findIndexByKeyValue(
+      waiting,
+      "refIndex",
+      sibling.dataset.ref
+    );
+    newIndex = oldIndex > siblingIndex ? siblingIndex : siblingIndex - 1;
+    console.log("sibling index", siblingIndex);
+    // if (oldIndex < newIndex) newIndex -= 1;
+  } else {
+    console.log(sibling, "no new index");
+  }
+  console.log("old index", oldIndex);
+  console.log("new index", newIndex);
+
+  array_move(waiting, oldIndex, newIndex);
+  console.log(waiting);
+  // el.querySelector("span").style.cursor = "grab";
+});
+
+function array_move(arr, old_index, new_index) {
+  if (new_index >= arr.length) {
+    return;
+  }
+  const movedObject = arr.splice(old_index, 1)[0]; // Remove the object at oldIndex and get it
+  arr.splice(new_index, 0, movedObject); // Insert the object at newIndex
+  displayWaitingList(waiting);
+}
+
+function findIndexByKeyValue(arr, key, value) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][key] == value) {
+      return i; // Return the index if the key value matches
+    }
+  }
+  return -1; // Return -1 if the value is not found in the array
+}
+drake.on("cloned", (clone, original, type) => {
+  // el.style.cursor = "grabbing";
+  // source.style.cursor = "grabbing";
+  console.log("cloned", clone, original, type);
+  // source.classList.add("moving");
+});
 let res;
 let searchResults;
 let waiting = [];
 let storedWaiting = localStorage.getItem("waiting");
-if (storedWaiting && storedWaiting != undefined) {
-  console.log("local", storedWaiting);
+// console.log(storedWaiting);
+if (storedWaiting && storedWaiting != "undefined") {
+  // console.log("local", storedWaiting);
   waiting = JSON.parse(storedWaiting);
   displayWaitingList(waiting);
   // displayWaitingList(waiting)
@@ -109,6 +177,7 @@ let toggleFontSizeInput = (isBible) => {
 };
 
 export function selectSongEventFunction(e) {
+  if (e.target.classList.contains("handle")) return;
   let clickedSong = e.target.closest(".song");
   let clickedChapter = e.target.closest(".chapter");
   let clickedPlus = e.target.classList.contains("plus");
@@ -123,7 +192,9 @@ export function selectSongEventFunction(e) {
     waiting = waiting.filter((item) => item.refIndex != clickedRef);
 
     // remove the deleted song/chapter from the dom
-    let deletedDiv = document.querySelector(`div[data-ref="${clickedRef}"]`);
+    let deletedDiv = document.querySelector(
+      `#waiting_output div[data-ref="${clickedRef}"]`
+    );
     if (deletedDiv) {
       deletedDiv.parentNode.removeChild(deletedDiv);
     }

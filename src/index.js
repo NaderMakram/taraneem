@@ -4,6 +4,7 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
+// const { dragula } = require("dragula");
 
 // auto update
 // const { updateElectronApp } = require("update-electron-app");
@@ -190,16 +191,12 @@ function searchSongs(event, term) {
     if (book_and_chapter) {
       let normalizedVerse = normalizeBibleVerse(book_and_chapter[0]);
       // fix for searching with common spelling
-      if (normalizedVerse === 'مزمور') {
-        normalizedVerse = 'مز'
+      if (normalizedVerse === "مزمور") {
+        normalizedVerse = "مز";
       }
-      results = bibleShortFuse.search(
-        "=" + normalizedVerse
-      );
+      results = bibleShortFuse.search("=" + normalizedVerse);
       if (results.length === 0) {
-        results = bibleLongFuse.search(
-          normalizedVerse
-        );
+        results = bibleLongFuse.search(normalizedVerse);
       }
     }
   } else {
@@ -347,6 +344,21 @@ function appendRestartButton() {
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
 app.on("ready", addIPCs);
+// init dragula
+// app.on("ready", () => {
+//   mainWindow.webContents.executeJavaScript(
+//     `
+//     let drake = dragula([document.querySelector('#waiting_output')], {
+//       moves: function (el, container, handle) {
+//         return handle.classList.contains('handle');
+//       }
+//     })
+//     drake.on("drop", (el, target, source, sibling)=>{
+//       console.log(el, target, source, sibling)
+//     })
+//     `
+//   );
+// });
 // app.on("ready", () => {
 //   let currentVersion = app.getVersion();
 //   updateVersionMessage(`version: ${currentVersion}`);

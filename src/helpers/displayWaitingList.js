@@ -34,6 +34,7 @@ export function displayWaitingList(waiting) {
       // Combine everything into a single HTML block
       return `
       <div class="big ${type}" data-ref="${refIndex}">
+      <span class="handle">+</span>
         ${titleHTML}
         <h2>
         ${chapter_name ? chapter_name : ""}

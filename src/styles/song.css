@@ -10,20 +10,20 @@
 }
 @font-face {
   font-family: MyTimesNewRoman;
-  src: url(./fonts/times-new-roman.ttf);
+  src: url(../fonts/times-new-roman.ttf);
 }
 @font-face {
   font-family: MyTimesNewRoman;
-  src: url(./fonts/times-new-roman-bold.ttf);
+  src: url(../fonts/times-new-roman-bold.ttf);
   font-weight: bold;
 }
 @font-face {
   font-family: MyCalibri;
-  src: url(./fonts/calibri.ttf);
+  src: url(../fonts/calibri.ttf);
 }
 @font-face {
   font-family: MyCalibri;
-  src: url(./fonts/calibri-bold.ttf);
+  src: url(../fonts/calibri-bold.ttf);
   font-weight: bold;
 }
 html {
@@ -44,8 +44,8 @@ body {
   /* display: flex;
   align-items: center;
   justify-content: center; */
-  /* background-image: url("./img/clean-gray-paper-40.png"); */
-  /* background-image: url("./img/cream-paper.png"); */
+  /* background-image: url("../img/clean-gray-paper-40.png"); */
+  /* background-image: url("../img/cream-paper.png"); */
   background-repeat: repeat;
   transition: 0.3s;
 }

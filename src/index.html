@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
     <title>Taraneem - ترانيم</title>
-    <link rel="stylesheet" href="main.css" />
-    <link rel="stylesheet" href="switch.css" />
-    <link rel="stylesheet" href="index.css" />
-    <link rel="stylesheet" href="loader.css" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/switch.css" />
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/loader.css" />
+    <link rel="stylesheet" href="styles/dragula.css" />
   </head>
   <body class="waiting-mode">
     <div id="version"></div>
@@ -119,7 +120,9 @@
     </div>
 
     <div id="slide-screen"></div>
+    <div id="scroll-top">^</div>
 
+    <script src="./helpers/dragula.js"></script>
     <script src="renderer.js" type="module"></script>
   </body>
 </html>

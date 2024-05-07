@@ -26,10 +26,11 @@
   },
   "license": "MIT",
   "dependencies": {
+    "dragula": "^3.7.3",
     "electron-is-dev": "^2.0.0",
+    "electron-log": "^4.4.1",
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^6.1.8",
-    "electron-log": "^4.4.1",
     "fuse.js": "^7.0.0"
   },
   "devDependencies": {

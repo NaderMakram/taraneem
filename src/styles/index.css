@@ -1,10 +1,10 @@
 /* @font-face {
   font-family: NotoNaskhArabic;
-  src: url(./fonts/NotoNaskhArabic-Regular.ttf);
+  src: url(../fonts/NotoNaskhArabic-Regular.ttf);
 } */
 @font-face {
   font-family: mySegoe-ui;
-  src: url(./fonts/segoe-ui.ttf);
+  src: url(../fonts/segoe-ui.ttf);
 }
 body {
   font-family: mySegoe-ui, -apple-system, NotoNaskhArabic, BlinkMacSystemFont,
@@ -308,7 +308,7 @@ button.bold {
 }
 
 #deep_mode_input + label:before {
-  background-image: url(./img/fast.png);
+  background-image: url(../img/fast.png);
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -319,7 +319,7 @@ button.bold {
 }
 
 #deep_mode_input:checked + label:before {
-  background-image: url(./img/snail2.png);
+  background-image: url(../img/snail2.png);
 }
 
 #version {
@@ -480,4 +480,11 @@ button.bold {
 
 [data-chapterindex="null"] {
   display: none;
+}
+.moving {
+  border: 3px solid orangered;
+}
+
+.handle {
+  cursor: grab;
 }
