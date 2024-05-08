@@ -1,4 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
+// const { remote } = require('electron');
+const sortable = require('sortablejs');
+console.log('sortable', sortable)
 
 contextBridge.exposeInMainWorld("myCustomAPI", {
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
@@ -18,6 +21,14 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   quitAndInstall: () => ipcRenderer.send("quit-and-install"),
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),
+  createSortable: (el) => sortable.create(el, {
+    handle: '.handle',
+    animation: 220,
+    ghostClass: "sortable-ghost",
+    scroll: true,
+    scrollSensitivity: 20,
+    scrollSpeed: 10
+  })
 });
 
 ipcRenderer.on("log", (event, message) => {

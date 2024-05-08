@@ -4,6 +4,8 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
+const sortable = require('sortablejs');
+
 // const { dragula } = require("dragula");
 
 // auto update

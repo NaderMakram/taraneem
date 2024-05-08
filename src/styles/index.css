@@ -481,9 +481,6 @@ button.bold {
 [data-chapterindex="null"] {
   display: none;
 }
-.moving {
-  border: 3px solid orangered;
-}
 
 .handle {
   cursor: grab;
@@ -501,4 +498,8 @@ button.bold {
 }
 .handle:hover {
   border: 1px solid var(--gray-2);
+}
+
+.sortable-ghost {
+  opacity: 0.2;
 }
