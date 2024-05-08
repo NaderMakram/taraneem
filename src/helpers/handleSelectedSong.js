@@ -10,8 +10,24 @@ const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const siblingChaptersBtns = document.querySelector("#siblingChaptersBtns");
 
-var el = document.getElementById('items');
-var sortable = myCustomAPI.createSortable(document.querySelector('#waiting_output'));
+let sortableOptions = {
+  handle: ".handle",
+  animation: 220,
+  ghostClass: "sortable-ghost",
+  scroll: true,
+  forceAutoScrollFallback: true,
+  scrollSensitivity: 100,
+  scrollSpeed: 10,
+  bubbleScroll: false,
+  onEnd: (e) => {
+    array_move(waiting, e.oldIndex, e.newIndex);
+  },
+};
+
+myCustomAPI.createSortable(
+  document.querySelector("#waiting_output"),
+  sortableOptions
+);
 
 function array_move(arr, old_index, new_index) {
   if (new_index >= arr.length) {
@@ -20,15 +36,6 @@ function array_move(arr, old_index, new_index) {
   const movedObject = arr.splice(old_index, 1)[0]; // Remove the object at oldIndex and get it
   arr.splice(new_index, 0, movedObject); // Insert the object at newIndex
   displayWaitingList(waiting);
-}
-
-function findIndexByKeyValue(arr, key, value) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i][key] == value) {
-      return i; // Return the index if the key value matches
-    }
-  }
-  return -1; // Return -1 if the value is not found in the array
 }
 
 let res;

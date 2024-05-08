@@ -4,8 +4,8 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
-const sortable = require('sortablejs');
-
+// const AutoScroll = require("sortablejs/modular/sortable.core.esm");
+// console.log("autoscroll", AutoScroll);
 // const { dragula } = require("dragula");
 
 // auto update
