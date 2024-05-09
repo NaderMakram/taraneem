@@ -13,6 +13,7 @@ const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
 const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
+const scrollToTop = document.querySelector('#scroll-top')
 
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
@@ -56,6 +57,14 @@ extendSongWindowBtn.addEventListener("click", () => {
 quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
 });
+
+scrollToTop.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  })
+})
 
 const previewSiblingChapter = async function (event) {
   let index = parseInt(event.target.dataset.chapterindex);

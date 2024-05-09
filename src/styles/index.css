@@ -135,8 +135,8 @@ h2 {
   width: 20px;
   height: 20px;
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 12px;
+  left: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -484,22 +484,40 @@ button.bold {
 
 .handle {
   cursor: grab;
-  position: relative;
+  position: absolute;
+  top: -2px;
+  right: -2px;
   width: 16px;
   height: 16px;
   display: block;
   background-image: url(../img/drag.png);
   background-position: center;
-  background-size: contain;
-  padding: 2px;
+  background-size: auto;
+  padding: 12px;
   background-repeat: no-repeat;
   border: 1px solid transparent;
   transition: all 0.3s;
+  opacity: 0.5;
+  border: 1px solid transparent;
 }
 .handle:hover {
-  border: 1px solid var(--gray-2);
+  border: 1px solid rgb(185, 185, 185);
+  border-radius: 8px;
+  opacity: 0.8;
 }
 
 .sortable-ghost {
   opacity: 0.3;
+}
+
+#scroll-top {
+  display: none;
+  position: sticky;
+  right: 60px;
+  bottom: 30px;
+  background: red;
+  width: 30px;
+  margin-left: auto;
+  z-index: 10;
+  cursor: pointer;
 }

@@ -14,6 +14,7 @@ let sortableOptions = {
   handle: ".handle",
   animation: 220,
   ghostClass: "sortable-ghost",
+  swapThreshold: 0.7,
   scroll: true,
   forceAutoScrollFallback: true,
   scrollSensitivity: 100,
