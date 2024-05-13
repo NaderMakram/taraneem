@@ -91,7 +91,11 @@ const deepFuse = new Fuse(songsWithSearchableContent, {
   tokenize: (input) => {
     return normalize(input).split(/\s+/); // Split on spaces
   },
-  keys: ["searchableContent"],
+  keys: [
+    { name: "searchableContent.title", weight: 0.4 },
+    { name: "searchableContent.chorus", weight: 0.3 },
+    { name: "searchableContent.firstVerse", weight: 0.2 },
+    { name: "searchableContent.verses", weight: 0.1 }],
 });
 
 const fastFuse = new Fuse(songsWithSearchableContent, {
@@ -105,7 +109,12 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
   tokenize: (input) => {
     return normalize(input).split(/\s+/); // Split on spaces
   },
-  keys: ["searchableContent"],
+  keys: [
+    { name: "searchableContent.title", weight: 0.4 },
+    { name: "searchableContent.chorus", weight: 0.3 },
+    { name: "searchableContent.firstVerse", weight: 0.2 },
+    { name: "searchableContent.verses", weight: 0.1 }],
+
 });
 
 const bibleShortFuse = new Fuse(bibleDBIndexed, {
@@ -141,13 +150,17 @@ function createSearchableContent(song) {
     ? verses.map((verse) => verse.join(" ")).join(" ")
     : "";
   const content = normalize(`${title} ${chorusText} ${versesText}`);
-
+  let searchableSong = {
+    title: title,
+    chorus: normalize(chorusText),
+    verses: normalize(versesText),
+    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : ''
+  }
   // Remove duplicate words
   // const uniqueWords = [...new Set(content.split(" "))];
   // const uniqueContent = uniqueWords.join(" ");
-
-  return content;
-  return uniqueContent;
+  return searchableSong
+  // return content;
 }
 
 // normalize song text
