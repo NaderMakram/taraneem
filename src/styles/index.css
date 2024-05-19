@@ -11,7 +11,7 @@ body {
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: auto;
   /* max-width: 38rem; */
-  padding: 0.7rem 3rem;
+  padding: 0.5rem 3rem;
   min-height: calc(100vh - 4rem);
   position: relative;
   user-select: none;
@@ -516,13 +516,30 @@ button.bold {
 }
 
 #scroll-top {
-  display: none;
   position: sticky;
-  right: 60px;
+  right: 39px;
   bottom: 30px;
-  background: red;
-  width: 30px;
+  background: var(--gray-1);
+  width: 40px;
   margin-left: auto;
   z-index: 10;
+  transform: translateX(2.5rem);
   cursor: pointer;
+  border-radius: 5px;
+  padding: 0px;
+  transform-origin: center;
+  height: 40px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+#scroll-top:hover {
+  background: var(--gray-2);
+}
+
+#scroll-top img {
+  width: 18px;
 }
