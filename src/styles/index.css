@@ -277,6 +277,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 button#bold {
   width: 70px;
+  display: none;
 }
 
 button.bold {

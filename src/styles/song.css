@@ -10,22 +10,27 @@
 }
 @font-face {
   font-family: MyTimesNewRoman;
-  src: url(../fonts/times-new-roman.ttf);
+  /* src: url(../fonts/times-new-roman.ttf); */
+  /* to go back to having bold button remove next line, uncomment the past line, and uncomment the next @font-face */
+  /* also un-bold the bible-container class */
+  src: url(../fonts/times-new-roman-bold.ttf);
 }
-@font-face {
+/* @font-face {
   font-family: MyTimesNewRoman;
   src: url(../fonts/times-new-roman-bold.ttf);
   font-weight: bold;
-}
+} */
 @font-face {
   font-family: MyCalibri;
-  src: url(../fonts/calibri.ttf);
+  /* src: url(../fonts/calibri.ttf); */
+  /* to go back to having bold button remove next line, uncomment the past line, and uncomment the next @font-face */
+  src: url(../fonts/calibri-bold.ttf);
 }
-@font-face {
+/* @font-face {
   font-family: MyCalibri;
   src: url(../fonts/calibri-bold.ttf);
   font-weight: bold;
-}
+} */
 html {
   height: 100%;
   direction: rtl !important;
@@ -88,7 +93,7 @@ body::-webkit-scrollbar {
 .bible-container {
   /* font-family: "Scheherazade New"; */
   font-family: MyTimesNewRoman;
-
+  font-weight: bold;
   /* font-family: "Noto Naskh Arabic", serif; */
   /* font-optical-sizing: auto; */
   /* font-weight: 500; */
