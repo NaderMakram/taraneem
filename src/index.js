@@ -92,10 +92,10 @@ const deepFuse = new Fuse(songsWithSearchableContent, {
     return normalize(input).split(/\s+/); // Split on spaces
   },
   keys: [
-    { name: "searchableContent.title", weight: 0.4 },
+    { name: "searchableContent.title", weight: 0.3 },
     { name: "searchableContent.chorus", weight: 0.3 },
     { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.1 }],
+    { name: "searchableContent.verses", weight: 0.2 }],
 });
 
 const fastFuse = new Fuse(songsWithSearchableContent, {
@@ -110,10 +110,10 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
     return normalize(input).split(/\s+/); // Split on spaces
   },
   keys: [
-    { name: "searchableContent.title", weight: 0.4 },
+    { name: "searchableContent.title", weight: 0.3 },
     { name: "searchableContent.chorus", weight: 0.3 },
     { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.1 }],
+    { name: "searchableContent.verses", weight: 0.2 }],
 
 });
 

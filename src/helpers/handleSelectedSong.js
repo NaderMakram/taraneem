@@ -52,9 +52,10 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 50;
+let delay = 250;
 
 export async function searchAndDisplayResults(term) {
+  console.log('doing a search >>>>>>>', delay)
   // if term contains digits meaning it's a bible search
   let containsDigit = /\d/.test(term);
 
