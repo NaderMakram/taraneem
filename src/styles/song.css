@@ -112,7 +112,7 @@ body::-webkit-scrollbar {
   padding-right: 4vw;
   font-size: 6.9vw;
   line-height: 1.45em;
-  height: 82.5vh;
+  height: 80vh;
 }
 
 /* the actual bible verse */
@@ -128,7 +128,7 @@ body::-webkit-scrollbar {
 
 .song-body {
   padding-right: 3rem;
-  font-size: 5.5rem;
+  font-size: 5.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
