@@ -189,11 +189,43 @@ function normalizeBibleVerse(text) {
     .replace(/ؤ|ئ/g, "ء");
 }
 
+let fastFuseController;
+let deepFuseController;
+async function performSearch(normalizedTerm) {
+  // Abort any ongoing searches
+  if (fastFuseController) fastFuseController.abort();
+  if (deepFuseController) deepFuseController.abort();
+
+  // Create new AbortControllers for the new search
+  fastFuseController = new AbortController();
+  deepFuseController = new AbortController();
+
+  try {
+    // Start the fastFuse search with the abort signal
+    let results = await fastFuse.search(normalizedTerm, { signal: fastFuseController.signal });
+
+    // If no results, start the deepFuse search with the abort signal
+    if (results.length === 0) {
+      results = await deepFuse.search(normalizedTerm, { signal: deepFuseController.signal });
+    }
+
+    return results;
+  } catch (err) {
+    // Handle the abort error
+    if (err.name === 'AbortError') {
+      console.log('Search aborted');
+    } else {
+      console.error('Search failed:', err);
+    }
+  }
+}
+
+
 // Function to search for songs
 function searchSongs(event, term) {
   let containsDigit = /\d/.test(term);
 
-  // console.time("searching time");
+  console.time("searching time");
   // console.log(BrowserWindow.getAllWindows());
   // console.log(fastSearch);
   let results;
@@ -218,16 +250,18 @@ function searchSongs(event, term) {
     // do song search
     let normalizedTerm = normalize(term);
     if (fastSearch) {
-      results = fastFuse.search(normalizedTerm);
-      if (results.length === 0) {
-        results = deepFuse.search(normalizedTerm);
-      }
+      // results = fastFuse.search(normalizedTerm);
+      // if (results.length === 0) {
+      //   results = deepFuse.search(normalizedTerm);
+      // }
+      results = performSearch(normalizedTerm)
+
     } else {
       results = deepFuse.search(normalizedTerm);
     }
   }
 
-  // console.timeEnd("searching time");
+  console.timeEnd("searching time");
   return results;
 }
 
