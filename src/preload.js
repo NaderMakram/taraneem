@@ -26,6 +26,12 @@ ipcRenderer.on("log", (event, message) => {
   console.log(message);
 });
 
+ipcRenderer.on('search-results', (event, results) => {
+  // Handle search results (e.g., update UI with results)
+  console.log(results);
+});
+
+
 ipcRenderer.on("shift-to-slide", (event, message) => {
   console.log("shift the slide", message);
   // let element = document.querySelector('[data-verseNumber="1"]');

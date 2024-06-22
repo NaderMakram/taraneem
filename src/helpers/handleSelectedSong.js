@@ -52,7 +52,7 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 250;
+let delay = 200;
 
 export async function searchAndDisplayResults(term) {
   console.log('doing a search >>>>>>>', delay)

@@ -4,6 +4,17 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
+const { Worker } = require('worker_threads');
+
+
+const worker = new Worker(path.join(__dirname, 'searchWorker.js'));
+worker.on('message', (results) => {
+  // Send the results back to the renderer process
+  console.log(results)
+  // mainWindow.webContents.send('search-results', results);
+});
+
+
 // const AutoScroll = require("sortablejs/modular/sortable.core.esm");
 // console.log("autoscroll", AutoScroll);
 // const { dragula } = require("dragula");
@@ -278,7 +289,11 @@ function readJson() {
 }
 app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
-  ipcMain.handle("search-songs", searchSongs);
+  ipcMain.handle('search-songs', async (event, term) => {
+    // Post data to the worker
+    worker.postMessage({ term });
+
+  });
   ipcMain.on("flip-searching-mode", () => {
     fastSearch = !fastSearch;
   });
