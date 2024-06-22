@@ -141,13 +141,15 @@ waitingModeToggle.addEventListener("change", (e) => {
 
 // for testing
 // setTimeout(() => {
-//   input.value = "مز12";
+//   input.value = "الرب";
+//   let waitingToggle = document.querySelector('#waiting_mode_input')
 
 //   // Create a new event
 //   const inputEvent = new Event("input", {
 //     bubbles: true,
 //     cancelable: true,
 //   });
+//   waitingToggle.click()
 
 //   input.dispatchEvent(inputEvent);
 // }, 1000);
