@@ -139,9 +139,22 @@ waitingModeToggle.addEventListener("change", (e) => {
 
 // let waiting = [];
 
+const button = document.getElementById('start-work');
+const worker = new Worker('searchWorker.js');
+worker.addEventListener('message', (event) => {
+  // resultSpan.textContent = event.data;
+  console.log(event.data)
+});
+
+// button.addEventListener('click', () => {
+//   worker.postMessage('عند شق الفجر باكر'); // Send a message to the worker
+// });
+
+
+
 // for testing
 // setTimeout(() => {
-//   input.value = "مز12";
+//   input.value = "ربي";
 
 //   // Create a new event
 //   const inputEvent = new Event("input", {

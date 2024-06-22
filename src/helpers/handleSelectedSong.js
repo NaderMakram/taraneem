@@ -41,7 +41,6 @@ function array_move(arr, old_index, new_index) {
 }
 
 let res;
-let searchResults;
 let waiting = [];
 let storedWaiting = localStorage.getItem("waiting");
 // console.log(storedWaiting);
@@ -52,23 +51,46 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 200;
+let delay = 700;
+
+// const worker = new Worker('searchWorker.js');
+let currentWorker; // Store a reference to the current worker
 
 export async function searchAndDisplayResults(term) {
-  console.log('doing a search >>>>>>>', delay)
-  // if term contains digits meaning it's a bible search
-  let containsDigit = /\d/.test(term);
+  console.log('doing a search >>>>>>>', term);
 
-  searchResults = await window.myCustomAPI.searchTerm(term);
-  res = searchResults.map(({ item, refIndex }) => {
+  const startTime = performance.now(); // Get start time before worker creation
+
+  // Terminate the previous worker if it exists
+  if (currentWorker) {
+    currentWorker.terminate();
+  }
+
+  // Create a new worker instance
+  currentWorker = new Worker('searchWorker.js');
+
+  const workerCreationTime = performance.now() - startTime; // Calculate time
+  console.log(`Worker creation time: ${workerCreationTime.toFixed(2)} ms`);
+
+  currentWorker.addEventListener('message', (event) => {
+    let { term, results } = event.data;
+    generatHTML(term, results);
+  });
+
+  currentWorker.postMessage(term); // Send the search term to the worker (corrected typo)
+}
+
+let generatHTML = (term, results) => {
+  let containsDigit = /\d/.test(term);
+  res = results.map(({ item, refIndex }) => {
     // Add a prefix to the bible results to differentiate them from songs with the same index
     let modifiedRefIndex = containsDigit ? `b-${refIndex}` : refIndex;
     // Return the modified object
     return { item, refIndex: modifiedRefIndex };
   });
 
-  console.log(typeof res);
-  console.log("containsDigit: ", containsDigit);
+  // console.log(typeof res);
+  // console.log("containsDigit: ", containsDigit);
 
   if (containsDigit) {
     // display bible

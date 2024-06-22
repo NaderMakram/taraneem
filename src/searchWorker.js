@@ -6,13 +6,15 @@ const songsDB = JSON.parse(
     fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 );
 
-
+const startTime = performance.now(); // Get start time before worker creation
 const songsWithSearchableContent = songsDB.map((song) => {
     return {
         ...song,
         searchableContent: createSearchableContent(song),
     };
 });
+const searchableContentCreationTime = performance.now() - startTime; // Calculate time
+console.log(`searchable content creation time: ${searchableContentCreationTime.toFixed(2)} ms`);
 
 
 const deepFuse = new Fuse(songsWithSearchableContent, {
@@ -53,11 +55,16 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
 });
 
 function performSearch(term) {
+    const startSearchTime = performance.now(); // Get start time before worker creation
+
     let results = fastFuse.search(term);
     if (results.length === 0) {
+        console.log(results, 'trying deep')
         results = deepFuse.search(term);
     }
-    console.log(results)
+    const searchTime = performance.now() - startSearchTime; // Calculate time
+    console.log(`search time: ${searchTime.toFixed(2)} ms`);
+    // console.log(results)
     return results;
 }
 
@@ -79,16 +86,6 @@ function normalize(text) {
 }
 
 
-onmessage = function (event) {
-    const { term } = event.data
-    console.log('term in worker', term)
-    let results;
-    let normalizedTerm = normalize(term);
-
-    results = performSearch(normalizedTerm);
-
-    postMessage(results);
-};
 
 function createSearchableContent(song) {
     const { title, chorus, verses } = song;
@@ -98,7 +95,7 @@ function createSearchableContent(song) {
         : "";
     // const content = normalize(`${title} ${chorusText} ${versesText}`);
     let searchableSong = {
-        title: title,
+        title: normalize(title),
         chorus: normalize(chorusText),
         verses: normalize(versesText),
         firstVerse: verses[0] ? normalize(verses[0].join(" ")) : ''
@@ -110,3 +107,15 @@ function createSearchableContent(song) {
     return searchableSong
     // return content;
 }
+
+self.addEventListener('message', async (event) => {
+    try {
+        const searchTerm = event.data; // Store the original term
+        const results = await performSearch(searchTerm);
+        const data = { term: searchTerm, results }; // Combine data in an object
+        self.postMessage(data);
+    } catch (error) {
+        console.error("Error in search:", error);
+        self.postMessage({ error }); // Send error object back to main process
+    }
+});

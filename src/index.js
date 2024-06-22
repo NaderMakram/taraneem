@@ -7,14 +7,6 @@ const Fuse = require("fuse.js");
 const { Worker } = require('worker_threads');
 
 
-const worker = new Worker(path.join(__dirname, 'searchWorker.js'));
-worker.on('message', (results) => {
-  // Send the results back to the renderer process
-  console.log(results)
-  // mainWindow.webContents.send('search-results', results);
-});
-
-
 // const AutoScroll = require("sortablejs/modular/sortable.core.esm");
 // console.log("autoscroll", AutoScroll);
 // const { dragula } = require("dragula");
@@ -314,6 +306,7 @@ const createMainWindow = () => {
     icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       // contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
     },
