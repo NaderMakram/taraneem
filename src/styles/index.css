@@ -546,3 +546,23 @@ button.bold {
 #scroll-top img {
   width: 18px;
 }
+
+/* plus click feedback */
+.yellowCheck {
+  width: 32px;
+  height: 32px;
+  background-image: url(../img/success.png);
+  scale: 0.9;
+  position: absolute;
+  opacity: 1;
+  transition: transform 1.3s ease-out, opacity 1.3s ease-out;
+}
+.rightHand {
+  width: 32px;
+  height: 32px;
+  background-image: url(../img/rightHand.png);
+  scale: 0.9;
+  position: absolute;
+  opacity: 1;
+  transition: transform 1.3s ease-out, opacity 1.3s ease-out;
+}

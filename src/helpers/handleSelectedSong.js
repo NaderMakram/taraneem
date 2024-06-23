@@ -140,6 +140,28 @@ let toggleFontSizeInput = (isBible) => {
   }
 };
 
+let createAddedFeedback = (container, feedbackClass) => {
+  const feedbackIcon = document.createElement('div');
+  feedbackIcon.classList.add(feedbackClass);
+
+  // Set feedbackIcon position to match container
+  feedbackIcon.style.position = 'absolute';  // Make feedbackIcon position relative to container
+  feedbackIcon.style.top = '-15px';
+  feedbackIcon.style.left = '6px';
+
+  container.appendChild(feedbackIcon);
+
+  // Rest of your code for animation and removal remains the same
+  requestAnimationFrame(() => {
+    feedbackIcon.style.transform = 'translateY(-50px)';
+    feedbackIcon.style.opacity = '0';
+  });
+
+  setTimeout(() => {
+    container.removeChild(feedbackIcon);
+  }, 1000);
+};
+
 export function selectSongEventFunction(e) {
   if (e.target.classList.contains("handle")) return;
   let clickedSong = e.target.closest(".song");
@@ -174,14 +196,19 @@ export function selectSongEventFunction(e) {
     }
     console.log(ref);
     // console.log(res.find((song) => song.refIndex == ref));
+    console.log(clickedSong)
     let foundItem = res.find((song) => song.refIndex == ref);
     if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
       waiting.push({
         item: foundItem.item,
         refIndex: foundItem.refIndex,
       });
+      createAddedFeedback(clickedSong ? clickedSong : clickedChapter, 'yellowCheck')
+
       console.log(foundItem.refIndex);
       console.log(clickedChapter);
+    } else {
+      createAddedFeedback(clickedSong ? clickedSong : clickedChapter, 'rightHand')
     }
     displayWaitingList(waiting);
     return;
