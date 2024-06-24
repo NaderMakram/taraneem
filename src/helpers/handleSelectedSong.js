@@ -51,7 +51,7 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 700;
+let delay = 300;
 
 // const worker = new Worker('searchWorker.js');
 let currentWorker; // Store a reference to the current worker
