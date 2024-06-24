@@ -193,7 +193,7 @@ function normalizeBibleVerse(text) {
 function searchSongs(event, term) {
   let containsDigit = /\d/.test(term);
 
-  // console.time("searching time");
+  console.time("searching time");
   // console.log(BrowserWindow.getAllWindows());
   // console.log(fastSearch);
   let results;
@@ -227,7 +227,7 @@ function searchSongs(event, term) {
     }
   }
 
-  // console.timeEnd("searching time");
+  console.timeEnd("searching time");
   return results;
 }
 
