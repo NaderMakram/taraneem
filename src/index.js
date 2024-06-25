@@ -4,6 +4,14 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
+const { Worker } = require('worker_threads');
+
+
+const worker = new Worker(path.join(__dirname, 'worker.js'));
+worker.addEventListener("message", (data) => {
+  console.log(data)
+})
+
 // const AutoScroll = require("sortablejs/modular/sortable.core.esm");
 // console.log("autoscroll", AutoScroll);
 // const { dragula } = require("dragula");
@@ -189,6 +197,38 @@ function normalizeBibleVerse(text) {
     .replace(/ؤ|ئ/g, "ء");
 }
 
+let fastFuseController;
+let deepFuseController;
+async function performSearch(normalizedTerm) {
+  // Abort any ongoing searches
+  if (fastFuseController) fastFuseController.abort();
+  if (deepFuseController) deepFuseController.abort();
+
+  // Create new AbortControllers for the new search
+  fastFuseController = new AbortController();
+  deepFuseController = new AbortController();
+
+  try {
+    // Start the fastFuse search with the abort signal
+    let results = await fastFuse.search(normalizedTerm, { signal: fastFuseController.signal });
+
+    // If no results, start the deepFuse search with the abort signal
+    if (results.length === 0) {
+      results = await deepFuse.search(normalizedTerm, { signal: deepFuseController.signal });
+    }
+
+    return results;
+  } catch (err) {
+    // Handle the abort error
+    if (err.name === 'AbortError') {
+      console.log('Search aborted');
+    } else {
+      console.error('Search failed:', err);
+    }
+  }
+}
+
+
 // Function to search for songs
 function searchSongs(event, term) {
   let containsDigit = /\d/.test(term);
@@ -218,10 +258,12 @@ function searchSongs(event, term) {
     // do song search
     let normalizedTerm = normalize(term);
     if (fastSearch) {
-      results = fastFuse.search(normalizedTerm);
-      if (results.length === 0) {
-        results = deepFuse.search(normalizedTerm);
-      }
+      // results = fastFuse.search(normalizedTerm);
+      // if (results.length === 0) {
+      //   results = deepFuse.search(normalizedTerm);
+      // }
+      results = performSearch(normalizedTerm)
+
     } else {
       results = deepFuse.search(normalizedTerm);
     }
@@ -244,7 +286,12 @@ function readJson() {
 }
 app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
-  ipcMain.handle("search-songs", searchSongs);
+  ipcMain.handle('search-songs', async (event, term) => {
+    // Post data to the worker
+    console.log(term);
+    // worker.postMessage({ term });
+
+  });
   ipcMain.on("flip-searching-mode", () => {
     fastSearch = !fastSearch;
   });
@@ -265,6 +312,7 @@ const createMainWindow = () => {
     icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       // contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
     },

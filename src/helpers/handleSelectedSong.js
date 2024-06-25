@@ -59,25 +59,25 @@ export async function searchAndDisplayResults(term) {
   // if term contains digits meaning it's a bible search
   let containsDigit = /\d/.test(term);
 
-  searchResults = await window.myCustomAPI.searchTerm(term);
-  res = searchResults.map(({ item, refIndex }) => {
-    // Add a prefix to the bible results to differentiate them from songs with the same index
-    let modifiedRefIndex = containsDigit ? `b-${refIndex}` : refIndex;
-    // Return the modified object
-    return { item, refIndex: modifiedRefIndex };
-  });
+  window.myCustomAPI.searchTerm(term);
+  // res = searchResults.map(({ item, refIndex }) => {
+  //   // Add a prefix to the bible results to differentiate them from songs with the same index
+  //   let modifiedRefIndex = containsDigit ? `b-${refIndex}` : refIndex;
+  //   // Return the modified object
+  //   return { item, refIndex: modifiedRefIndex };
+  // });
 
-  console.log(typeof res);
-  console.log("containsDigit: ", containsDigit);
+  // console.log(typeof res);
+  // console.log("containsDigit: ", containsDigit);
 
-  if (containsDigit) {
-    // display bible
-    search_output.innerHTML = generateBibleHTML(res, term);
-  } else {
-    // display songs
-    search_output.innerHTML = generateHTML(res);
-  }
-  console.log(res);
+  // if (containsDigit) {
+  //   // display bible
+  //   search_output.innerHTML = generateBibleHTML(res, term);
+  // } else {
+  //   // display songs
+  //   search_output.innerHTML = generateHTML(res);
+  // }
+  // console.log(res);
 }
 
 export function debounce(func, delay) {
