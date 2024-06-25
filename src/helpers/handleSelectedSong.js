@@ -66,13 +66,16 @@ console.log(myCustomAPI.bibleDBIndexed)
 let currentWorker; // Store a reference to the current worker
 
 export async function searchAndDisplayResults(term) {
-  search_output.innerHTML = `
-  <div class="content-wrapper">
-  <div class="placeholder">
+  let containsDigit = /\d/.test(term);
+  if (!containsDigit) {
+    search_output.innerHTML = `
+    <div class="content-wrapper">
+    <div class="placeholder big song">
     <div class="animated-background"></div>
-  </div>
-  </div>
-  `
+    </div>
+    </div>
+    `
+  }
   console.log('doing a search >>>>>>>', term);
 
   // Terminate the previous worker if it exists
