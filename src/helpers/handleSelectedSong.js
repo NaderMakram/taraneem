@@ -9,6 +9,8 @@ const fontSizeInput = document.querySelector("#fontSize");
 const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const siblingChaptersBtns = document.querySelector("#siblingChaptersBtns");
+// const fs = require("fs");
+
 
 let sortableOptions = {
   handle: ".handle",
@@ -53,13 +55,25 @@ if (storedWaiting && storedWaiting != "undefined") {
 console.log("waiting", waiting);
 let delay = 300;
 
+// const songsDB = JSON.parse(
+//   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
+// );
+
+console.log(myCustomAPI.songsWithSearchableContent)
+console.log(myCustomAPI.bibleDBIndexed)
+
 // const worker = new Worker('searchWorker.js');
 let currentWorker; // Store a reference to the current worker
 
 export async function searchAndDisplayResults(term) {
+  search_output.innerHTML = `
+  <div class="content-wrapper">
+  <div class="placeholder">
+    <div class="animated-background"></div>
+  </div>
+  </div>
+  `
   console.log('doing a search >>>>>>>', term);
-
-  const startTime = performance.now(); // Get start time before worker creation
 
   // Terminate the previous worker if it exists
   if (currentWorker) {
@@ -68,16 +82,12 @@ export async function searchAndDisplayResults(term) {
 
   // Create a new worker instance
   currentWorker = new Worker('searchWorker.js');
-
-  const workerCreationTime = performance.now() - startTime; // Calculate time
-  console.log(`Worker creation time: ${workerCreationTime.toFixed(2)} ms`);
-
   currentWorker.addEventListener('message', (event) => {
     let { term, results } = event.data;
     generatHTML(term, results);
   });
 
-  currentWorker.postMessage(term); // Send the search term to the worker (corrected typo)
+  currentWorker.postMessage({ term, songsWithSearchableContent: myCustomAPI.songsWithSearchableContent, bibleDBIndexed: myCustomAPI.bibleDBIndexed }); // Send the search term to the worker (corrected typo)
 }
 
 let generatHTML = (term, results) => {

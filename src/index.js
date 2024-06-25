@@ -4,7 +4,7 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
-const { Worker } = require('worker_threads');
+// const { Worker } = require('worker_threads');
 
 
 // const AutoScroll = require("sortablejs/modular/sortable.core.esm");
