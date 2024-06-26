@@ -53,7 +53,7 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 20;
+let delay = 200;
 
 // const songsDB = JSON.parse(
 //   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
