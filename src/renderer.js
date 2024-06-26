@@ -139,6 +139,19 @@ waitingModeToggle.addEventListener("change", (e) => {
 
 // let waiting = [];
 
+const button = document.getElementById('start-work');
+const worker = new Worker('searchWorker.js');
+worker.addEventListener('message', (event) => {
+  // resultSpan.textContent = event.data;
+  console.log(event.data)
+});
+
+// button.addEventListener('click', () => {
+//   worker.postMessage('عند شق الفجر باكر'); // Send a message to the worker
+// });
+
+
+
 // for testing
 // setTimeout(() => {
 //   input.value = "الرب";
@@ -172,9 +185,23 @@ waitingModeToggle.addEventListener("change", (e) => {
 // end testing
 
 // Attach the debouncedSearch function to the input event
+let loader_HTML = `
+<div class="content-wrapper">
+<div class="placeholder big song">
+<div class="animated-background"></div>
+</div>
+</div>
+`
+
 input.addEventListener("input", function (e) {
   let term = e.target.value;
+  console.log(term.length)
   if (term.length < 3) return (search_output.innerHTML = "");
+  let containsDigit = /\d/.test(term);
+  if (!containsDigit && search_output.innerHTML != loader_HTML) {
+    search_output.innerHTML = loader_HTML;
+  }
+
   debouncedSearch(term);
 });
 

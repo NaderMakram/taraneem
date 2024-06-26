@@ -9,6 +9,8 @@ const fontSizeInput = document.querySelector("#fontSize");
 const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const siblingChaptersBtns = document.querySelector("#siblingChaptersBtns");
+// const fs = require("fs");
+
 
 let sortableOptions = {
   handle: ".handle",
@@ -41,7 +43,6 @@ function array_move(arr, old_index, new_index) {
 }
 
 let res;
-let searchResults;
 let waiting = [];
 let storedWaiting = localStorage.getItem("waiting");
 // console.log(storedWaiting);
@@ -52,23 +53,67 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 250;
+let delay = 20;
 
+// const songsDB = JSON.parse(
+//   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
+// );
+
+
+// let loader_HTML = `
+// <div class="content-wrapper">
+// <div class="placeholder big song">
+// <div class="animated-background"></div>
+// </div>
+// </div>
+// `
+
+// const worker = new Worker('searchWorker.js');
+let currentWorker; // Store a reference to the current worker
+let startSearchTime
 export async function searchAndDisplayResults(term) {
-  console.log('doing a search >>>>>>>', delay)
-  // if term contains digits meaning it's a bible search
-  let containsDigit = /\d/.test(term);
+  // console.log(search_output.innerHTML == loader_HTML)
+  // let containsDigit = /\d/.test(term);
+  // if (!containsDigit && search_output.innerHTML != loader_HTML) {
+  //   search_output.innerHTML = loader_HTML;
+  // }
+  console.log('doing a search >>>>>>>', term);
 
-  searchResults = await window.myCustomAPI.searchTerm(term);
-  res = searchResults.map(({ item, refIndex }) => {
+  // Terminate the previous worker if it exists
+  if (currentWorker) {
+    currentWorker.terminate();
+  }
+
+  // Create a new worker instance
+  currentWorker = new Worker('searchWorker.js');
+  currentWorker.addEventListener('message', (event) => {
+    let { term, results, time } = event.data;
+    console.log('time to travel from worker: ', Date.now() - time)
+    generatHTML(term, results);
+  });
+
+  currentWorker.postMessage({ term, songsWithSearchableContent: myCustomAPI.songsWithSearchableContent, bibleDBIndexed: myCustomAPI.bibleDBIndexed }); // Send the search term to the worker (corrected typo)
+  startSearchTime = Date.now(); // Get start time before worker creation
+}
+
+let generatHTML = (term, results) => {
+  const searchTime = Date.now() - startSearchTime; // Calculate time
+  console.log(`total search time: ${searchTime.toFixed(2)} ms`);
+
+  // console.log('search input', document.querySelector('#title-input').value)
+  if (document.querySelector('#title-input').value.length < 3) {
+    return search_output.innerHTML = ''
+  }
+  let containsDigit = /\d/.test(term);
+  res = results.map(({ item, refIndex }) => {
     // Add a prefix to the bible results to differentiate them from songs with the same index
     let modifiedRefIndex = containsDigit ? `b-${refIndex}` : refIndex;
     // Return the modified object
     return { item, refIndex: modifiedRefIndex };
   });
 
-  console.log(typeof res);
-  console.log("containsDigit: ", containsDigit);
+  // console.log(typeof res);
+  // console.log("containsDigit: ", containsDigit);
 
   if (containsDigit) {
     // display bible
@@ -77,7 +122,8 @@ export async function searchAndDisplayResults(term) {
     // display songs
     search_output.innerHTML = generateHTML(res);
   }
-  console.log(res);
+  // console.log(res);
+
 }
 
 export function debounce(func, delay) {
