@@ -3,14 +3,14 @@ const Fuse = require("fuse.js");
 let deepFuse;
 let fastFuse;
 function performSongSearch(term) {
-    const startSearchTime = performance.now(); // Get start time before worker creation
+    const startSearchTime = Date.now(); // Get start time before worker creation
 
     let results = fastFuse.search(term);
     if (results.length === 0) {
         console.log(results, 'trying deep')
         results = deepFuse.search(term);
     }
-    const searchTime = performance.now() - startSearchTime; // Calculate time
+    const searchTime = Date.now() - startSearchTime; // Calculate time
     console.log(`search time: ${searchTime.toFixed(2)} ms`);
     // console.log(results)
     return results;
@@ -47,9 +47,12 @@ function normalizeBibleVerse(text) {
 self.addEventListener('message', async (event) => {
     try {
         const { term, songsWithSearchableContent, bibleDBIndexed } = event.data
+        const bibleStartSearchTime = Date.now(); // Get start time before worker creation
         const searchTerm = term; // Store the original term
         let containsDigit = /\d/.test(searchTerm);
         let results;
+        console.log(`bible search time: ${(Date.now() - bibleStartSearchTime).toFixed(2)} ms`);
+
         if (containsDigit) {
             // do bible search
             let termWithoutSpaces = searchTerm.replace(/\s+/g, "");
@@ -62,7 +65,6 @@ self.addEventListener('message', async (event) => {
                 if (normalizedVerse === "مزمور") {
                     normalizedVerse = "مز";
                 }
-                const bibleStartSearchTime = performance.now(); // Get start time before worker creation
                 // add bible fuses
                 const bibleShortFuse = new Fuse(bibleDBIndexed, {
                     includeScore: true,
@@ -94,8 +96,6 @@ self.addEventListener('message', async (event) => {
                     results = bibleLongFuse.search(normalizedVerse);
 
                 }
-                const bibleSearchTime = performance.now() - bibleStartSearchTime; // Calculate time
-                console.log(`bible search time: ${bibleSearchTime.toFixed(2)} ms`);
             }
         } else {
             deepFuse = new Fuse(songsWithSearchableContent, {
@@ -137,7 +137,7 @@ self.addEventListener('message', async (event) => {
 
             results = await performSongSearch(normalize(searchTerm));
         }
-        const data = { term: searchTerm, results }; // Combine data in an object
+        const data = { term: searchTerm, results, time: Date.now() }; // Combine data in an object
         self.postMessage(data);
     } catch (error) {
         console.error("Error in search:", error);
@@ -145,4 +145,4 @@ self.addEventListener('message', async (event) => {
     }
 });
 
-// console.log(`searchable content time: ${(performance.now() - startTime).toFixed(2)} ms`);
+// console.log(`searchable content time: ${(Date.now() - startTime).toFixed(2)} ms`);

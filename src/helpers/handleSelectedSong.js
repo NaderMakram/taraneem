@@ -53,7 +53,7 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 200;
+let delay = 20;
 
 // const songsDB = JSON.parse(
 //   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
@@ -73,7 +73,6 @@ let currentWorker; // Store a reference to the current worker
 let startSearchTime
 export async function searchAndDisplayResults(term) {
   // console.log(search_output.innerHTML == loader_HTML)
-  startSearchTime = performance.now(); // Get start time before worker creation
   // let containsDigit = /\d/.test(term);
   // if (!containsDigit && search_output.innerHTML != loader_HTML) {
   //   search_output.innerHTML = loader_HTML;
@@ -88,20 +87,23 @@ export async function searchAndDisplayResults(term) {
   // Create a new worker instance
   currentWorker = new Worker('searchWorker.js');
   currentWorker.addEventListener('message', (event) => {
-    let { term, results } = event.data;
+    let { term, results, time } = event.data;
+    console.log('time to travel from worker: ', Date.now() - time)
     generatHTML(term, results);
   });
 
   currentWorker.postMessage({ term, songsWithSearchableContent: myCustomAPI.songsWithSearchableContent, bibleDBIndexed: myCustomAPI.bibleDBIndexed }); // Send the search term to the worker (corrected typo)
+  startSearchTime = Date.now(); // Get start time before worker creation
 }
 
 let generatHTML = (term, results) => {
+  const searchTime = Date.now() - startSearchTime; // Calculate time
+  console.log(`total search time: ${searchTime.toFixed(2)} ms`);
+
   // console.log('search input', document.querySelector('#title-input').value)
   if (document.querySelector('#title-input').value.length < 3) {
     return search_output.innerHTML = ''
   }
-  const searchTime = performance.now() - startSearchTime; // Calculate time
-  console.log(`total search time: ${searchTime.toFixed(2)} ms`);
   let containsDigit = /\d/.test(term);
   res = results.map(({ item, refIndex }) => {
     // Add a prefix to the bible results to differentiate them from songs with the same index
@@ -120,7 +122,8 @@ let generatHTML = (term, results) => {
     // display songs
     search_output.innerHTML = generateHTML(res);
   }
-  console.log(res);
+  // console.log(res);
+
 }
 
 export function debounce(func, delay) {
