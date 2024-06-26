@@ -53,7 +53,7 @@ if (storedWaiting && storedWaiting != "undefined") {
   // displayWaitingList(waiting)
 }
 console.log("waiting", waiting);
-let delay = 300;
+let delay = 200;
 
 // const songsDB = JSON.parse(
 //   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
@@ -62,19 +62,23 @@ let delay = 300;
 console.log(myCustomAPI.songsWithSearchableContent)
 console.log(myCustomAPI.bibleDBIndexed)
 
+let loader_HTML = `
+<div class="content-wrapper">
+<div class="placeholder big song">
+<div class="animated-background"></div>
+</div>
+</div>
+`
+
 // const worker = new Worker('searchWorker.js');
 let currentWorker; // Store a reference to the current worker
-
+let startSearchTime
 export async function searchAndDisplayResults(term) {
+  console.log(search_output.innerHTML == loader_HTML)
+  startSearchTime = performance.now(); // Get start time before worker creation
   let containsDigit = /\d/.test(term);
-  if (!containsDigit) {
-    search_output.innerHTML = `
-    <div class="content-wrapper">
-    <div class="placeholder big song">
-    <div class="animated-background"></div>
-    </div>
-    </div>
-    `
+  if (!containsDigit && search_output.innerHTML != loader_HTML) {
+    search_output.innerHTML = loader_HTML;
   }
   console.log('doing a search >>>>>>>', term);
 
@@ -94,6 +98,8 @@ export async function searchAndDisplayResults(term) {
 }
 
 let generatHTML = (term, results) => {
+  const searchTime = performance.now() - startSearchTime; // Calculate time
+  console.log(`total search time: ${searchTime.toFixed(2)} ms`);
   let containsDigit = /\d/.test(term);
   res = results.map(({ item, refIndex }) => {
     // Add a prefix to the bible results to differentiate them from songs with the same index
