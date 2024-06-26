@@ -183,9 +183,23 @@ worker.addEventListener('message', (event) => {
 // end testing
 
 // Attach the debouncedSearch function to the input event
+let loader_HTML = `
+<div class="content-wrapper">
+<div class="placeholder big song">
+<div class="animated-background"></div>
+</div>
+</div>
+`
+
 input.addEventListener("input", function (e) {
   let term = e.target.value;
+  console.log(term.length)
   if (term.length < 3) return (search_output.innerHTML = "");
+  let containsDigit = /\d/.test(term);
+  if (!containsDigit && search_output.innerHTML != loader_HTML) {
+    search_output.innerHTML = loader_HTML;
+  }
+
   debouncedSearch(term);
 });
 

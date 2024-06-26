@@ -59,27 +59,25 @@ let delay = 200;
 //   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 // );
 
-console.log(myCustomAPI.songsWithSearchableContent)
-console.log(myCustomAPI.bibleDBIndexed)
 
-let loader_HTML = `
-<div class="content-wrapper">
-<div class="placeholder big song">
-<div class="animated-background"></div>
-</div>
-</div>
-`
+// let loader_HTML = `
+// <div class="content-wrapper">
+// <div class="placeholder big song">
+// <div class="animated-background"></div>
+// </div>
+// </div>
+// `
 
 // const worker = new Worker('searchWorker.js');
 let currentWorker; // Store a reference to the current worker
 let startSearchTime
 export async function searchAndDisplayResults(term) {
-  console.log(search_output.innerHTML == loader_HTML)
+  // console.log(search_output.innerHTML == loader_HTML)
   startSearchTime = performance.now(); // Get start time before worker creation
-  let containsDigit = /\d/.test(term);
-  if (!containsDigit && search_output.innerHTML != loader_HTML) {
-    search_output.innerHTML = loader_HTML;
-  }
+  // let containsDigit = /\d/.test(term);
+  // if (!containsDigit && search_output.innerHTML != loader_HTML) {
+  //   search_output.innerHTML = loader_HTML;
+  // }
   console.log('doing a search >>>>>>>', term);
 
   // Terminate the previous worker if it exists
@@ -98,6 +96,10 @@ export async function searchAndDisplayResults(term) {
 }
 
 let generatHTML = (term, results) => {
+  // console.log('search input', document.querySelector('#title-input').value)
+  if (document.querySelector('#title-input').value.length < 3) {
+    return search_output.innerHTML = ''
+  }
   const searchTime = performance.now() - startSearchTime; // Calculate time
   console.log(`total search time: ${searchTime.toFixed(2)} ms`);
   let containsDigit = /\d/.test(term);
