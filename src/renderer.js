@@ -136,6 +136,7 @@ waitingModeToggle.addEventListener("change", (e) => {
   document.body.classList.toggle("waiting-mode", !e.target.checked);
   waitingModeToggle.blur();
 });
+waitingModeToggle.click()
 
 // let waiting = [];
 
