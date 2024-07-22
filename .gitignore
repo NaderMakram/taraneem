@@ -92,3 +92,6 @@ typings/
 out/
 Release/
 dist/
+
+# desktop
+desktop.ini
