@@ -42,6 +42,7 @@ body {
   /* color: rgb(21, 23, 29); */
   /* background-color: #fcfcfc; */
   background-color: #f9f9f9;
+  user-select: none;
 
   min-height: 90vh;
   padding: 5vh 6vw;
