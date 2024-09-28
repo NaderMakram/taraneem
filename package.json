@@ -1,13 +1,10 @@
 {
-  "name": "taraneem",
-  "productName": "Taraneem",
-  "version": "2.11.5",
+  "name": "taraneem-pro",
+  "productName": "Taraneem pro",
+  "version": "1.0.0",
   "main": "src/index.js",
   "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/NaderMakram/taraneem"
-  },
+ 
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",

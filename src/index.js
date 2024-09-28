@@ -1,11 +1,10 @@
 ﻿const { app, BrowserWindow, screen, ipcMain } = require("electron");
-const { autoUpdater } = require("electron-updater");
+// const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
 // const { Worker } = require('worker_threads');
-
 
 // const AutoScroll = require("sortablejs/modular/sortable.core.esm");
 // console.log("autoscroll", AutoScroll);
@@ -98,7 +97,8 @@ const deepFuse = new Fuse(songsWithSearchableContent, {
     { name: "searchableContent.title", weight: 0.3 },
     { name: "searchableContent.chorus", weight: 0.3 },
     { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.2 }],
+    { name: "searchableContent.verses", weight: 0.2 },
+  ],
 });
 
 const fastFuse = new Fuse(songsWithSearchableContent, {
@@ -116,8 +116,8 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
     { name: "searchableContent.title", weight: 0.3 },
     { name: "searchableContent.chorus", weight: 0.3 },
     { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.2 }],
-
+    { name: "searchableContent.verses", weight: 0.2 },
+  ],
 });
 
 const bibleShortFuse = new Fuse(bibleDBIndexed, {
@@ -157,12 +157,12 @@ function createSearchableContent(song) {
     title: title,
     chorus: normalize(chorusText),
     verses: normalize(versesText),
-    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : ''
-  }
+    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : "",
+  };
   // Remove duplicate words
   // const uniqueWords = [...new Set(content.split(" "))];
   // const uniqueContent = uniqueWords.join(" ");
-  return searchableSong
+  return searchableSong;
   // return content;
 }
 
@@ -205,24 +205,27 @@ async function performSearch(normalizedTerm) {
 
   try {
     // Start the fastFuse search with the abort signal
-    let results = await fastFuse.search(normalizedTerm, { signal: fastFuseController.signal });
+    let results = await fastFuse.search(normalizedTerm, {
+      signal: fastFuseController.signal,
+    });
 
     // If no results, start the deepFuse search with the abort signal
     if (results.length === 0) {
-      results = await deepFuse.search(normalizedTerm, { signal: deepFuseController.signal });
+      results = await deepFuse.search(normalizedTerm, {
+        signal: deepFuseController.signal,
+      });
     }
 
     return results;
   } catch (err) {
     // Handle the abort error
-    if (err.name === 'AbortError') {
-      console.log('Search aborted');
+    if (err.name === "AbortError") {
+      console.log("Search aborted");
     } else {
-      console.error('Search failed:', err);
+      console.error("Search failed:", err);
     }
   }
 }
-
 
 // Function to search for songs
 function searchSongs(event, term) {
@@ -257,8 +260,7 @@ function searchSongs(event, term) {
       // if (results.length === 0) {
       //   results = deepFuse.search(normalizedTerm);
       // }
-      results = performSearch(normalizedTerm)
-
+      results = performSearch(normalizedTerm);
     } else {
       results = deepFuse.search(normalizedTerm);
     }
@@ -281,10 +283,9 @@ function readJson() {
 }
 app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
-  ipcMain.handle('search-songs', async (event, term) => {
+  ipcMain.handle("search-songs", async (event, term) => {
     // Post data to the worker
     worker.postMessage({ term });
-
   });
   ipcMain.on("flip-searching-mode", () => {
     fastSearch = !fastSearch;
@@ -322,10 +323,8 @@ const createMainWindow = () => {
 
   // remove menu
   mainWindow.removeMenu();
+  mainWindow.webContents.openDevTools();
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -382,21 +381,6 @@ const createSongWindow = () => {
   }
 };
 
-// update version message
-function updateVersionMessage(message) {
-  mainWindow.webContents.executeJavaScript(
-    `document.querySelector('#version').innerHTML=("${message}")`
-  );
-  mainWindow.webContents.send("log", message);
-}
-
-function appendRestartButton() {
-  mainWindow.webContents.executeJavaScript(
-    `
-    console.log("hi")
-    `
-  );
-}
 
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
@@ -550,41 +534,41 @@ app.on("activate", () => {
 
 // auto update
 
-app.on("ready", function () {
-  let currentVersion = app.getVersion();
-  updateVersionMessage(`Version: ${currentVersion}`);
-  autoUpdater.checkForUpdates();
-});
-autoUpdater.on("checking-for-update", () => {
-  updateVersionMessage("Checking for new version...");
-});
-autoUpdater.on("update-available", (info) => {
-  updateVersionMessage("New version available");
-});
-autoUpdater.on("update-not-available", (info) => {
-  let currentVersion = app.getVersion();
-  updateVersionMessage(`Up to date | Version: ${currentVersion}`);
-});
-autoUpdater.on("error", (err) => {
-  let currentVersion = app.getVersion();
-  updateVersionMessage(`Version: ${currentVersion} !`);
-});
+// app.on("ready", function () {
+//   let currentVersion = app.getVersion();
+//   updateVersionMessage(`Version: ${currentVersion}`);
+//   autoUpdater.checkForUpdates();
+// });
+// autoUpdater.on("checking-for-update", () => {
+//   updateVersionMessage("Checking for new version...");
+// });
+// autoUpdater.on("update-available", (info) => {
+//   updateVersionMessage("New version available");
+// });
+// autoUpdater.on("update-not-available", (info) => {
+//   let currentVersion = app.getVersion();
+//   updateVersionMessage(`Up to date | Version: ${currentVersion}`);
+// });
+// autoUpdater.on("error", (err) => {
+//   let currentVersion = app.getVersion();
+//   updateVersionMessage(`Version: ${currentVersion} !`);
+// });
 
-autoUpdater.on("download-progress", (progressObj) => {
-  let log_message = "Downloading: " + Math.floor(progressObj.percent) + "%";
-  updateVersionMessage(log_message);
-});
-autoUpdater.on("update-downloaded", (info) => {
-  updateVersionMessage(
-    "✅ Finished downloading, Restart the app to install updates."
-  );
-  mainWindow.webContents
-    .executeJavaScript(`document.querySelector('#installBtn').style.display = 'inline-block'
-  `);
-  // autoUpdater.quitAndInstall();
-});
+// autoUpdater.on("download-progress", (progressObj) => {
+//   let log_message = "Downloading: " + Math.floor(progressObj.percent) + "%";
+//   updateVersionMessage(log_message);
+// });
+// autoUpdater.on("update-downloaded", (info) => {
+//   updateVersionMessage(
+//     "✅ Finished downloading, Restart the app to install updates."
+//   );
+//   mainWindow.webContents
+//     .executeJavaScript(`document.querySelector('#installBtn').style.display = 'inline-block'
+//   `);
+//   // autoUpdater.quitAndInstall();
+// });
 
-ipcMain.on("quit-and-install", () => {
-  console.log("closing");
-  autoUpdater.quitAndInstall();
-});
+// ipcMain.on("quit-and-install", () => {
+//   console.log("closing");
+//   autoUpdater.quitAndInstall();
+// });

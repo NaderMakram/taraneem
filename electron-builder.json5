@@ -3,11 +3,11 @@
  */
 {
   $schema: "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  appId: "Taraneem",
+  appId: "Taraneem-pro",
   asar: true,
-  productName: "Taraneem",
+  productName: "Taraneem-pro",
   directories: {
-    output: "release/${version}",
+    output: "release/${version}-pro",
   },
   files: ["src"],
   mac: {
