@@ -4,6 +4,8 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 const Fuse = require("fuse.js");
+const { jsPDF } = require("jspdf");
+
 // const { Worker } = require('worker_threads');
 
 // const AutoScroll = require("sortablejs/modular/sortable.core.esm");
@@ -325,7 +327,6 @@ const createMainWindow = () => {
   mainWindow.removeMenu();
   mainWindow.webContents.openDevTools();
 
-
   mainWindow.on("closed", () => {
     app.quit();
   });
@@ -380,7 +381,6 @@ const createSongWindow = () => {
     songWindow.webContents.openDevTools();
   }
 };
-
 
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
@@ -572,3 +572,139 @@ app.on("activate", () => {
 //   console.log("closing");
 //   autoUpdater.quitAndInstall();
 // });
+
+function loadFont(fontPath) {
+  // Read the font file and convert it to Base64
+  const fontData = fs.readFileSync(fontPath);
+  return Buffer.from(fontData).toString("base64");
+}
+
+ipcMain.on("exportAllSongsToPDF", (event, waiting) => {
+  const doc = new jsPDF({
+    encoding: "UTF-8",
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  });
+
+  // Loop through each song in the 'waiting' array and generate PDF content
+  waiting.forEach((song, index) => {
+    const { title, chorus, verses, scale } = song.item;
+    const fontPath = path.join(__dirname, "fonts", "amiri-Regular.ttf");
+    const amiriFont = loadFont(fontPath);
+
+    // Add the font to VFS and register it with jsPDF
+    doc.addFileToVFS("Amiri-Regular.ttf", amiriFont);
+    doc.addFont("Amiri-Regular.ttf", "Amiri", "normal");
+    doc.setFont("Amiri"); // Set the Amiri font
+    doc.setLanguage("ar-EG"); // Arabic language setting
+
+    const lineHeight = 15;
+
+    // Add the song title and scale to the PDF
+    doc.setFontSize(20);
+    doc.text(`${title}`, doc.internal.pageSize.getWidth() / 2, 20, {
+      align: "center",
+      lang: "ar",
+      // isInputRtl: true,
+    });
+
+    // Add chorus if it exists
+    doc.setFontSize(18);
+    if (chorus && chorus.length > 0) {
+      const chorusLabelWidth =
+        (doc.getStringUnitWidth("Chorus:") * doc.internal.getFontSize()) /
+        doc.internal.scaleFactor;
+      doc.text("القرار", doc.internal.pageSize.getWidth() / 2, 30);
+
+      chorus.forEach((line, idx) => {
+        const chorusLineWidth =
+          (doc.getStringUnitWidth(`${idx + 1}. ${line}`) *
+            doc.internal.getFontSize()) /
+          doc.internal.scaleFactor;
+        // Center the chorus line
+        doc.text(
+          line,
+          doc.internal.pageSize.getWidth() / 2,
+          50 + idx * lineHeight,
+          {
+            align: "center",
+            lang: "ar",
+          }
+        );
+      });
+
+      // Add spacing after the chorus
+      doc.text("", 10, 50 + chorus.length * 20); // Add an empty line after chorus
+    }
+
+    // Add verses if they exist
+    if (verses && verses.length > 0) {
+      let yOffset = 50 + chorus.length * lineHeight; // Adjust yOffset based on chorus length
+
+      verses.forEach((verse, verseIndex) => {
+        // Add spacing before each verse
+        yOffset += lineHeight; // Add space before each verse
+        doc.setFontSize(16);
+        const verseLabelWidth =
+          (doc.getStringUnitWidth(`${verseIndex + 1}:`) *
+            doc.internal.getFontSize()) /
+          doc.internal.scaleFactor;
+        // Center the verse label
+        doc.text(
+          `${verseIndex + 1}`,
+          doc.internal.pageSize.getWidth() / 2,
+          yOffset,
+          {
+            align: "center",
+            lang: "ar",
+          }
+        );
+
+        verse.forEach((line, lineIndex) => {
+          const lineWidth =
+            (doc.getStringUnitWidth(`${line}`) * doc.internal.getFontSize()) /
+            doc.internal.scaleFactor;
+          // Center the verse line
+          doc.text(
+            line,
+            doc.internal.pageSize.getWidth() / 2,
+            yOffset + lineIndex * lineHeight,
+            {
+              align: "center",
+              lang: "ar",
+            }
+          );
+          yOffset += lineHeight; // Move down after verse number
+        });
+
+        // Add spacing after each verse
+        yOffset += verse.length * 10 + lineHeight; // Add space after each verse
+      });
+    }
+
+    // Add a new page if there are more songs
+    if (index < waiting.length - 1) {
+      doc.addPage();
+    }
+  });
+
+  // Generate the PDF as a binary string
+  const pdfOutput = doc.output();
+
+  // Get the path to the user's Desktop
+  const desktopPath = path.join(
+    process.env.USERPROFILE,
+    "Desktop",
+    "songs.pdf"
+  );
+
+  // Write the PDF to the Desktop
+  fs.writeFile(desktopPath, pdfOutput, "binary", (err) => {
+    if (err) {
+      console.error("Error writing PDF:", err);
+    } else {
+      console.log("PDF successfully saved to Desktop at", desktopPath);
+    }
+  });
+});

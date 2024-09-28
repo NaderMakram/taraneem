@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
- 
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -29,6 +28,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^6.1.8",
     "fuse.js": "^7.0.0",
+    "jspdf": "^2.5.2",
     "sortablejs": "^1.15.2"
   },
   "devDependencies": {

@@ -60,7 +60,7 @@ export function previewSelectedChapter(
   return html;
 }
 
-// preview selected song
+// preview selected song - generate song slides html
 export function previewSelectedSong(
   { title, chorus, verses, chorusFirst, scale },
   refIndex

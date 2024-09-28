@@ -13,7 +13,7 @@ const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
 const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
-const scrollToTop = document.querySelector('#scroll-top')
+const scrollToTop = document.querySelector("#scroll-top");
 
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
@@ -58,13 +58,13 @@ quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
 });
 
-scrollToTop.addEventListener('click', () => {
+scrollToTop.addEventListener("click", () => {
   window.scrollTo({
     top: 0,
     left: 0,
     behavior: "smooth",
-  })
-})
+  });
+});
 
 const previewSiblingChapter = async function (event) {
   let index = parseInt(event.target.dataset.chapterindex);
@@ -136,22 +136,20 @@ waitingModeToggle.addEventListener("change", (e) => {
   document.body.classList.toggle("waiting-mode", !e.target.checked);
   waitingModeToggle.blur();
 });
-waitingModeToggle.click()
+waitingModeToggle.click();
 
 // let waiting = [];
 
-const button = document.getElementById('start-work');
-const worker = new Worker('searchWorker.js');
-worker.addEventListener('message', (event) => {
+const button = document.getElementById("start-work");
+const worker = new Worker("searchWorker.js");
+worker.addEventListener("message", (event) => {
   // resultSpan.textContent = event.data;
-  console.log(event.data)
+  console.log(event.data);
 });
 
 // button.addEventListener('click', () => {
 //   worker.postMessage('عند شق الفجر باكر'); // Send a message to the worker
 // });
-
-
 
 // for testing
 // setTimeout(() => {
@@ -192,11 +190,11 @@ let loader_HTML = `
 <div class="animated-background"></div>
 </div>
 </div>
-`
+`;
 
 input.addEventListener("input", function (e) {
   let term = e.target.value;
-  console.log(term.length)
+  console.log(term.length);
   if (term.length < 3) return (search_output.innerHTML = "");
   let containsDigit = /\d/.test(term);
   if (!containsDigit && search_output.innerHTML != loader_HTML) {

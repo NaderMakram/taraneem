@@ -3,7 +3,6 @@ const Sortable = require("sortablejs");
 const fs = require("fs");
 const path = require("path");
 
-
 const songsDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 );
@@ -38,6 +37,8 @@ const songsWithSearchableContent = songsDB.map((song) => {
 contextBridge.exposeInMainWorld("myCustomAPI", {
   bibleDBIndexed,
   songsWithSearchableContent,
+  exportAllSongsToPDF: (waiting) =>
+    ipcRenderer.send("exportAllSongsToPDF", waiting),
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
   flipSearchingMode: () => ipcRenderer.send("flip-searching-mode"),
   searchTerm: (term) => ipcRenderer.invoke("search-songs", term),
@@ -62,11 +63,10 @@ ipcRenderer.on("log", (event, message) => {
   console.log(message);
 });
 
-ipcRenderer.on('search-results', (event, results) => {
+ipcRenderer.on("search-results", (event, results) => {
   // Handle search results (e.g., update UI with results)
   console.log(results);
 });
-
 
 ipcRenderer.on("shift-to-slide", (event, message) => {
   console.log("shift the slide", message);
@@ -91,12 +91,12 @@ function createSearchableContent(song) {
     title: title,
     chorus: normalize(chorusText),
     verses: normalize(versesText),
-    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : ''
-  }
+    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : "",
+  };
   // Remove duplicate words
   // const uniqueWords = [...new Set(content.split(" "))];
   // const uniqueContent = uniqueWords.join(" ");
-  return searchableSong
+  return searchableSong;
   // return content;
 }
 
