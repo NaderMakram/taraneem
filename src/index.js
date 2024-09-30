@@ -356,8 +356,8 @@ const createSongWindow = () => {
     songWindow.setFullScreen(true);
   } else {
     songWindow = new BrowserWindow({
-      show: false,
-      frame: false,
+      show: isDev ? true : false,
+      frame: isDev ? true : false,
       width: 500,
       height: 400,
       icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
@@ -436,6 +436,9 @@ ipcMain.on("update-font-weight", (event) => {
 });
 ipcMain.on("toggle-dark-mode", (event) => {
   songWindow.webContents.send("toggle-dark-mode");
+});
+ipcMain.on("change-text-color", (event, color) => {
+  songWindow.webContents.send("change-text-color", color);
 });
 
 app.on("ready", () => {

@@ -13,6 +13,10 @@ ipcRenderer.on("update-font-weight", (event, message) => {
   document.querySelector("#content").classList.toggle("bold");
 });
 
+ipcRenderer.on("change-text-color", (event, color) => {
+  document.querySelector(".song-body").style.color = color;
+});
+
 ipcRenderer.on("update-song-window", (event, content, isBible) => {
   // console.log(isBible);
   if (isBible) {

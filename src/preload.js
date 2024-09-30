@@ -57,6 +57,8 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),
   createSortable: (el, options) => Sortable.create(el, options),
+  changeTextColor: (hexColor) =>
+    ipcRenderer.send("change-text-color", hexColor),
 });
 
 ipcRenderer.on("log", (event, message) => {

@@ -14,6 +14,7 @@ const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
 const scrollToTop = document.querySelector("#scroll-top");
+const textColorBtn = document.querySelector("#textColor");
 
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
@@ -241,3 +242,8 @@ preview_output.addEventListener("click", (e) => {
     newSlide(element.innerHTML);
   }
 });
+
+// text color picker button
+textColorBtn.addEventListener("input", (e) =>
+  window.myCustomAPI.changeTextColor(e.target.value)
+);
