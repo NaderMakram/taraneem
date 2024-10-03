@@ -33,15 +33,13 @@
         title="Font Size"
       /> -->
       <div id="fontSizeContainer">
+        <button class="gray-hover fontSizeBtn" id="fontSizeMinus">
+          <img src="./img/minus_yellow.png" />
+        </button>
         <div id="fontSize" title="Font Size">16</div>
-        <div id="fontSizeButtons">
-          <button class="gray-hover" id="fontSizePlus">
-            <img src="./img/plus_yellow.png" />
-          </button>
-          <button class="gray-hover" id="fontSizeMinus">
-            <img src="./img/minus_yellow.png" />
-          </button>
-        </div>
+        <button class="gray-hover fontSizeBtn" id="fontSizePlus">
+          <img src="./img/plus_yellow.png" />
+        </button>
       </div>
       <input type="checkbox" id="deep_mode_input" name="deep" />
       <label
@@ -78,7 +76,7 @@
 
       <!-- waiting toggle -->
       <div id="list-toggle-group">
-        <img src="./img/list.png" />
+        <!-- <img src="./img/list.png" /> -->
         <input
           class="gray-hover"
           type="checkbox"
@@ -105,17 +103,90 @@
 
     <div id="main-wrapper">
       <div id="search-wrapper">
-        <h2>البحث</h2>
-        <input id="title-input" autocomplete="on" />
-        <div id="search_output"></div>
+        <!-- <h2>البحث</h2> -->
+        <input
+          id="title-input"
+          autocomplete="on"
+          placeholder="أبحث عن ترنيمة أو شاهد كتابي"
+        />
+        <div id="search_output">
+          <!-- start testing songs -->
+
+          <div class="big song" data-ref="206">
+            <h2>باركوا الرب</h2>
+            <div class="chorus">
+              (ق) يباركك الرب من صهيون الصانع السموات والارض
+            </div>
+            <div class="verses">
+              1- باركوا الرب يا جميع عبيد الرب الواقفين في بيت الر…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+          <div class="big song" data-ref="5031">
+            <h2>فرحا افرح بالرب بهجة فرحي</h2>
+            <div class="chorus">(ق) (فرحًا أفرح بالربٍ)2</div>
+            <div class="verses">
+              1- فرحًا أفرح بالربٍ بهجة فرحى إلهى ثياب خلاص البسنى…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+
+          <!-- end testing -->
+        </div>
       </div>
       <div id="waiting-wrapper" class="hide">
         <h2>قائمة التحضير</h2>
-        <div id="waiting_output"></div>
+        <div id="waiting_output">
+          <!-- start testing songs -->
+
+          <div class="big song" data-ref="206">
+            <h2>باركوا الرب</h2>
+            <div class="chorus">
+              (ق) يباركك الرب من صهيون الصانع السموات والارض
+            </div>
+            <div class="verses">
+              1- باركوا الرب يا جميع عبيد الرب الواقفين في بيت الر…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+          <div class="big song" data-ref="5031">
+            <h2>فرحا افرح بالرب بهجة فرحي</h2>
+            <div class="chorus">(ق) (فرحًا أفرح بالربٍ)2</div>
+            <div class="verses">
+              1- فرحًا أفرح بالربٍ بهجة فرحى إلهى ثياب خلاص البسنى…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+
+          <!-- end testing -->
+        </div>
       </div>
       <div id="preview-wrapper">
         <h2>قائمة العرض</h2>
-        <div id="preview_output"></div>
+        <div id="preview_output">
+          <!-- start testing songs -->
+
+          <div class="big song" data-ref="206">
+            <h2>باركوا الرب</h2>
+            <div class="chorus">
+              (ق) يباركك الرب من صهيون الصانع السموات والارض
+            </div>
+            <div class="verses">
+              1- باركوا الرب يا جميع عبيد الرب الواقفين في بيت الر…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+          <div class="big song" data-ref="5031">
+            <h2>فرحا افرح بالرب بهجة فرحي</h2>
+            <div class="chorus">(ق) (فرحًا أفرح بالربٍ)2</div>
+            <div class="verses">
+              1- فرحًا أفرح بالربٍ بهجة فرحى إلهى ثياب خلاص البسنى…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+
+          <!-- end testing -->
+        </div>
       </div>
     </div>
 

@@ -1,13 +1,16 @@
 :root {
   /* --primary: #ff7e67; */
   /* --primary: #67ff6a; */
-  --main-window-bg: #fdfdfd;
+  /* --main-window-bg: #fdfdfd; */
+  --main-window-bg: #f8f8f8;
   --primary: #ca2328;
 
   --dark: #15171d;
 
   --secondary: #07689f;
   --gray-hover: rgba(221, 221, 221, 0.4);
-  --gray-1: rgba(221, 221, 221, 0.7);
-  --gray-2: rgba(221, 221, 221, 0.9);
+  --gray-1: rgba(221, 221, 221, 0.3);
+  --gray-2: rgba(221, 221, 221, 0.5);
+
+  --border-radius-1: 15px;
 }

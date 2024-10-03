@@ -6,7 +6,6 @@ const fs = require("fs");
 const Fuse = require("fuse.js");
 // const { Worker } = require('worker_threads');
 
-
 // const AutoScroll = require("sortablejs/modular/sortable.core.esm");
 // console.log("autoscroll", AutoScroll);
 // const { dragula } = require("dragula");
@@ -98,7 +97,8 @@ const deepFuse = new Fuse(songsWithSearchableContent, {
     { name: "searchableContent.title", weight: 0.3 },
     { name: "searchableContent.chorus", weight: 0.3 },
     { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.2 }],
+    { name: "searchableContent.verses", weight: 0.2 },
+  ],
 });
 
 const fastFuse = new Fuse(songsWithSearchableContent, {
@@ -116,8 +116,8 @@ const fastFuse = new Fuse(songsWithSearchableContent, {
     { name: "searchableContent.title", weight: 0.3 },
     { name: "searchableContent.chorus", weight: 0.3 },
     { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.2 }],
-
+    { name: "searchableContent.verses", weight: 0.2 },
+  ],
 });
 
 const bibleShortFuse = new Fuse(bibleDBIndexed, {
@@ -157,12 +157,12 @@ function createSearchableContent(song) {
     title: title,
     chorus: normalize(chorusText),
     verses: normalize(versesText),
-    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : ''
-  }
+    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : "",
+  };
   // Remove duplicate words
   // const uniqueWords = [...new Set(content.split(" "))];
   // const uniqueContent = uniqueWords.join(" ");
-  return searchableSong
+  return searchableSong;
   // return content;
 }
 
@@ -205,24 +205,27 @@ async function performSearch(normalizedTerm) {
 
   try {
     // Start the fastFuse search with the abort signal
-    let results = await fastFuse.search(normalizedTerm, { signal: fastFuseController.signal });
+    let results = await fastFuse.search(normalizedTerm, {
+      signal: fastFuseController.signal,
+    });
 
     // If no results, start the deepFuse search with the abort signal
     if (results.length === 0) {
-      results = await deepFuse.search(normalizedTerm, { signal: deepFuseController.signal });
+      results = await deepFuse.search(normalizedTerm, {
+        signal: deepFuseController.signal,
+      });
     }
 
     return results;
   } catch (err) {
     // Handle the abort error
-    if (err.name === 'AbortError') {
-      console.log('Search aborted');
+    if (err.name === "AbortError") {
+      console.log("Search aborted");
     } else {
-      console.error('Search failed:', err);
+      console.error("Search failed:", err);
     }
   }
 }
-
 
 // Function to search for songs
 function searchSongs(event, term) {
@@ -257,8 +260,7 @@ function searchSongs(event, term) {
       // if (results.length === 0) {
       //   results = deepFuse.search(normalizedTerm);
       // }
-      results = performSearch(normalizedTerm)
-
+      results = performSearch(normalizedTerm);
     } else {
       results = deepFuse.search(normalizedTerm);
     }
@@ -281,10 +283,9 @@ function readJson() {
 }
 app.on("ready", () => {
   ipcMain.on("set-title", handleSetTitle);
-  ipcMain.handle('search-songs', async (event, term) => {
+  ipcMain.handle("search-songs", async (event, term) => {
     // Post data to the worker
     worker.postMessage({ term });
-
   });
   ipcMain.on("flip-searching-mode", () => {
     fastSearch = !fastSearch;
@@ -372,6 +373,9 @@ const createSongWindow = () => {
   songWindow.removeMenu();
   // and load the index.html of the app.
   songWindow.loadFile(path.join(__dirname, "song.html"));
+  if (isDev) {
+    songWindow.hide();
+  }
 
   // remove menu
   songWindow.on("closed", () => {
