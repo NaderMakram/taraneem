@@ -153,7 +153,15 @@ h2 {
 }
 
 .big h2 {
-  margin-top: 0;
+  margin: 0 auto;
+  font-size: 1.3rem;
+  margin-bottom: 1em;
+  max-width: calc(100% - 25px - 1rem);
+  /* text-align: center; */
+}
+
+.big > div {
+  margin-bottom: 0.8em;
 }
 
 .plus,
@@ -265,7 +273,10 @@ button.fontSizeBtn {
 }
 
 button.fontSizeBtn img {
-  width: 15px;
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  opacity: 0.7;
 }
 
 .gray-hover {
