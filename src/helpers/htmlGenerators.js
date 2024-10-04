@@ -25,17 +25,18 @@ export function generateHTML(dataArray, truncateLimit = 50) {
       // Generate HTML for chorus if it exists
       let chorusHTML = chorus
         ? `<div class="chorus">(ق) ${truncate(
-          chorus.map((line) => `${line}`).join(""),
-          50
-        )}</div>`
+            chorus.map((line) => `${line}`).join(""),
+            50
+          )}</div>`
         : "";
 
       // Generate HTML for verses if they exist
       let versesHTML = verses
-        ? `<div class="verses">1- ${verses[0] && typeof verses[0][0] == "string"
-          ? truncate(verses[0][0], truncateLimit)
-          : ""
-        }</div>`
+        ? `<div class="verses">1- ${
+            verses[0] && typeof verses[0][0] == "string"
+              ? truncate(verses[0][0], truncateLimit)
+              : ""
+          }</div>`
         : "";
 
       // Combine everything into a single HTML block
@@ -94,8 +95,9 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
       let titleHTML = chapter_name ? `<h2>${chapter_name}</h2>` : "";
 
       let versesHTML = verses
-        ? `<div class="verses">1- ${verses["1"] + "2- " + verses["2"] + " ..."
-        }</div>`
+        ? `<div class="verses">1- ${
+            verses["1"] + "2- " + verses["2"] + " ..."
+          }</div>`
         : "";
 
       return `
@@ -108,7 +110,7 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
     })
     .join("");
 
-  console.log(htmlData.length)
+  console.log(htmlData.length);
   if (htmlData == 0) {
     htmlData = `
     <div class="note big bold">
@@ -116,8 +118,9 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
       اكتب الشاهد بالاختصار ورقم الأصحاح فقط</br>
       تك 3</br>
       1 صم 12</br>
+      <img src="./img/warning.png" class="warning icon" alt="plus">
     </div>
-    `
+    `;
   }
 
   return htmlData;

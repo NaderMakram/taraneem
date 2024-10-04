@@ -17,7 +17,7 @@ const scrollToTop = document.querySelector("#scroll-top");
 
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
-const waitingModeToggle = document.querySelector("input#waiting_mode_input");
+// const waitingModeToggle = document.querySelector("input#waiting_mode_input");
 
 // import functions
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
@@ -131,12 +131,12 @@ fontSizeMinus.addEventListener("click", () => {
   window.myCustomAPI.updateFontSize(currentValue - 1);
 });
 
-waitingModeToggle.addEventListener("change", (e) => {
-  // Toggle a class on the body based on checkbox state
-  document.body.classList.toggle("waiting-mode", !e.target.checked);
-  waitingModeToggle.blur();
-});
-waitingModeToggle.click();
+// waitingModeToggle.addEventListener("change", (e) => {
+//   // Toggle a class on the body based on checkbox state
+//   document.body.classList.toggle("waiting-mode", !e.target.checked);
+//   waitingModeToggle.blur();
+// });
+// waitingModeToggle.click();
 
 // let waiting = [];
 
