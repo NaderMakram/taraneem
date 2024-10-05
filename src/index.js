@@ -374,7 +374,7 @@ const createSongWindow = () => {
   // and load the index.html of the app.
   songWindow.loadFile(path.join(__dirname, "song.html"));
   if (isDev) {
-    songWindow.hide();
+    // songWindow.hide();
   }
 
   // remove menu

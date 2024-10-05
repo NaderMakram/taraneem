@@ -94,7 +94,17 @@ h2 {
   font-weight: bold;
 }
 
-.big.selectedSong,
+.big.selectedSong:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--primary);
+  width: calc(var(--border-radius-1) / 2);
+  display: block;
+  transition: all 1s;
+}
 .song-preview .active {
   border: 2px solid var(--primary);
 }
@@ -121,7 +131,7 @@ h2 {
 
 .big {
   background: rgba(149, 157, 165, 0.068);
-  border: 2px solid var(--gray-1);
+  /* border: 2px solid var(--gray-1); */
   direction: rtl;
   cursor: pointer;
   padding: 1rem;
@@ -136,6 +146,7 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: hidden;
 }
 .big:hover {
   /* background: var(--gray-2); */
