@@ -17,6 +17,13 @@ ipcRenderer.on("change-text-color", (event, color) => {
   document.querySelector(".song-body").style.color = color;
 });
 
+ipcRenderer.on("change-bg-image", (event, imageUrl) => {
+  console.log(imageUrl);
+  document.querySelector(
+    ".song-body"
+  ).style.backgroundImage = `url('${imageUrl}')`;
+});
+
 ipcRenderer.on("update-song-window", (event, content, isBible) => {
   // console.log(isBible);
   if (isBible) {

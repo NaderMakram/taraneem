@@ -440,6 +440,9 @@ ipcMain.on("toggle-dark-mode", (event) => {
 ipcMain.on("change-text-color", (event, color) => {
   songWindow.webContents.send("change-text-color", color);
 });
+ipcMain.on("change-bg-image", (event, imageUrl) => {
+  songWindow.webContents.send("change-bg-image", imageUrl);
+});
 
 app.on("ready", () => {
   screen.on("display-added", (event, newDisplay) => {

@@ -59,6 +59,8 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   createSortable: (el, options) => Sortable.create(el, options),
   changeTextColor: (hexColor) =>
     ipcRenderer.send("change-text-color", hexColor),
+  changeBackgroundImage: (imageUrl) =>
+    ipcRenderer.send("change-bg-image", imageUrl),
 });
 
 ipcRenderer.on("log", (event, message) => {

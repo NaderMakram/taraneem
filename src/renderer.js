@@ -15,6 +15,7 @@ const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
 const scrollToTop = document.querySelector("#scroll-top");
 const textColorBtn = document.querySelector("#textColor");
+const bgImageInput = document.querySelector("#bgImage");
 
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
@@ -247,3 +248,16 @@ preview_output.addEventListener("click", (e) => {
 textColorBtn.addEventListener("input", (e) =>
   window.myCustomAPI.changeTextColor(e.target.value)
 );
+
+// Background image picker
+bgImageInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageUrl = reader.result;
+      window.myCustomAPI.changeBackgroundImage(imageUrl); // Send the image data to main process
+    };
+    reader.readAsDataURL(file);
+  }
+});
