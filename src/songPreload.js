@@ -33,17 +33,25 @@ ipcRenderer.on("update-song-window", (event, content, isBible) => {
       text.style.fontSize = `6.9vw`;
     }
     // update slide
-    const contentElement = document.getElementById("content");
-    contentElement.innerHTML = content;
+    const bibleContent = document.querySelector("#bible-content");
+    // hide song html and display bible
+    document.querySelector("#song-content").style.display = "none";
+    document.querySelector("#song-content").classList.remove("active");
+    bibleContent.style.display = "block";
+    bibleContent.innerHTML = content;
     // adjust slide if needed
     adjustFontSizeToFit();
   } else {
+    // hide bible html and display song
+    document.querySelector("#bible-content").style.display = "none";
+    document.querySelector("#song-content").style.display = "block";
+    document.querySelector("#song-content").classList.add("active");
     fadeContent(content);
   }
 });
 
 function fadeContent(content) {
-  const contentElement = document.getElementById("content");
+  const contentElement = document.querySelector("#song-content .fade-in-out");
 
   // Add the fade-out class to initiate the fade-out effect
   contentElement.classList.remove("show");

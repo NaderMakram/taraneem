@@ -1,13 +1,5 @@
 /* @import url("https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap"); */
 /* @import url("https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400..700&display=swap"); */
-.fake {
-  font-family: MyCalibri;
-  font-weight: bold;
-  color: transparent;
-  height: 0px;
-  position: absolute;
-  /* display: none; */
-}
 @font-face {
   font-family: MyTimesNewRoman;
   /* src: url(../fonts/times-new-roman.ttf); */
@@ -38,14 +30,14 @@ html {
   cursor: none;
 }
 body {
-  color: #191919;
-  /* color: rgb(21, 23, 29); */
-  /* background-color: #fcfcfc; */
+  /* color: #191919; */
+  color: var(--wedding-font);
   background-color: #f9f9f9;
+  background-color: var(--wedding-bg);
+
   user-select: none;
 
   min-height: 90vh;
-  padding: 5vh 6vw;
   margin: 0;
   /* display: flex;
   align-items: center;
@@ -53,9 +45,13 @@ body {
   /* background-image: url("../img/clean-gray-paper-40.png"); */
   /* background-image: url("../img/cream-paper.png"); */
   background-repeat: repeat;
-  transition: 0.3s;
 }
-
+#song-content,
+#bible-content {
+  padding: 5vh 6vw;
+  min-height: calc(100vh - 10vh); /* remove padding from min height */
+  transition: all 0.25s;
+}
 body::-webkit-scrollbar {
   display: none;
 }
@@ -79,6 +75,17 @@ body::-webkit-scrollbar {
 
 .container .body {
   position: relative;
+}
+
+body:has(#song-content.active) {
+  background-color: black;
+}
+
+#song-content {
+  background: url(../img/wedding2.jpg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .container .song-body {
@@ -107,6 +114,7 @@ body::-webkit-scrollbar {
   line-height: 1em;
   font-size: 3.8vw;
   color: var(--primary);
+  color: var(--wedding-accent);
 }
 
 .bible-body {
@@ -176,4 +184,5 @@ body::-webkit-scrollbar {
   display: block;
   font-size: 0.5em;
   color: var(--primary);
+  color: var(--wedding-accent);
 }

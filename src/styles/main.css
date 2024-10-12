@@ -10,4 +10,8 @@
   --gray-hover: rgba(221, 221, 221, 0.4);
   --gray-1: rgba(221, 221, 221, 0.7);
   --gray-2: rgba(221, 221, 221, 0.9);
+
+  --wedding-bg: #fff8f3;
+  --wedding-font: #282520;
+  --wedding-accent: #e86160;
 }
