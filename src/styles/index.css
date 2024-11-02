@@ -101,7 +101,7 @@ h2 {
   left: 0;
   height: 100%;
   background: var(--primary);
-  width: calc(var(--border-radius-1) / 2);
+  width: calc(var(--border-radius-1) * 0.5);
   display: block;
   transition: all 1s;
 }
@@ -130,7 +130,7 @@ h2 {
 }
 
 .big {
-  background: rgba(149, 157, 165, 0.068);
+  background: rgba(149, 157, 165, 0.05);
   /* border: 2px solid var(--gray-1); */
   direction: rtl;
   cursor: pointer;
@@ -141,7 +141,8 @@ h2 {
   position: relative;
   /* z-index: 10; */
   transition: all 0.2s;
-  box-shadow: rgba(149, 157, 165, 0.15) 0px 6px 12px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
   margin-bottom: 1.2rem;
   display: flex;
   flex-direction: column;
@@ -150,7 +151,8 @@ h2 {
 }
 .big:hover {
   /* background: var(--gray-2); */
-  box-shadow: rgba(149, 157, 165, 0.25) 0px 9px 24px;
+  box-shadow: rgba(149, 157, 165, 0.25) 0px 9px 24px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 }
 
 /* .big:after {
@@ -286,6 +288,10 @@ button#extendSongWindowButton {
   height: 15px;
 }
 
+#fontSizeContainer:has(button[disabled]) {
+  cursor: not-allowed;
+}
+
 button.fontSizeBtn {
   background: none;
   cursor: pointer;
@@ -296,7 +302,7 @@ button.fontSizeBtn {
   justify-content: center;
   padding: 15px;
   border: 1px solid transparent;
-  border-radius: var(--border-radius-1);
+  border-radius: 50px;
 }
 
 button.fontSizeBtn img {

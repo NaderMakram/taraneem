@@ -11,7 +11,6 @@ const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const siblingChaptersBtns = document.querySelector("#siblingChaptersBtns");
 // const fs = require("fs");
 
-
 let sortableOptions = {
   handle: ".handle",
   animation: 220,
@@ -59,7 +58,6 @@ let delay = 200;
 //   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 // );
 
-
 // let loader_HTML = `
 // <div class="content-wrapper">
 // <div class="placeholder big song">
@@ -70,14 +68,14 @@ let delay = 200;
 
 // const worker = new Worker('searchWorker.js');
 let currentWorker; // Store a reference to the current worker
-let startSearchTime
+let startSearchTime;
 export async function searchAndDisplayResults(term) {
   // console.log(search_output.innerHTML == loader_HTML)
   // let containsDigit = /\d/.test(term);
   // if (!containsDigit && search_output.innerHTML != loader_HTML) {
   //   search_output.innerHTML = loader_HTML;
   // }
-  console.log('doing a search >>>>>>>', term);
+  console.log("doing a search >>>>>>>", term);
 
   // Terminate the previous worker if it exists
   if (currentWorker) {
@@ -85,14 +83,18 @@ export async function searchAndDisplayResults(term) {
   }
 
   // Create a new worker instance
-  currentWorker = new Worker('searchWorker.js');
-  currentWorker.addEventListener('message', (event) => {
+  currentWorker = new Worker("searchWorker.js");
+  currentWorker.addEventListener("message", (event) => {
     let { term, results, time } = event.data;
-    console.log('time to travel from worker: ', Date.now() - time)
+    console.log("time to travel from worker: ", Date.now() - time);
     generatHTML(term, results);
   });
 
-  currentWorker.postMessage({ term, songsWithSearchableContent: myCustomAPI.songsWithSearchableContent, bibleDBIndexed: myCustomAPI.bibleDBIndexed }); // Send the search term to the worker (corrected typo)
+  currentWorker.postMessage({
+    term,
+    songsWithSearchableContent: myCustomAPI.songsWithSearchableContent,
+    bibleDBIndexed: myCustomAPI.bibleDBIndexed,
+  }); // Send the search term to the worker (corrected typo)
   startSearchTime = Date.now(); // Get start time before worker creation
 }
 
@@ -101,8 +103,8 @@ let generatHTML = (term, results) => {
   console.log(`total search time: ${searchTime.toFixed(2)} ms`);
 
   // console.log('search input', document.querySelector('#title-input').value)
-  if (document.querySelector('#title-input').value.length < 3) {
-    return search_output.innerHTML = ''
+  if (document.querySelector("#title-input").value.length < 3) {
+    return (search_output.innerHTML = "");
   }
   let containsDigit = /\d/.test(term);
   res = results.map(({ item, refIndex }) => {
@@ -123,8 +125,7 @@ let generatHTML = (term, results) => {
     search_output.innerHTML = generateHTML(res);
   }
   // console.log(res);
-
-}
+};
 
 export function debounce(func, delay) {
   let timeoutId;
@@ -187,20 +188,20 @@ let toggleFontSizeInput = (isBible) => {
 };
 
 let createAddedFeedback = (container, feedbackClass) => {
-  const feedbackIcon = document.createElement('div');
+  const feedbackIcon = document.createElement("div");
   feedbackIcon.classList.add(feedbackClass);
 
   // Set feedbackIcon position to match container
-  feedbackIcon.style.position = 'absolute';  // Make feedbackIcon position relative to container
-  feedbackIcon.style.top = '-15px';
-  feedbackIcon.style.left = '6px';
+  feedbackIcon.style.position = "absolute"; // Make feedbackIcon position relative to container
+  feedbackIcon.style.top = "-15px";
+  feedbackIcon.style.left = "6px";
 
   container.appendChild(feedbackIcon);
 
   // Rest of your code for animation and removal remains the same
   requestAnimationFrame(() => {
-    feedbackIcon.style.transform = 'translateY(-50px)';
-    feedbackIcon.style.opacity = '0';
+    feedbackIcon.style.transform = "translateY(-50px)";
+    feedbackIcon.style.opacity = "0";
   });
 
   setTimeout(() => {
@@ -242,19 +243,25 @@ export function selectSongEventFunction(e) {
     }
     console.log(ref);
     // console.log(res.find((song) => song.refIndex == ref));
-    console.log(clickedSong)
+    console.log(clickedSong);
     let foundItem = res.find((song) => song.refIndex == ref);
     if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
       waiting.push({
         item: foundItem.item,
         refIndex: foundItem.refIndex,
       });
-      createAddedFeedback(clickedSong ? clickedSong : clickedChapter, 'yellowCheck')
+      createAddedFeedback(
+        clickedSong ? clickedSong : clickedChapter,
+        "yellowCheck"
+      );
 
       console.log(foundItem.refIndex);
       console.log(clickedChapter);
     } else {
-      createAddedFeedback(clickedSong ? clickedSong : clickedChapter, 'rightHand')
+      createAddedFeedback(
+        clickedSong ? clickedSong : clickedChapter,
+        "rightHand"
+      );
     }
     displayWaitingList(waiting);
     return;
