@@ -16,7 +16,7 @@
   font-family: MyCalibri;
   /* src: url(../fonts/calibri.ttf); */
   /* to go back to having bold button remove next line, uncomment the past line, and uncomment the next @font-face */
-  src: url(../fonts/calibri-bold.ttf);
+  src: url(../fonts/3asomy-Regular.ttf);
 }
 /* @font-face {
   font-family: MyCalibri;
@@ -82,7 +82,7 @@ body:has(#song-content.active) {
 }
 
 #song-content {
-  background: url(../img/wedding2.jpg);
+  background: url(../img/pro-bg.png);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
