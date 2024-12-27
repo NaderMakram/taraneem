@@ -468,8 +468,8 @@ app.on("ready", () => {
     if (displays.length == 1) {
       firstScreen = displays[0];
       songWindow.setFullScreen(false);
-      songWindow.minimize();
-      songWindow.hide();
+      // songWindow.minimize();
+      // songWindow.hide();
       // songWindow.setBounds({
       //   width: 500,
       //   height: 400,
