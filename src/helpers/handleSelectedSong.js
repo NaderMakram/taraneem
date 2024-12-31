@@ -300,7 +300,7 @@ export function selectSongEventFunction(e) {
           document.querySelector(".active").classList.remove("active");
         }
         firstSlide.classList.add("active");
-        newSlide(firstSlide.innerHTML);
+        newSlide(firstSlide.innerHTML, false);
       }
       return;
 
@@ -317,7 +317,7 @@ export function selectSongEventFunction(e) {
           targetedSong.item,
           targetedSong.refIndex
         );
-        newSlide("");
+        newSlide("", false);
       }
     }
   } else if (clickedChapter) {
@@ -351,7 +351,7 @@ export function selectSongEventFunction(e) {
           document.querySelector(".active").classList.remove("active");
         }
         firstSlide.classList.add("active");
-        newSlide(firstSlide.innerHTML);
+        newSlide(firstSlide.innerHTML, true);
       }
       return;
 
@@ -368,7 +368,7 @@ export function selectSongEventFunction(e) {
           targetedSong.item,
           targetedSong.refIndex
         );
-        newSlide("");
+        newSlide("", true);
       }
     }
   }

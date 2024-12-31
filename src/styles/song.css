@@ -34,7 +34,6 @@ body {
   /* color: #191919; */
   color: var(--wedding-font);
   background-color: #f9f9f9;
-  background-color: var(--wedding-bg);
 
   user-select: none;
 
@@ -48,7 +47,7 @@ body {
   background-repeat: repeat;
 }
 body {
-  background: url(../img/bible-bg.png);
+  /* background: url(../img/pro-bg.png); */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -91,6 +90,12 @@ body:has(#song-content.active) {
 
 #song-content {
   background: url(../img/pro-bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+#bible-content {
+  background: url(../img/bible-bg.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

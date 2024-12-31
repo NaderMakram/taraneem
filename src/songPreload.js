@@ -25,6 +25,8 @@ ipcRenderer.on("change-bg-image", (event, imageUrl) => {
 });
 
 ipcRenderer.on("update-song-window", (event, content, isBible) => {
+  console.log("updating song window");
+  console.log(isBible ? "its bible" : "its song");
   // console.log(isBible);
   if (isBible) {
     // reset html font size

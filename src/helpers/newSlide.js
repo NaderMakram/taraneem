@@ -1,5 +1,4 @@
-export function newSlide(html) {
-  // console.log(html);
+export function newSlide(html, isBible) {
   let paused = document.querySelector(".pause");
   if (paused) paused.classList.remove("pause");
   // if it's a bible verse, add the chapter title
@@ -19,13 +18,13 @@ export function newSlide(html) {
       </div>
       </div>`;
     // console.log(combined_html);
-    window.myCustomAPI.updateSongWindow(combined_html, true);
+    window.myCustomAPI.updateSongWindow(combined_html, !html ? isBible : true);
   } else {
     let combined_html = `<div class="container song-container">
       <div class="body song-body">
       ${html}
       </div>
       </div>`;
-    window.myCustomAPI.updateSongWindow(combined_html, false);
+    window.myCustomAPI.updateSongWindow(combined_html, !html ? isBible : false);
   }
 }
