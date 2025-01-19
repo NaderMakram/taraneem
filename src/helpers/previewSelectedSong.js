@@ -42,13 +42,13 @@ export function previewSelectedChapter(
 
     // add verse number for the first line in a verse
     html += `<div class="bible-verse slide" data-verseNumber="${key}">
-            <span class="verseNumber">${new Intl.NumberFormat("ar-EG").format(
-              key
-            )}</span>
+            <span class="verseNumber">${
+              key == 0 ? "" : new Intl.NumberFormat("ar-EG").format(key)
+            }</span>
             <div>
-            ${value}
+            ${value.replace(/\n/g, "<br>")}
             </div>
-            </div>`;
+          </div>`;
   }
 
   // add empty slide
