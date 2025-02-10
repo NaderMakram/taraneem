@@ -119,7 +119,7 @@ fontWeightBtn.addEventListener("click", () => {
 fontSizePlus.addEventListener("click", () => {
   let currentValue = parseInt(fontSizeInput.textContent);
   console.log(currentValue);
-  if (currentValue == 50) return;
+  if (currentValue == 20) return;
   fontSizeInput.textContent = currentValue + 1;
   window.myCustomAPI.updateFontSize(currentValue + 1);
 });

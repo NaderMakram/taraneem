@@ -324,9 +324,7 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -435,7 +433,7 @@ function addIPCs() {
 
           elementRect = element.getBoundingClientRect();
           absoluteElementTop = elementRect.top + window.pageYOffset;
-          middle = absoluteElementTop - (window.innerHeight / 2);
+          middle = absoluteElementTop - (window.innerHeight / 3);
           window.scrollTo({
             top: middle,
             left: 0,

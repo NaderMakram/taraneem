@@ -27,9 +27,18 @@ export function previewSelectedChapter(
   // window.myCustomAPI.getSiblingChapters(siblings)
   // console.log(siblings)
 
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${
-    chapter_book + "  " + chapter_number_ar + "    |    " + chapter_en
-  }</h4>`;
+  let html = `<div class="song-title" data-ref="${refIndex}">
+  <h4>${chapter_book + "  " + chapter_number_ar}</h4>
+  <div class="verse-info">
+  <span class="total-verse">${
+    Object.keys(verses).filter((key) => key !== "0").length
+  }</span>
+  <span>/</span>
+  <span class="current-verse"></span>
+  </div>
+  </div>`;
+
+  html += `<h4 class="chapter-title-en" style="display: none;">${chapter_en}</h4>`;
   html += `<div class="song-preview">`;
   // console.log(verses);
 
@@ -65,8 +74,14 @@ export function previewSelectedSong(
   { title, chorus, verses, chorusFirst, scale },
   refIndex
 ) {
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${title}</h4>`;
-  html += `<h5 class="song-info">scale: ${scale ? scale : "??"}</h5>`;
+  let html = `<div class="song-title" data-ref="${refIndex}">
+  <h4>${title}</h4>
+  <div class="verse-info">
+  <span class="total-verse">${verses.length}/</span>
+  <span class="current-verse"></span>
+  </div>
+  </div>`;
+  // html += `<h5 class="song-info">scale: ${scale ? scale : "??"}</h5>`;
   html += `<div class="song-preview">`;
   const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
 
