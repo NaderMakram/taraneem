@@ -63,42 +63,61 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
     return "";
   }
 
-  // Limit the results to the first 10 elements
-  // let trimmedResults = dataArray.slice(0, 100);
+  term = term.replace(/^\d+\s*/, ""); // Remove leading numbers and spaces
 
-  // Generate HTML for each element
-  // let containsDigit = /\d/.test(term);
+  let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
+
+  let searched_chapter;
+  let searched_verse;
+  if (match) {
+    searched_chapter = match[1];
+    searched_verse = match[2] || null;
+  } else {
+    console.log("No match found");
+  }
+  console.log("Chapter:", searched_chapter);
+  console.log("Verse:", searched_verse);
 
   let htmlData = dataArray
     .filter(function (element) {
       let { item } = element;
       let { chapter_number } = item;
-      let searched_numbers = term.match(/\d+$/);
-      let numbers = searched_numbers ? searched_numbers.map(Number) : 0;
+
+      // ظظظظظظظظظظظظظظظظظ
+      console.log(`searched_chapter: ${searched_chapter}`);
+      console.log(`searched_verse: ${searched_verse}`);
+
+      // ظظظظظظظظظظظظظظظظظ
+
+      console.log(`term: ${term}`);
+      console.log(`searched_numbers: ${typeof searched_chapter}`);
+
       // console.log(searched_numbers)
-      if (searched_numbers) {
-        if (searched_numbers[0] == "0") {
+      if (searched_chapter) {
+        if (searched_chapter == "0") {
           return true;
-        } else if (
-          !searched_numbers[0] ||
-          chapter_number != searched_numbers[0]
-        ) {
+        } else if (!searched_chapter || chapter_number != searched_chapter) {
           return false; // skip
         }
       }
       return true;
     })
     .map((element) => {
+      console.log(`filtered element: ${{ element }}`);
       let { item, refIndex, score } = element;
       let { chapter_name, chapter_number, verses } = item;
 
-      let titleHTML = chapter_name ? `<h2>${chapter_name}</h2>` : "";
-
-      let versesHTML = verses
-        ? `<div class="verses">1- ${
-            verses["1"] + "2- " + verses["2"] + " ..."
-          }</div>`
+      let titleHTML = chapter_name
+        ? `<h2>${chapter_name} ${
+            searched_verse ? `: ${searched_verse}` : ""
+          }</h2>`
         : "";
+
+      let versesHTML = searched_verse
+        ? `<div class="verses">${verses[searched_verse]}</div>`
+        : `<div class="verses">1- ${
+            verses["1"] + "2- " + verses["2"] + " ..."
+          }</div>`;
 
       return `
         <div class="big chapter" data-ref="${refIndex}" dir="rtl">

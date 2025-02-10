@@ -82,7 +82,7 @@ self.addEventListener("message", async (event) => {
 
         const bibleLongFuse = new Fuse(bibleDBIndexed, {
           includeScore: true,
-          threshold: 0.15,
+          threshold: 0.05,
           // location: 200,
           // distance: 1000,
           ignoreLocation: true,
