@@ -236,19 +236,22 @@ export function selectSongEventFunction(e) {
   }
   if (clickedPlus) {
     let ref;
+    let verse;
     if (clickedSong) {
       ref = clickedSong.getAttribute("data-ref");
     } else {
       ref = clickedChapter.getAttribute("data-ref");
+      verse = clickedChapter.getAttribute("data-verse");
     }
-    console.log(ref);
+    // console.log(ref);
     // console.log(res.find((song) => song.refIndex == ref));
-    console.log(clickedSong);
+    // console.log(clickedSong);
     let foundItem = res.find((song) => song.refIndex == ref);
     if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
       waiting.push({
         item: foundItem.item,
         refIndex: foundItem.refIndex,
+        verse,
       });
       createAddedFeedback(
         clickedSong ? clickedSong : clickedChapter,
@@ -321,6 +324,7 @@ export function selectSongEventFunction(e) {
   } else if (clickedChapter) {
     toggleFontSizeInput(true);
     let ref = clickedChapter.getAttribute("data-ref");
+    let verse = clickedChapter.getAttribute("data-verse");
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
 
@@ -340,16 +344,22 @@ export function selectSongEventFunction(e) {
     }
 
     // if the selected song already is in preview, start showing the first slide
+    // if there is verse attribute in the chapter, go to verse slide
     clickedChapter.classList.add("selectedSong");
     if (ref && currentSongRef && ref == currentSongRef) {
-      let firstSlide = document.querySelector(".slide");
-      if (firstSlide) {
+      let targetSlide;
+      console.log(typeof verse);
+      targetSlide = document.querySelector(
+        `.slide[data-versenumber="${verse ? verse : "1"}"]`
+      );
+
+      if (targetSlide) {
         // if there is an active element remove it
         if (document.querySelector(".active")) {
           document.querySelector(".active").classList.remove("active");
         }
-        firstSlide.classList.add("active");
-        newSlide(firstSlide.innerHTML);
+        targetSlide.classList.add("active");
+        newSlide(targetSlide.innerHTML);
       }
       return;
 

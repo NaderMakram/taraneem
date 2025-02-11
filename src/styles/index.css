@@ -114,10 +114,9 @@ h2 {
   text-align: right;
 }
 .song-title {
-  min-height: 60px;
+  height: 62px;
   direction: rtl;
   text-align: center;
-  margin-bottom: 0px;
   position: sticky;
   top: -5px;
   background: rgb(243, 243, 243);
@@ -130,8 +129,7 @@ h2 {
   margin-top: 0px;
   z-index: 100;
   overflow: hidden;
-  max-height: 60px;
-  margin-bottom: 30px;
+  margin-bottom: 27px;
 
   display: flex;
   align-items: center;

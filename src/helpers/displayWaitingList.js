@@ -2,12 +2,13 @@ function truncate(str, max_length) {
   return str.length > max_length ? str.slice(0, max_length - 1) + "…" : str;
 }
 export function displayWaitingList(waiting) {
+  console.log("waiting");
   console.log(waiting);
   localStorage.setItem("waiting", JSON.stringify(waiting));
   let htmlData = waiting
     .map((element) => {
       // Extract information from the object
-      let { item, refIndex } = element;
+      let { item, refIndex, verse } = element;
       let { title, chorus, verses, chapter_name } = item;
 
       let type = chapter_name ? "chapter" : "song";
@@ -33,13 +34,18 @@ export function displayWaitingList(waiting) {
 
       // Combine everything into a single HTML block
       return `
-      <div class="big ${type}" data-ref="${refIndex}">
+      <div class="big ${type}" data-ref="${refIndex}" ${
+        verse ? `data-verse="${verse}"` : ""
+      }>
       <span class="handle"></span>
         ${titleHTML}
         <h2>
         ${chapter_name ? chapter_name : ""}
+        ${verse && chapter_name ? ":" : ""}
+        ${verse && chapter_name ? verse : ""}
+
         </h2>
-        ${chapter_name ? verses[1] : ""}
+        ${verse && chapter_name ? verses[verse] : verses[1]}
         
         ${chapter_name ? "" : chorusHTML + versesHTML}
         <img src="./img/minus-64.png" class="delete hide" alt="delete"/>

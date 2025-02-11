@@ -56,7 +56,7 @@ self.addEventListener("message", async (event) => {
 
     if (containsDigit) {
       // do bible search
-      let termWithoutSpaces = searchTerm.replace(/\s+/g, "");
+      let termWithoutSpaces = searchTerm.trim().replace(/\s+/g, " ");
       let book_and_chapter = termWithoutSpaces.match(
         /(?:\b\d+)?[\u0600-\u06FF]+/
       );
@@ -82,10 +82,10 @@ self.addEventListener("message", async (event) => {
 
         const bibleLongFuse = new Fuse(bibleDBIndexed, {
           includeScore: true,
-          threshold: 0.05,
+          threshold: 0.0,
           // location: 200,
           // distance: 1000,
-          ignoreLocation: true,
+          // ignoreLocation: true,
           minMatchCharLength: 0,
           // includeMatches: true,
           shouldSort: true,

@@ -62,7 +62,8 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
     console.log(term);
     return "";
   }
-
+  console.log(dataArray);
+  term = term.trim();
   term = term.replace(/^\d+\s*/, ""); // Remove leading numbers and spaces
 
   let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
@@ -81,22 +82,15 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
   let htmlData = dataArray
     .filter(function (element) {
       let { item } = element;
-      let { chapter_number } = item;
-
-      // ظظظظظظظظظظظظظظظظظ
-      console.log(`searched_chapter: ${searched_chapter}`);
-      console.log(`searched_verse: ${searched_verse}`);
-
-      // ظظظظظظظظظظظظظظظظظ
-
-      console.log(`term: ${term}`);
-      console.log(`searched_numbers: ${typeof searched_chapter}`);
+      let { chapter_number, verses } = item;
 
       // console.log(searched_numbers)
       if (searched_chapter) {
-        if (searched_chapter == "0") {
-          return true;
-        } else if (!searched_chapter || chapter_number != searched_chapter) {
+        if (
+          !searched_chapter ||
+          chapter_number != searched_chapter ||
+          (searched_verse && !verses[searched_verse])
+        ) {
           return false; // skip
         }
       }
@@ -120,7 +114,9 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
           }</div>`;
 
       return `
-        <div class="big chapter" data-ref="${refIndex}" dir="rtl">
+        <div class="big chapter" data-ref="${refIndex}" data-verse="${
+        searched_verse ? searched_verse : ""
+      }" dir="rtl">
           ${titleHTML}
           ${versesHTML}
           <img src="./img/plus.svg" class="plus hide" alt="plus"/>
@@ -133,10 +129,9 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
   if (htmlData == 0) {
     htmlData = `
     <div class="note big bold">
+      هذا الشاهد غير صحيح</br>
       لو بتدور في الكتاب المقدس</br>
-      اكتب الشاهد بالاختصار ورقم الأصحاح فقط</br>
-      تك 3</br>
-      1 صم 12</br>
+      اكتب الشاهد بالاختصار 
       <img src="./img/warning.png" class="warning icon" alt="plus">
     </div>
     `;
