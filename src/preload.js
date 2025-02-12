@@ -7,7 +7,7 @@ const songsDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 );
 const bibleDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "chapters_only.json"), "utf-8")
+  fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
 
 const prevNextIndices = bibleDB.map((_, index) => ({

@@ -57,17 +57,19 @@ self.addEventListener("message", async (event) => {
     if (containsDigit) {
       // do bible search
       let termWithoutSpaces = searchTerm.trim().replace(/\s+/g, " ");
-      let book_and_chapter = termWithoutSpaces.match(
-        /(?:\b\d+)?[\u0600-\u06FF]+/
-      );
+      let book_and_chapter = termWithoutSpaces
+        .replace(/[^\u0600-\u06FF\s]/g, "")
+        .trim();
+
+      console.log(`book_and_chapter: ${book_and_chapter}`);
       if (book_and_chapter) {
-        let normalizedVerse = normalizeBibleVerse(book_and_chapter[0]);
+        let normalizedVerse = normalizeBibleVerse(book_and_chapter);
         // fix for searching with common spelling
         if (normalizedVerse === "مزمور") {
           normalizedVerse = "مز";
         }
         // add bible fuses
-        const bibleShortFuse = new Fuse(bibleDBIndexed, {
+        const bibleFuse = new Fuse(bibleDBIndexed, {
           includeScore: true,
           threshold: 0.0,
           // location: 200,
@@ -77,25 +79,10 @@ self.addEventListener("message", async (event) => {
           useExtendedSearch: true,
           // includeMatches: true,
           shouldSort: true,
-          keys: ["chapter_book_short"],
+          keys: ["chapter_book_short", "chapter_book_normalized"],
         });
 
-        const bibleLongFuse = new Fuse(bibleDBIndexed, {
-          includeScore: true,
-          threshold: 0.0,
-          // location: 200,
-          // distance: 1000,
-          // ignoreLocation: true,
-          minMatchCharLength: 0,
-          // includeMatches: true,
-          shouldSort: true,
-          keys: ["chapter_book_normalized"],
-        });
-
-        results = bibleShortFuse.search("=" + normalizedVerse);
-        if (results.length === 0) {
-          results = bibleLongFuse.search(normalizedVerse);
-        }
+        results = bibleFuse.search(normalizedVerse);
       }
     } else {
       const startDeepFuseTime = Date.now(); // Get start time before worker creation

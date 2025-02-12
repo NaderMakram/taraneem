@@ -64,8 +64,17 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
   }
   console.log(dataArray);
   term = term.trim();
-  term = term.replace(/^\d+\s*/, ""); // Remove leading numbers and spaces
 
+  // Capture leading number (book number) if it exists
+  let bookNumberMatch = term.match(/^(\d+)(?=\D)/); // Capture leading number only if followed by non-digit
+  let searched_book_series = bookNumberMatch ? bookNumberMatch[1] : null;
+
+  // Remove the book number (if found) from the term
+  if (searched_book_series) {
+    term = term.replace(/^\d+/, ""); // Remove the number without requiring a space
+  }
+
+  // Match chapter and verse
   let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
 
   let searched_chapter;
@@ -74,17 +83,25 @@ export function generateBibleHTML(dataArray, term, truncateLimit = 50) {
     searched_chapter = match[1];
     searched_verse = match[2] || null;
   } else {
-    console.log("No match found");
+    console.log("No chapter/verse match found");
   }
+
+  // Debug Output
+  console.log("searched book series:", searched_book_series);
   console.log("Chapter:", searched_chapter);
   console.log("Verse:", searched_verse);
 
   let htmlData = dataArray
     .filter(function (element) {
       let { item } = element;
-      let { chapter_number, verses } = item;
+      let { chapter_number, verses, chapter_book_short } = item;
 
+      let book_series = (chapter_book_short.match(/\d+/) || [null])[0];
+      console.log(`book series: ${book_series}`);
       // console.log(searched_numbers)
+      if (searched_book_series && searched_book_series != book_series) {
+        return false;
+      }
       if (searched_chapter) {
         if (
           !searched_chapter ||
