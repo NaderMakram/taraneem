@@ -27,7 +27,7 @@ import { pause } from "./helpers/pause.js";
 //   previewSelectedChapter,
 //   previewSelectedSong,
 // } from "./helpers/previewSelectedThing.js";
-import { generateBibleHTML, generateHTML } from "./helpers/htmlGenerators.js";
+import { generate_item_html } from "./helpers/htmlGenerators.js";
 import {
   selectSongEventFunction,
   debounce,
@@ -152,19 +152,19 @@ worker.addEventListener("message", (event) => {
 // });
 
 // for testing
-// setTimeout(() => {
-//   input.value = "الرب";
-//   let waitingToggle = document.querySelector('#waiting_mode_input')
+setTimeout(() => {
+  input.value = "في البدء خلق الله";
+  // let waitingToggle = document.querySelector("#waiting_mode_input");
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
-//   waitingToggle.click()
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
+  // waitingToggle.click();
 
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
+  input.dispatchEvent(inputEvent);
+}, 1000);
 
 // let clickDev = new Event("click", {
 //   bubbles: true,

@@ -54,6 +54,8 @@ const bibleDBIndexed = bibleDB.map((item, index) => {
     prevNum: bibleDB[prevIndex]?.chapter_number,
     nextShort: bibleDB[nextIndex]?.chapter_book_short,
     nextNum: bibleDB[nextIndex]?.chapter_number,
+    custom_ref: `chapter-${index}`,
+    type: "chapter",
   };
 });
 

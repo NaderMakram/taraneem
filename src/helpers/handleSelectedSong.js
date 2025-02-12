@@ -1,4 +1,4 @@
-import { generateHTML, generateBibleHTML } from "./htmlGenerators.js";
+import { generate_item_html } from "./htmlGenerators.js";
 import {
   previewSelectedSong,
   previewSelectedChapter,
@@ -117,13 +117,12 @@ let generatHTML = (term, results) => {
   // console.log(typeof res);
   // console.log("containsDigit: ", containsDigit);
 
-  if (containsDigit) {
-    // display bible
-    search_output.innerHTML = generateBibleHTML(res, term);
-  } else {
-    // display songs
-    search_output.innerHTML = generateHTML(res);
-  }
+  let search_output_html = "";
+  res.forEach((item) => {
+    search_output_html += generate_item_html(item, term);
+  });
+
+  search_output.innerHTML = search_output_html;
   // console.log(res);
 };
 

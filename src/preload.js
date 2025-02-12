@@ -24,13 +24,15 @@ const bibleDBIndexed = bibleDB.map((item, index) => {
     prevNum: bibleDB[prevIndex]?.chapter_number,
     nextShort: bibleDB[nextIndex]?.chapter_book_short,
     nextNum: bibleDB[nextIndex]?.chapter_number,
+    custom_ref: `chapter-${index}`,
   };
 });
 
-const songsWithSearchableContent = songsDB.map((song) => {
+const songsWithSearchableContent = songsDB.map((song, index) => {
   return {
     ...song,
     searchableContent: createSearchableContent(song),
+    custom_ref: `song-${index}`,
   };
 });
 
