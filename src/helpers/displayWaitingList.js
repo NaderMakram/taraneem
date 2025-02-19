@@ -2,15 +2,13 @@ function truncate(str, max_length) {
   return str.length > max_length ? str.slice(0, max_length - 1) + "…" : str;
 }
 export function displayWaitingList(waiting) {
-  console.log("waiting");
-  console.log(waiting);
+  // console.log("waiting");
+  // console.log(waiting);
   localStorage.setItem("waiting", JSON.stringify(waiting));
   let htmlData = waiting
-    .map((element) => {
+    .map(({ title, chorus, verse, verses, chapter_name, custom_ref }) => {
       // Extract information from the object
-      let { item, refIndex, verse } = element;
-      let { title, chorus, verses, chapter_name } = item;
-
+      // console.log(title, chorus, verse, verses, chapter_name, custom_ref);
       let type = chapter_name ? "chapter" : "song";
       // Generate HTML for title
       let titleHTML = title ? `<h2>${title}</h2>` : "";
@@ -34,7 +32,7 @@ export function displayWaitingList(waiting) {
 
       // Combine everything into a single HTML block
       return `
-      <div class="big ${type}" data-ref="${refIndex}" ${
+      <div class="big ${type}" data-ref="${custom_ref}" ${
         verse ? `data-verse="${verse}"` : ""
       }>
       <span class="handle"></span>
@@ -45,7 +43,7 @@ export function displayWaitingList(waiting) {
         ${verse && chapter_name ? verse : ""}
 
         </h2>
-        ${verse && chapter_name ? verses[verse] : verses[1]}
+        ${verse && chapter_name ? verses[verse] : ""}
         
         ${chapter_name ? "" : chorusHTML + versesHTML}
         <img src="./img/minus-64.png" class="delete hide" alt="delete"/>

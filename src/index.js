@@ -61,12 +61,13 @@ const bibleDBIndexed = bibleDB.map((item, index) => {
 
 // Map your songs array and create searchable content for each song
 console.time("creating content time:");
-const songsWithSearchableContent = songsDB.map((song) => {
-  return {
-    ...song,
-    searchableContent: createSearchableContent(song),
-  };
-});
+// const songsWithSearchableContent = songsDB.map((song, index) => {
+//   return {
+//     ...song,
+//     searchableContent: createSearchableContent(song),
+//     custom_ref: `song-${index}`,
+//   };
+// });
 console.timeEnd("creating content time:");
 // console.timeEnd("MappingSongs");
 // const filename = 'songs-with-searchable-content.json';
@@ -84,68 +85,68 @@ function writeSongsToJSON(data, filename) {
   }
 }
 
-const deepFuse = new Fuse(songsWithSearchableContent, {
-  // includeScore: true,
-  threshold: 0.2, // Adjust as needed
-  // location: 200,
-  // distance: 1000,
-  ignoreLocation: true,
-  minMatchCharLength: 2,
-  // shouldSort: true,
-  tokenize: (input) => {
-    return normalize(input).split(/\s+/); // Split on spaces
-  },
-  keys: [
-    { name: "searchableContent.title", weight: 0.3 },
-    { name: "searchableContent.chorus", weight: 0.3 },
-    { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.2 },
-  ],
-});
+// const deepFuse = new Fuse(songsWithSearchableContent, {
+//   // includeScore: true,
+//   threshold: 0.2, // Adjust as needed
+//   // location: 200,
+//   // distance: 1000,
+//   ignoreLocation: true,
+//   minMatchCharLength: 2,
+//   // shouldSort: true,
+//   tokenize: (input) => {
+//     return normalize(input).split(/\s+/); // Split on spaces
+//   },
+//   keys: [
+//     { name: "searchableContent.title", weight: 0.3 },
+//     { name: "searchableContent.chorus", weight: 0.3 },
+//     { name: "searchableContent.firstVerse", weight: 0.2 },
+//     { name: "searchableContent.verses", weight: 0.2 },
+//   ],
+// });
 
-const fastFuse = new Fuse(songsWithSearchableContent, {
-  // includeScore: true,
-  threshold: 0.0,
-  // location: 200,
-  // distance: 1000,
-  ignoreLocation: true,
-  minMatchCharLength: 2,
-  // shouldSort: true,
-  tokenize: (input) => {
-    return normalize(input).split(/\s+/); // Split on spaces
-  },
-  keys: [
-    { name: "searchableContent.title", weight: 0.3 },
-    { name: "searchableContent.chorus", weight: 0.3 },
-    { name: "searchableContent.firstVerse", weight: 0.2 },
-    { name: "searchableContent.verses", weight: 0.2 },
-  ],
-});
+// const fastFuse = new Fuse(songsWithSearchableContent, {
+//   // includeScore: true,
+//   threshold: 0.0,
+//   // location: 200,
+//   // distance: 1000,
+//   ignoreLocation: true,
+//   minMatchCharLength: 2,
+//   // shouldSort: true,
+//   tokenize: (input) => {
+//     return normalize(input).split(/\s+/); // Split on spaces
+//   },
+//   keys: [
+//     { name: "searchableContent.title", weight: 0.3 },
+//     { name: "searchableContent.chorus", weight: 0.3 },
+//     { name: "searchableContent.firstVerse", weight: 0.2 },
+//     { name: "searchableContent.verses", weight: 0.2 },
+//   ],
+// });
 
-const bibleShortFuse = new Fuse(bibleDBIndexed, {
-  includeScore: true,
-  threshold: 0.0,
-  // location: 200,
-  // distance: 1000,
-  ignoreLocation: true,
-  minMatchCharLength: 0,
-  useExtendedSearch: true,
-  // includeMatches: true,
-  shouldSort: true,
-  keys: ["chapter_book_short"],
-});
+// const bibleShortFuse = new Fuse(bibleDBIndexed, {
+//   includeScore: true,
+//   threshold: 0.0,
+//   // location: 200,
+//   // distance: 1000,
+//   ignoreLocation: true,
+//   minMatchCharLength: 0,
+//   useExtendedSearch: true,
+//   // includeMatches: true,
+//   shouldSort: true,
+//   keys: ["chapter_book_short"],
+// });
 
-const bibleLongFuse = new Fuse(bibleDBIndexed, {
-  includeScore: true,
-  threshold: 0.15,
-  // location: 200,
-  // distance: 1000,
-  ignoreLocation: true,
-  minMatchCharLength: 0,
-  // includeMatches: true,
-  shouldSort: true,
-  keys: ["chapter_book_normalized"],
-});
+// const bibleLongFuse = new Fuse(bibleDBIndexed, {
+//   includeScore: true,
+//   threshold: 0.15,
+//   // location: 200,
+//   // distance: 1000,
+//   ignoreLocation: true,
+//   minMatchCharLength: 0,
+//   // includeMatches: true,
+//   shouldSort: true,
+//   keys: ["chapter_book_normalized"],
+// });
 
 // Function to create a searchable content string for each song
 function createSearchableContent(song) {

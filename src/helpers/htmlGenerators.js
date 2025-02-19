@@ -3,9 +3,16 @@ function truncate(str, max_length) {
 }
 export function generate_item_html(element, term, truncateLimit = 50) {
   console.log(element);
-  let { item, refIndex } = element;
-  let { title, chorus, custom_ref, type } = item;
-  let { chapter_number, verses, chapter_book_short } = item;
+  let {
+    title,
+    chorus,
+    custom_ref,
+    type,
+    chapter_number,
+    verses,
+    chapter_book_short,
+    chapter_book,
+  } = element;
 
   if (custom_ref.includes("song")) {
     let titleHTML = title ? `<h2>${title}</h2>` : "";
@@ -29,8 +36,9 @@ export function generate_item_html(element, term, truncateLimit = 50) {
 
     // Combine everything into a single HTML block
     return `
-        <div class="big song" data-ref="${refIndex}">
+        <div class="big song" data-ref="${custom_ref}">
           ${titleHTML}
+          ${element.score}
           ${chorusHTML}
           ${versesHTML}
           <img src="./img/plus.svg" class="plus hide" alt="plus"/>
@@ -66,12 +74,13 @@ export function generate_item_html(element, term, truncateLimit = 50) {
     console.log("Verse:", searched_verse);
 
     let book_series = (chapter_book_short.match(/\d+/) || [null])[0];
-    let { item, refIndex, score } = element;
-    let { chapter_name, chapter_number, verses } = item;
+    let { chapter_name, chapter_number, verse, verses, custom_ref, score } =
+      element;
     console.log(`book series: ${book_series}`);
     // console.log(searched_numbers)
     if (searched_book_series && searched_book_series != book_series) {
       return "";
+      return "<div>here 2</div>";
     }
     if (searched_chapter) {
       if (
@@ -79,13 +88,14 @@ export function generate_item_html(element, term, truncateLimit = 50) {
         chapter_number != searched_chapter ||
         (searched_verse && !verses[searched_verse])
       ) {
+        return "";
         return "<div>here</div>"; // skip
       } else {
         let titleHTML = chapter_name
           ? `<h2>${chapter_name} ${
               searched_verse ? `: ${searched_verse}` : ""
             }</h2>`
-          : "";
+          : "<h2>default title</h2>";
 
         let versesHTML = searched_verse
           ? `<div class="verses">${verses[searched_verse]}</div>`
@@ -94,7 +104,7 @@ export function generate_item_html(element, term, truncateLimit = 50) {
             }</div>`;
 
         return `
-          <div class="big chapter" data-ref="${refIndex}" data-verse="${
+          <div class="big chapter" data-ref="${custom_ref}" data-verse="${
           searched_verse ? searched_verse : ""
         }" dir="rtl">
             ${titleHTML}
@@ -104,7 +114,17 @@ export function generate_item_html(element, term, truncateLimit = 50) {
           `;
       }
     } else {
-      return "<div>hi</div>";
+      // if there is no searched chapter, it's a single verse
+      return `
+          <div class="big chapter" data-ref="${custom_ref}" data-verse="${
+        verse ? verse : ""
+      }" dir="rtl">
+            ${chapter_book}
+            <br/>
+            ${verses[element.verse]}
+            <img src="./img/plus.svg" class="plus hide" alt="plus"/>
+          </div>
+          `;
     }
   }
 }
@@ -115,7 +135,7 @@ export function generate_item_html(element, term, truncateLimit = 50) {
 //   let htmlData = trimmedResults
 //     .map((element) => {
 //       // Extract information from the object
-//       let { item, refIndex } = element;
+//       let { item, custom_ref } = element;
 //       let { title, chorus, verses } = item;
 
 //       // Generate HTML for title
@@ -140,7 +160,7 @@ export function generate_item_html(element, term, truncateLimit = 50) {
 
 //       // Combine everything into a single HTML block
 //       return `
-//         <div class="big song" data-ref="${refIndex}">
+//         <div class="big song" data-ref="${custom_ref}">
 //           ${titleHTML}
 //           ${chorusHTML}
 //           ${versesHTML}
@@ -212,7 +232,7 @@ export function generate_item_html(element, term, truncateLimit = 50) {
 //     })
 //     .map((element) => {
 //       console.log(`filtered element: ${{ element }}`);
-//       let { item, refIndex, score } = element;
+//       let { item, custom_ref, score } = element;
 //       let { chapter_name, chapter_number, verses } = item;
 
 //       let titleHTML = chapter_name
@@ -228,7 +248,7 @@ export function generate_item_html(element, term, truncateLimit = 50) {
 //           }</div>`;
 
 //       return `
-//         <div class="big chapter" data-ref="${refIndex}" data-verse="${
+//         <div class="big chapter" data-ref="${custom_ref}" data-verse="${
 //         searched_verse ? searched_verse : ""
 //       }" dir="rtl">
 //           ${titleHTML}

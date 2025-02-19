@@ -1,6 +1,6 @@
-export function previewSelectedChapter(
-  {
-    chapter_name,
+export function previewSelectedChapter(chapter) {
+  console.log(`chapter: ${chapter}`);
+  let {
     chapter_en,
     chapter_book,
     chapter_number,
@@ -9,10 +9,10 @@ export function previewSelectedChapter(
     prevShort,
     prevNum,
     nextShort,
+    chapter_name,
     nextNum,
-  },
-  refIndex
-) {
+    custom_ref,
+  } = chapter;
   let chapter_number_ar = new Intl.NumberFormat("ar-EG").format(chapter_number);
 
   const prevChapterBtn = document.querySelector("#prevChapter");
@@ -27,7 +27,7 @@ export function previewSelectedChapter(
   // window.myCustomAPI.getSiblingChapters(siblings)
   // console.log(siblings)
 
-  let html = `<div class="song-title" data-ref="${refIndex}">
+  let html = `<div class="song-title" data-ref="${custom_ref}">
   <h4>${chapter_book + "  " + chapter_number_ar}</h4>
   <div class="verse-info">
   <span class="total-verse">${
@@ -70,11 +70,15 @@ export function previewSelectedChapter(
 }
 
 // preview selected song
-export function previewSelectedSong(
-  { title, chorus, verses, chorusFirst, scale },
-  refIndex
-) {
-  let html = `<div class="song-title" data-ref="${refIndex}">
+export function previewSelectedSong({
+  title,
+  chorus,
+  verses,
+  chorusFirst,
+  scale,
+  custom_ref,
+}) {
+  let html = `<div class="song-title" data-ref="${custom_ref}">
   <h4>${title}</h4>
   <div class="verse-info">
   <span class="total-verse">${verses.length}/</span>
@@ -120,7 +124,9 @@ export function previewSelectedSong(
           if (chorusIndex == 0) {
             chorusSymbol = "ق";
           }
-          html += `<div class="chorus slide">
+          html += `<div class="chorus slide" data-verseNumber="${
+            verseIndex + 1
+          }">
             <span class="chorusSymbol">${chorusSymbol}</span>
             ${replaceLineBreaks(chorusLine)}
             </div>`;

@@ -65,8 +65,14 @@ export function handleKeyDown(e) {
   if (key === "End") {
     let AllSlides = document.querySelectorAll(".slide");
     let AllEffectiveSlides = document.querySelectorAll(
-      '[data-verseNumber]:not([data-verseNumber=""])'
+      '.verse[data-verseNumber]:not([data-verseNumber=""])'
     );
+    console.log(AllEffectiveSlides);
+    if (AllEffectiveSlides.length == 0) {
+      AllEffectiveSlides = document.querySelectorAll(
+        '.bible-verse[data-verseNumber]:not([data-verseNumber=""])'
+      );
+    }
 
     if (AllSlides) {
       let lastSlide = AllEffectiveSlides[AllEffectiveSlides.length - 1];
@@ -83,7 +89,10 @@ export function handleKeyDown(e) {
     return;
   }
   if (key === "Home") {
-    let AllSlides = document.querySelectorAll(`.slide`);
+    let AllSlides = document.querySelectorAll(`.verse`);
+    if (AllSlides.length == 0) {
+      AllSlides = document.querySelectorAll(`.bible-verse`);
+    }
     // let AllEffectiveSlides = document.querySelectorAll(`[data-verseNumber]`);
     if (AllSlides) {
       let firstSlide = AllSlides[0];

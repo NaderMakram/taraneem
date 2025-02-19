@@ -153,7 +153,7 @@ worker.addEventListener("message", (event) => {
 
 // for testing
 setTimeout(() => {
-  input.value = "في البدء خلق الله";
+  input.value = "تك 2";
   // let waitingToggle = document.querySelector("#waiting_mode_input");
 
   // Create a new event

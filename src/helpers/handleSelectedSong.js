@@ -87,7 +87,7 @@ export async function searchAndDisplayResults(term) {
   currentWorker.addEventListener("message", (event) => {
     let { term, results, time } = event.data;
     console.log("time to travel from worker: ", Date.now() - time);
-    generatHTML(term, results);
+    generateHTML(term, results);
   });
 
   currentWorker.postMessage({
@@ -98,7 +98,10 @@ export async function searchAndDisplayResults(term) {
   startSearchTime = Date.now(); // Get start time before worker creation
 }
 
-let generatHTML = (term, results) => {
+let generateHTML = (term, results) => {
+  results.forEach((element) => {
+    console.log(element);
+  });
   const searchTime = Date.now() - startSearchTime; // Calculate time
   console.log(`total search time: ${searchTime.toFixed(2)} ms`);
 
@@ -107,20 +110,25 @@ let generatHTML = (term, results) => {
     return (search_output.innerHTML = "");
   }
   let containsDigit = /\d/.test(term);
-  res = results.map(({ item, refIndex }) => {
-    // Add a prefix to the bible results to differentiate them from songs with the same index
-    let modifiedRefIndex = containsDigit ? `b-${refIndex}` : refIndex;
-    // Return the modified object
-    return { item, refIndex: modifiedRefIndex };
-  });
+  // res = results.map(({ item, custom_ref }) => {
+  //   // Add a prefix to the bible results to differentiate them from songs with the same index
+  //   let modifiedcustom_ref = containsDigit ? `b-${custom_ref}` : custom_ref;
+  //   // Return the modified object
+  //   return { item, custom_ref };
+  // });
 
+  res = results;
   // console.log(typeof res);
   // console.log("containsDigit: ", containsDigit);
 
   let search_output_html = "";
-  res.forEach((item) => {
-    search_output_html += generate_item_html(item, term);
-  });
+  for (let i = 0; i < Math.min(15, res.length); i++) {
+    search_output_html += generate_item_html(res[i], term);
+  }
+  // res.forEach((item) => {
+  //   console.log(`res in handle: ${item}`);
+  //   search_output_html += generate_item_html(item, term);
+  // });
 
   search_output.innerHTML = search_output_html;
   // console.log(res);
@@ -221,7 +229,7 @@ export function selectSongEventFunction(e) {
   if (clickedDelete) {
     let clickedRef = e.target.parentNode.getAttribute("data-ref");
     console.log(clickedRef);
-    waiting = waiting.filter((item) => item.refIndex != clickedRef);
+    waiting = waiting.filter((item) => item.custom_ref != clickedRef);
 
     // remove the deleted song/chapter from the dom
     let deletedDiv = document.querySelector(
@@ -243,21 +251,17 @@ export function selectSongEventFunction(e) {
       verse = clickedChapter.getAttribute("data-verse");
     }
     // console.log(ref);
-    // console.log(res.find((song) => song.refIndex == ref));
+    // console.log(res.find((song) => song.custom_ref == ref));
     // console.log(clickedSong);
-    let foundItem = res.find((song) => song.refIndex == ref);
-    if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
-      waiting.push({
-        item: foundItem.item,
-        refIndex: foundItem.refIndex,
-        verse,
-      });
+    let foundItem = res.find((song) => song.custom_ref == ref);
+    if (foundItem && !waiting.some((item) => item.custom_ref == ref)) {
+      waiting.push(foundItem);
       createAddedFeedback(
         clickedSong ? clickedSong : clickedChapter,
         "yellowCheck"
       );
 
-      console.log(foundItem.refIndex);
+      console.log(foundItem.custom_ref);
       console.log(clickedChapter);
     } else {
       createAddedFeedback(
@@ -276,7 +280,7 @@ export function selectSongEventFunction(e) {
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
 
-    // if there is a current song in preview, get it's refIndex
+    // if there is a current song in preview, get it's custom_ref
     if (currentSong) {
       currentSongRef = currentSong.getAttribute("data-ref");
     }
@@ -308,15 +312,12 @@ export function selectSongEventFunction(e) {
     } else {
       let targetedSong;
       if (clickedSong.parentNode.id == "search_output") {
-        targetedSong = res.find((song) => song.refIndex == ref);
+        targetedSong = res.find((song) => song.custom_ref == ref);
       } else if (clickedSong.parentNode.id == "waiting_output") {
-        targetedSong = waiting.find((song) => song.refIndex == ref);
+        targetedSong = waiting.find((song) => song.custom_ref == ref);
       }
       if (!clickedPlus) {
-        preview_output.innerHTML = previewSelectedSong(
-          targetedSong.item,
-          targetedSong.refIndex
-        );
+        preview_output.innerHTML = previewSelectedSong(targetedSong);
         newSlide("");
       }
     }
@@ -327,7 +328,7 @@ export function selectSongEventFunction(e) {
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
 
-    // if there is a current song in preview, get it's refIndex
+    // if there is a current song in preview, get it's custom_ref
     if (currentSong) {
       currentSongRef = currentSong.getAttribute("data-ref");
     }
@@ -366,15 +367,12 @@ export function selectSongEventFunction(e) {
     } else {
       let targetedSong;
       if (clickedChapter.parentNode.id == "search_output") {
-        targetedSong = res.find((song) => song.refIndex == ref);
+        targetedSong = res.find((song) => song.custom_ref == ref);
       } else if (clickedChapter.parentNode.id == "waiting_output") {
-        targetedSong = waiting.find((song) => song.refIndex == ref);
+        targetedSong = waiting.find((song) => song.custom_ref == ref);
       }
       if (!clickedPlus) {
-        preview_output.innerHTML = previewSelectedChapter(
-          targetedSong.item,
-          targetedSong.refIndex
-        );
+        preview_output.innerHTML = previewSelectedChapter(targetedSong);
         newSlide("");
       }
     }
