@@ -446,19 +446,34 @@ button.bold {
 }
 
 #slide-screen {
-  width: 45px;
-  height: 25px;
+  max-width: 0px;
+  max-height: 0px;
   background: #313336;
   color: whitesmoke;
-  position: sticky;
-  bottom: 30px;
-  font-size: 18px;
-  left: 60px;
-  border-radius: 5px;
+  font-size: 20px;
+  border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding-bottom: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%) scale(0);
+  padding: 14px 2.5rem;
+  padding-bottom: 15px;
+  letter-spacing: 1px;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 0.3s ease, max-height 0.3s ease, opacity 0.3s ease,
+    transform 0.15s ease-in-out;
+}
+
+/* When the div has text, expand it */
+#slide-screen:not(:empty) {
+  opacity: 1;
+  max-width: 60px;
+  max-height: 25px;
+  transform: translate(-50%, 0%) scale(1);
 }
 
 /* .waiting-mode .plus,

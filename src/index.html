@@ -21,17 +21,8 @@
       <!-- bold font button -->
       <button class="gray-hover" id="bold" title="Bold">Bold</button>
 
-      <!-- font size input -->
-      <!-- <input
-        type="number"
-        id="fontSize"
-        name="fontSize"
-        value="16"
-        min="2"
-        max="50"
-        step="1"
-        title="Font Size"
-      /> -->
+      <!-- font size -->
+    
       <div id="fontSizeContainer">
         <button class="gray-hover fontSizeBtn" id="fontSizeMinus">
           <img src="./img/minus-bold.png" />
@@ -41,6 +32,8 @@
           <img src="./img/plus-bold.png" />
         </button>
       </div>
+
+      <!-- deep mode (deprecated) -->
       <input type="checkbox" id="deep_mode_input" name="deep" />
       <label
         for="deep_mode_input"
@@ -48,19 +41,7 @@
         name="deep"
         title="Fast/Slow Mode"
       ></label>
-      <!-- new test for font size -->
-      <!-- <div id="fontSizeContainer">
-        <p id="fontSizeNumber">65</p>
-        <div id="fontSizeButtons">
-          <button id="fontSizeUp">+</button>
-          <button id="fontSizeDown">-</button>
-        </div>
-      </div> -->
-      <!-- dark mode switch -->
-      <!-- <input type="checkbox" id="dark_mode_input" /> -->
-      <!-- <label for="dark_mode_input" title="Dark Mode" id="dark_mode_label"
-        >Toggle</label
-        > -->
+    
 
       <!-- dark mode switch #2 -->
       <label
@@ -74,7 +55,7 @@
         <span class="switch-handle"></span>
       </label>
 
-      <!-- waiting toggle -->
+      <!-- waiting toggle (deprecated) -->
       <!-- <div id="list-toggle-group">
         <img src="./img/list.png" />
         <input
@@ -93,6 +74,10 @@
       >
         <img src="./img/extend.png" />
       </button>
+
+      <!-- verse switch screen -->
+      <div id="slide-screen"></div>
+
     </div>
 
     <!-- sibling chapters -->
@@ -200,7 +185,6 @@
       </div>
     </div>
 
-    <div id="slide-screen"></div>
     <div id="scroll-top" class="ripple">
       <img src="./img/up.png" />
     </div>
