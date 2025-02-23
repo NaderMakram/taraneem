@@ -12,6 +12,8 @@ export function generate_item_html(element, term, truncateLimit = 50) {
     verses,
     chapter_book_short,
     chapter_book,
+    chapter,
+    verse,
   } = element;
 
   if (custom_ref.includes("song")) {
@@ -119,9 +121,15 @@ export function generate_item_html(element, term, truncateLimit = 50) {
           <div class="big chapter" data-ref="${custom_ref}" data-verse="${
         verse ? verse : ""
       }" dir="rtl">
+            <h2>
             ${chapter_book}
-            <br/>
+            ${chapter}
+            :
+            ${verse}
+            </h2>
+            <div class="verses">
             ${verses[element.verse]}
+            </div>
             <img src="./img/plus.svg" class="plus hide" alt="plus"/>
           </div>
           `;

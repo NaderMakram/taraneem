@@ -8,7 +8,10 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
 
   // console.log(`term: ${term}, songs: ${songsWithSearchableContent}`);
   let songResults = searchSongs(term, songsWithSearchableContent);
-  let bibleResults = searchBible(term, bibleVerses);
+  let bibleResults = [];
+  if (term.trim().split(/\s+/).length >= 3) {
+    bibleResults = searchBible(term, bibleVerses);
+  }
 
   const searchTime = Date.now() - startSearchTime; // Calculate time
   console.log(`Actual search time: ${searchTime.toFixed(2)} ms`);
