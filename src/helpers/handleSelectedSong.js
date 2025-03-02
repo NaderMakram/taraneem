@@ -99,39 +99,30 @@ export async function searchAndDisplayResults(term) {
 }
 
 let generateHTML = (term, results) => {
-  results.forEach((element) => {
-    console.log(element);
-  });
-  const searchTime = Date.now() - startSearchTime; // Calculate time
-  console.log(`total search time: ${searchTime.toFixed(2)} ms`);
+  search_output.innerHTML = ""; // Clear previous results
 
-  // console.log('search input', document.querySelector('#title-input').value)
   if (document.querySelector("#title-input").value.length < 3) {
-    return (search_output.innerHTML = "");
+    return;
   }
+
   let containsDigit = /\d/.test(term);
-  // res = results.map(({ item, custom_ref }) => {
-  //   // Add a prefix to the bible results to differentiate them from songs with the same index
-  //   let modifiedcustom_ref = containsDigit ? `b-${custom_ref}` : custom_ref;
-  //   // Return the modified object
-  //   return { item, custom_ref };
-  // });
-
   res = results;
-  // console.log(typeof res);
-  // console.log("containsDigit: ", containsDigit);
 
-  let search_output_html = "";
   for (let i = 0; i < Math.min(15, res.length); i++) {
-    search_output_html += generate_item_html(res[i], term);
-  }
-  // res.forEach((item) => {
-  //   console.log(`res in handle: ${item}`);
-  //   search_output_html += generate_item_html(item, term);
-  // });
+    let slide = document.createElement("div");
+    slide.innerHTML = generate_item_html(res[i], term);
+    slide.classList.add("slide-item");
+    slide.style.opacity = "0"; // Initially hidden
+    slide.style.transform = "translateY(20px)"; // Slightly lower position
 
-  search_output.innerHTML = search_output_html;
-  // console.log(res);
+    search_output.appendChild(slide);
+
+    // Staggered animation
+    setTimeout(() => {
+      slide.style.opacity = "1";
+      slide.style.transform = "translateY(0)";
+    }, i * 50); // Delay each slide by 100ms
+  }
 };
 
 export function debounce(func, delay) {
@@ -280,6 +271,8 @@ export function selectSongEventFunction(e) {
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
 
+    console.log(`ref: ${ref}`);
+
     // if there is a current song in preview, get it's custom_ref
     if (currentSong) {
       currentSongRef = currentSong.getAttribute("data-ref");
@@ -310,14 +303,18 @@ export function selectSongEventFunction(e) {
 
       // if the selected song is not in preview, add it to preview
     } else {
-      let targetedSong;
-      if (clickedSong.parentNode.id == "search_output") {
+      console.log("not in preview");
+      console.log(clickedSong.parentNode.id);
+      let targetedSong = null;
+      console.log(res);
+      if (clickedSong.parentNode.parentNode.id == "search_output") {
         targetedSong = res.find((song) => song.custom_ref == ref);
-      } else if (clickedSong.parentNode.id == "waiting_output") {
+      } else if (clickedSong.parentNode.parentNode.id == "waiting_output") {
         targetedSong = waiting.find((song) => song.custom_ref == ref);
       }
       if (!clickedPlus) {
-        preview_output.innerHTML = previewSelectedSong(targetedSong);
+        console.log(`target song: ${targetedSong}`);
+        previewSelectedSong(targetedSong);
         newSlide("");
       }
     }

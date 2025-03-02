@@ -2,7 +2,7 @@ function truncate(str, max_length) {
   return str.length > max_length ? str.slice(0, max_length - 1) + "…" : str;
 }
 export function generate_item_html(element, term, truncateLimit = 50) {
-  console.log(element);
+  // console.log(element);
   let {
     title,
     chorus,
@@ -40,7 +40,6 @@ export function generate_item_html(element, term, truncateLimit = 50) {
     return `
         <div class="big song" data-ref="${custom_ref}">
           ${titleHTML}
-          ${element.score}
           ${chorusHTML}
           ${versesHTML}
           <img src="./img/plus.svg" class="plus hide" alt="plus"/>

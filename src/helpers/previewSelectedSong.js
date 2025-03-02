@@ -70,73 +70,85 @@ export function previewSelectedChapter(chapter) {
 }
 
 // preview selected song
-export function previewSelectedSong({
-  title,
-  chorus,
-  verses,
-  chorusFirst,
-  scale,
-  custom_ref,
-}) {
-  let html = `<div class="song-title" data-ref="${custom_ref}">
-  <h4>${title}</h4>
-  <div class="verse-info">
-  <span class="total-verse">${verses.length}/</span>
-  <span class="current-verse"></span>
-  </div>
-  </div>`;
-  // html += `<h5 class="song-info">scale: ${scale ? scale : "??"}</h5>`;
-  html += `<div class="song-preview">`;
-  const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
+export function previewSelectedSong(song) {
+  console.log(song);
+  let { title, chorus, verses, chorusFirst, scale, custom_ref } = song;
+  // Clear previous content
+  preview_output.innerHTML = "";
 
-  if ((chorusFirst && chorus && chorus.length > 0) || verses.length == 0) {
+  // Create and append the song title immediately (no animation)
+  let titleDiv = document.createElement("div");
+  titleDiv.classList.add("song-title");
+  titleDiv.dataset.ref = custom_ref;
+  titleDiv.innerHTML = `
+    <h4>${title}</h4>
+    <div class="verse-info">
+      <span class="total-verse">${verses.length}/</span>
+      <span class="current-verse"></span>
+    </div>
+  `;
+  preview_output.appendChild(titleDiv);
+
+  // Create and append the container immediately (no animation)
+  let container = document.createElement("div");
+  container.classList.add("song-preview");
+  preview_output.appendChild(container);
+
+  const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
+  let slides = [];
+
+  // Prepare slides without appending them yet
+  if ((chorusFirst && chorus.length > 0) || verses.length === 0) {
     chorus.forEach((line) => {
-      html += `<div class="chorus slide">${replaceLineBreaks(line)}</div>`;
+      let div = document.createElement("div");
+      div.classList.add("chorus", "slide");
+      div.innerHTML = replaceLineBreaks(line);
+      slides.push(div);
     });
   }
 
-  if (verses && verses.length > 0) {
-    for (let verseIndex = 0; verseIndex < verses.length; verseIndex++) {
-      const verse = verses[verseIndex];
+  if (verses.length > 0) {
+    verses.forEach((verse, verseIndex) => {
+      verse.forEach((line, lineIndex) => {
+        let verseNumber = lineIndex === 0 ? verseIndex + 1 : "";
+        let arabicNumber = verseNumber
+          ? new Intl.NumberFormat("ar-EG").format(verseNumber)
+          : "";
 
-      for (let lineIndex = 0; lineIndex < verse.length; lineIndex++) {
-        const line = verse[lineIndex];
-
-        // add verse number for the first line in a verse
-        let verseNumber = "";
-        let arabicNumber = "";
-        if (lineIndex == 0) {
-          verseNumber = verseIndex + 1;
-          arabicNumber = new Intl.NumberFormat("ar-EG").format(verseNumber);
-        }
-        html += `<div class="verse slide" data-verseNumber="${verseNumber}">
-            <span class="verseNumber">${arabicNumber}</span>
-            <div>
-            ${replaceLineBreaks(line)}
-            </div>
-            </div>`;
-      }
+        let div = document.createElement("div");
+        div.classList.add("verse", "slide");
+        div.dataset.verseNumber = verseNumber;
+        div.innerHTML = `<span class="verseNumber">${arabicNumber}</span><div>${replaceLineBreaks(
+          line
+        )}</div>`;
+        slides.push(div);
+      });
 
       if (chorus && chorus.length > 0) {
-        for (let chorusIndex = 0; chorusIndex < chorus.length; chorusIndex++) {
-          const chorusLine = chorus[chorusIndex];
-          let chorusSymbol = "";
-          if (chorusIndex == 0) {
-            chorusSymbol = "ق";
-          }
-          html += `<div class="chorus slide" data-verseNumber="${
-            verseIndex + 1
-          }">
-            <span class="chorusSymbol">${chorusSymbol}</span>
-            ${replaceLineBreaks(chorusLine)}
-            </div>`;
-        }
+        chorus.forEach((chorusLine, chorusIndex) => {
+          let chorusSymbol = chorusIndex === 0 ? "ق" : "";
+
+          let div = document.createElement("div");
+          div.classList.add("chorus", "slide");
+          div.dataset.verseNumber = verseIndex + 1;
+          div.innerHTML = `<span class="chorusSymbol">${chorusSymbol}</span> ${replaceLineBreaks(
+            chorusLine
+          )}`;
+          slides.push(div);
+        });
       }
-    }
+    });
   }
 
-  html += `<div class="chorus slide"></div>`;
+  // Animate slides one by one
+  slides.forEach((slide, index) => {
+    slide.style.opacity = "0";
+    slide.style.transform = "translateY(20px)";
+    container.appendChild(slide); // Append to DOM first
 
-  html += `</div>`;
-  return html;
+    setTimeout(() => {
+      slide.style.opacity = "1";
+      slide.style.transform = "translateY(0)";
+    }, index * 100);
+  });
 }

@@ -9,7 +9,7 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
   // console.log(`term: ${term}, songs: ${songsWithSearchableContent}`);
   let songResults = searchSongs(term, songsWithSearchableContent);
   let bibleResults = [];
-  if (term.trim().split(/\s+/).length >= 3) {
+  if (term.trim().split(/\s+/).length >= 2) {
     bibleResults = searchBible(term, bibleVerses);
   }
 
@@ -17,7 +17,7 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
   console.log(`Actual search time: ${searchTime.toFixed(2)} ms`);
   // console.log(`songResults: ${songResults}`);
   // console.log(`bibleResults: ${bibleResults}`);
-  return [...bibleResults, ...songResults];
+  return [...songResults, ...bibleResults];
 }
 
 function performChapterSearch(term, bibleChapters) {

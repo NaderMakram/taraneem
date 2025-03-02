@@ -87,7 +87,12 @@ h2 {
   border-radius: var(--border-radius-1);
   cursor: pointer;
   margin-bottom: 8px;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+}
+
+.song-preview .slide:hover,
+.song-preview .slide.active {
+  background: rgba(149, 157, 165, 0.03);
 }
 
 .song-preview .slide div {
@@ -164,8 +169,8 @@ h2 {
 }
 
 .big {
-  background: rgba(149, 157, 165, 0.05);
-  border: 2px solid var(--gray-1);
+  background: rgba(149, 157, 165, 0.02);
+  /* border: 2px solid var(--gray-1); */
   direction: rtl;
   cursor: pointer;
   padding: 1rem;
@@ -175,23 +180,32 @@ h2 {
   position: relative;
   /* z-index: 10; */
   transition: all 0.2s;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 2px 0px,
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 8px;
   /* overflow: hidden; */
+  transition: all 250ms;
 }
 .big:hover {
-  /* background: var(--gray-2); */
-  box-shadow: rgba(149, 157, 165, 0.25) 0px 9px 24px,
+  box-shadow: rgba(149, 157, 165, 0.15) 0px 9px 15px,
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  background: var(--gray-2);
+}
+.big.selectedSong {
+  background: var(--gray-2);
 }
 
-.big.selectedSong {
-  border: 2px solid var(--primary);
+.big.selectedSong:hover {
+  box-shadow: none;
 }
+.slide-item,
+.slide {
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
 /* .big:after {
   content: "";
   position: absolute;
