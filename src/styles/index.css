@@ -201,10 +201,10 @@ h2 {
 .big.selectedSong:hover {
   box-shadow: none;
 }
-.slide-item,
+/* .slide-item,
 .slide {
   transition: opacity 200ms ease-out, transform 200ms ease-out;
-}
+} */
 
 /* .big:after {
   content: "";

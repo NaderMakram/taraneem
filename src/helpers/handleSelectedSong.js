@@ -261,6 +261,7 @@ export function selectSongEventFunction(e) {
       );
     }
     displayWaitingList(waiting);
+    console.log(waiting);
     return;
   }
 
@@ -309,7 +310,7 @@ export function selectSongEventFunction(e) {
       console.log(res);
       if (clickedSong.parentNode.parentNode.id == "search_output") {
         targetedSong = res.find((song) => song.custom_ref == ref);
-      } else if (clickedSong.parentNode.parentNode.id == "waiting_output") {
+      } else if (clickedSong.parentNode.id == "waiting_output") {
         targetedSong = waiting.find((song) => song.custom_ref == ref);
       }
       if (!clickedPlus) {
