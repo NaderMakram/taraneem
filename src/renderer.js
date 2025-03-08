@@ -78,8 +78,8 @@ const previewSiblingChapter = async function (event) {
   if (activeSong) {
     activeSong.classList.remove("selectedSong");
   }
-  document.querySelector("#preview_output").innerHTML =
-    previewSelectedChapter(siblingChapter);
+
+  previewSelectedChapter(siblingChapter);
 };
 
 prevChapterBtn.addEventListener("click", (event) => {
