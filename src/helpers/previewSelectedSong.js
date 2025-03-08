@@ -1,5 +1,4 @@
 export function previewSelectedChapter(chapter) {
-  console.log(`chapter: ${chapter}`);
   let {
     chapter_en,
     chapter_book,
@@ -9,7 +8,6 @@ export function previewSelectedChapter(chapter) {
     prevShort,
     prevNum,
     nextShort,
-    chapter_name,
     nextNum,
     custom_ref,
   } = chapter;
@@ -24,49 +22,70 @@ export function previewSelectedChapter(chapter) {
   prevChapterBtn.innerHTML = `${prevShort}<br/>${prevNum}`;
   nextChapterBtn.innerHTML = `${nextShort}<br/>${nextNum}`;
 
-  // window.myCustomAPI.getSiblingChapters(siblings)
-  // console.log(siblings)
+  // Clear previous content
+  preview_output.innerHTML = "";
 
-  let html = `<div class="song-title" data-ref="${custom_ref}">
-  <h4>${chapter_book + "  " + chapter_number_ar}</h4>
-  <div class="verse-info">
-  <span class="total-verse">${
-    Object.keys(verses).filter((key) => key !== "0").length
-  }</span>
-  <span>/</span>
-  <span class="current-verse"></span>
-  </div>
-  </div>`;
+  // Create and append the song title immediately (no animation)
+  let titleDiv = document.createElement("div");
+  titleDiv.classList.add("song-title");
+  titleDiv.dataset.ref = custom_ref;
+  titleDiv.innerHTML = `
+    <h4>${chapter_book} ${chapter_number_ar}</h4>
+    <div class="verse-info">
+      <span class="total-verse">${
+        Object.keys(verses).filter((key) => key !== "0").length
+      }</span>
+      <span>/</span>
+      <span class="current-verse"></span>
+    </div>
+  `;
+  preview_output.appendChild(titleDiv);
 
-  html += `<h4 class="chapter-title-en" style="display: none;">${chapter_en}</h4>`;
-  html += `<div class="song-preview">`;
-  // console.log(verses);
+  // Create and append the chapter title (hidden by default)
+  let chapterTitleEn = document.createElement("h4");
+  chapterTitleEn.classList.add("chapter-title-en");
+  chapterTitleEn.style.display = "none";
+  chapterTitleEn.textContent = chapter_en;
+  preview_output.appendChild(chapterTitleEn);
 
+  // Create and append the container immediately (no animation)
+  let container = document.createElement("div");
+  container.classList.add("song-preview");
+  preview_output.appendChild(container);
+
+  let slides = [];
+
+  // Prepare verse slides without appending them yet
   for (const [key, value] of Object.entries(verses)) {
-    // console.log(`Key: ${key}, Value: ${value}`);
+    let div = document.createElement("div");
+    div.classList.add("bible-verse", "slide");
+    div.dataset.verseNumber = key;
+    div.innerHTML = `
+      <span class="verseNumber">${new Intl.NumberFormat("ar-EG").format(
+        key
+      )}</span>
+      <div>${value}</div>
+    `;
+    slides.push(div);
   }
 
-  for (const [key, value] of Object.entries(verses)) {
-    // console.log(value);
+  // Add an empty slide at the end
+  let emptySlide = document.createElement("div");
+  emptySlide.classList.add("bible-verse", "slide");
+  emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;
+  slides.push(emptySlide);
 
-    // add verse number for the first line in a verse
-    html += `<div class="bible-verse slide" data-verseNumber="${key}">
-            <span class="verseNumber">${new Intl.NumberFormat("ar-EG").format(
-              key
-            )}</span>
-            <div>
-            ${value}
-            </div>
-            </div>`;
-  }
+  // Animate slides one by one
+  slides.forEach((slide, index) => {
+    slide.style.opacity = "0";
+    slide.style.transform = "translateY(20px)";
+    container.appendChild(slide); // Append to DOM first
 
-  // add empty slide
-  html += `<div class="bible-verse slide">
-  <span class="verseNumber"></span>
-  <div></div>
-  </div>`;
-  html += `</div>`;
-  return html;
+    setTimeout(() => {
+      slide.style.opacity = "1";
+      slide.style.transform = "translateY(0)";
+    }, index * 100);
+  });
 }
 
 // preview selected song
@@ -149,6 +168,6 @@ export function previewSelectedSong(song) {
     setTimeout(() => {
       slide.style.opacity = "1";
       slide.style.transform = "translateY(0)";
-    }, index * 100);
+    }, index * 50);
   });
 }

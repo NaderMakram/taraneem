@@ -70,14 +70,14 @@ export function generate_item_html(element, term, truncateLimit = 50) {
     }
 
     // Debug Output
-    console.log("searched book series:", searched_book_series);
-    console.log("Chapter:", searched_chapter);
-    console.log("Verse:", searched_verse);
+    // console.log("searched book series:", searched_book_series);
+    // console.log("Chapter:", searched_chapter);
+    // console.log("Verse:", searched_verse);
 
     let book_series = (chapter_book_short.match(/\d+/) || [null])[0];
     let { chapter_name, chapter_number, verse, verses, custom_ref, score } =
       element;
-    console.log(`book series: ${book_series}`);
+    // console.log(`book series: ${book_series}`);
     // console.log(searched_numbers)
     if (searched_book_series && searched_book_series != book_series) {
       return "";

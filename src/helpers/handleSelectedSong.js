@@ -229,7 +229,10 @@ export function selectSongEventFunction(e) {
     if (deletedDiv) {
       deletedDiv.parentNode.removeChild(deletedDiv);
     }
-    // displayWaitingList(waiting);
+
+    // update localstorage
+
+    displayWaitingList(waiting);
     return;
   }
   if (clickedPlus) {
@@ -290,7 +293,10 @@ export function selectSongEventFunction(e) {
     if (!clickedPlus) {
       clickedSong.classList.add("selectedSong");
     }
+    console.log(`ref: ${ref}`);
+    console.log(`currentSongRef: ${currentSongRef}`);
     if (ref && currentSongRef && ref == currentSongRef) {
+      console.log(`song is in preview `);
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
         // if there is an active element remove it
@@ -344,12 +350,16 @@ export function selectSongEventFunction(e) {
     // if the selected song already is in preview, start showing the first slide
     // if there is verse attribute in the chapter, go to verse slide
     clickedChapter.classList.add("selectedSong");
+    console.log(`chapter ref: ${ref}`);
+    console.log(`currentSongRef: ${currentSongRef}`);
+
     if (ref && currentSongRef && ref == currentSongRef) {
       let targetSlide;
       console.log(typeof verse);
       targetSlide = document.querySelector(
-        `.slide[data-versenumber="${verse ? verse : "1"}"]`
+        `.slide[data-verse-number="${verse ? verse : "1"}"]`
       );
+      console.log(targetSlide);
 
       if (targetSlide) {
         // if there is an active element remove it
@@ -364,13 +374,15 @@ export function selectSongEventFunction(e) {
       // if the selected song is not in preview, add it to preview
     } else {
       let targetedSong;
-      if (clickedChapter.parentNode.id == "search_output") {
+      if (clickedChapter.parentNode.parentNode.id == "search_output") {
         targetedSong = res.find((song) => song.custom_ref == ref);
+        console.log(`in search & targetsong is: ${targetedSong}`);
       } else if (clickedChapter.parentNode.id == "waiting_output") {
         targetedSong = waiting.find((song) => song.custom_ref == ref);
+        console.log(`in waiting & targetsong is: ${targetedSong}`);
       }
       if (!clickedPlus) {
-        preview_output.innerHTML = previewSelectedChapter(targetedSong);
+        previewSelectedChapter(targetedSong);
         newSlide("");
       }
     }

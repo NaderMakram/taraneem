@@ -87,7 +87,8 @@ h2 {
   border-radius: var(--border-radius-1);
   cursor: pointer;
   margin-bottom: 8px;
-  transition: all 0.2s;
+  transition: opacity 200ms ease-out, transform 200ms ease-out,
+    background-color 200ms ease-in-out;
 }
 
 .song-preview .slide:hover,
@@ -179,7 +180,6 @@ h2 {
   text-align: center;
   position: relative;
   /* z-index: 10; */
-  transition: all 0.2s;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 2px 0px,
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
   margin-bottom: 0.5rem;
@@ -187,7 +187,7 @@ h2 {
   flex-direction: column;
   gap: 8px;
   /* overflow: hidden; */
-  transition: all 250ms;
+  transition: background-color 250ms ease, box-shadow 250ms ease;
 }
 .big:hover {
   box-shadow: rgba(149, 157, 165, 0.15) 0px 9px 15px,
@@ -201,10 +201,10 @@ h2 {
 .big.selectedSong:hover {
   box-shadow: none;
 }
-/* .slide-item,
+.slide-item,
 .slide {
   transition: opacity 200ms ease-out, transform 200ms ease-out;
-} */
+}
 
 /* .big:after {
   content: "";
@@ -244,7 +244,7 @@ h2 {
   align-items: center;
   justify-content: center;
   opacity: 0.8;
-  transition: transform 0.2s;
+  transition: transform 200ms;
 }
 .warning {
   opacity: 1;
@@ -373,7 +373,7 @@ button.fontSizeBtn img {
   /* color: transparent; */
   /* text-shadow: 0 0 0 whitesmoke; */
   background-color: var(--gray-hover) !important;
-  border: 1px solid var(--gray-1) !important;
+  /* border: 1px solid var(--gray-1) !important; */
 }
 
 .bold.gray-hover:hover {
@@ -627,11 +627,11 @@ input[type="checkbox"]::before {
   cursor: grab;
   display: block;
   position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 16px;
-  height: 16px;
-  background-image: url(../img/drag.png);
+  top: 0px;
+  right: 0px;
+  width: 12px;
+  height: 12px;
+  background-image: url(../img/drag-4.png);
   background-position: center;
   background-size: auto;
   padding: 12px;
@@ -639,7 +639,6 @@ input[type="checkbox"]::before {
   border: 1px solid transparent;
   transition: all 0.3s;
   opacity: 0;
-  border: 1px solid transparent;
 }
 
 .big:hover .handle {
@@ -653,7 +652,12 @@ input[type="checkbox"]::before {
 }
 
 .sortable-ghost {
-  opacity: 0.3;
+  /* opacity: 0.8; */
+}
+
+.sortable-chosen {
+  background: rgba(221, 221, 221, 0.9);
+  opacity: 1 !important;
 }
 
 #scroll-top {
