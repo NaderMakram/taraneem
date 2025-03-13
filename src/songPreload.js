@@ -43,7 +43,7 @@ function fadeContent(content) {
 
     // Add the fade-in class to initiate the fade-in effect
     contentElement.classList.add("show");
-  }, 150); // Adjust the duration to match the transition duration
+  }, 50); // Adjust the duration to match the transition duration
 }
 
 function adjustFontSizeToFit() {

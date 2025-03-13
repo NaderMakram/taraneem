@@ -17,7 +17,7 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
   console.log(`Actual search time: ${searchTime.toFixed(2)} ms`);
   // console.log(`songResults: ${songResults}`);
   // console.log(`bibleResults: ${bibleResults}`);
-  return [...songResults, ...bibleResults];
+  return [...bibleResults, ...songResults];
 }
 
 function performChapterSearch(term, bibleChapters) {

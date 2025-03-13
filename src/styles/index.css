@@ -221,11 +221,23 @@ h2 {
 }
 
 .big h2 {
-  margin: 0 auto;
+  margin: 0;
   font-size: 1.3rem;
   /* margin-bottom: 1em; */
   max-width: calc(100% - 25px - 1rem);
   /* text-align: center; */
+}
+
+.big .box-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.big img.title-logo {
+  height: 15px;
+  margin-left: 5px;
 }
 
 /* .big > div {

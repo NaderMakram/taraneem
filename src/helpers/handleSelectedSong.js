@@ -43,7 +43,7 @@ function array_move(arr, old_index, new_index) {
 
 let res;
 let waiting = [];
-let storedWaiting = localStorage.getItem("waiting");
+let storedWaiting = localStorage.getItem("waiting_list");
 // console.log(storedWaiting);
 if (storedWaiting && storedWaiting != "undefined") {
   // console.log("local", storedWaiting);
@@ -105,12 +105,32 @@ let generateHTML = (term, results) => {
     return;
   }
 
-  let containsDigit = /\d/.test(term);
+  console.log(res);
   res = results;
 
-  for (let i = 0; i < Math.min(15, res.length); i++) {
+  let filtered_results = results;
+  let containsDigit = /\d/.test(term);
+  if (containsDigit) {
+    // filter bible chapters to the correct chapter
+    filtered_results = res.filter((item) => {
+      // Match chapter and verse
+      term = term.trim();
+      let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
+
+      let searched_chapter;
+      if (match) {
+        searched_chapter = match[1];
+        return searched_chapter == item.chapter_number;
+      }
+    });
+  }
+
+  console.log("filtered results");
+  console.log(filtered_results);
+
+  for (let i = 0; i < Math.min(15, filtered_results.length); i++) {
     let slide = document.createElement("div");
-    slide.innerHTML = generate_item_html(res[i], term);
+    slide.innerHTML = generate_item_html(filtered_results[i], term);
     slide.classList.add("slide-item");
     slide.style.opacity = "0"; // Initially hidden
     slide.style.transform = "translateY(20px)"; // Slightly lower position
@@ -244,12 +264,17 @@ export function selectSongEventFunction(e) {
       ref = clickedChapter.getAttribute("data-ref");
       verse = clickedChapter.getAttribute("data-verse");
     }
-    // console.log(ref);
+    console.log(ref, verse);
     // console.log(res.find((song) => song.custom_ref == ref));
     // console.log(clickedSong);
     let foundItem = res.find((song) => song.custom_ref == ref);
+    console.log(foundItem);
     if (foundItem && !waiting.some((item) => item.custom_ref == ref)) {
-      waiting.push(foundItem);
+      waiting.push({
+        ...foundItem,
+        ...(verse !== undefined && { verse }), // Add 'verse' only if it's defined
+        ...(verse !== undefined && { custom_ref: `verse-${verse}` }), // Add 'verse' only if it's defined
+      });
       createAddedFeedback(
         clickedSong ? clickedSong : clickedChapter,
         "yellowCheck"

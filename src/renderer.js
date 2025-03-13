@@ -141,11 +141,11 @@ fontSizeMinus.addEventListener("click", () => {
 // let waiting = [];
 
 const button = document.getElementById("start-work");
-const worker = new Worker("searchWorker.js");
-worker.addEventListener("message", (event) => {
-  // resultSpan.textContent = event.data;
-  console.log(event.data);
-});
+// const worker = new Worker("searchWorker.js");
+// worker.addEventListener("message", (event) => {
+//   // resultSpan.textContent = event.data;
+//   console.log(event.data);
+// });
 
 // button.addEventListener('click', () => {
 //   worker.postMessage('عند شق الفجر باكر'); // Send a message to the worker
@@ -153,7 +153,7 @@ worker.addEventListener("message", (event) => {
 
 // for testing
 setTimeout(() => {
-  input.value = "تك 3";
+  input.value = "عند شق الفجر";
   // let waitingToggle = document.querySelector("#waiting_mode_input");
 
   // Create a new event

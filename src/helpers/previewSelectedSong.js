@@ -68,7 +68,6 @@ export function previewSelectedChapter(chapter) {
     `;
     slides.push(div);
   }
-
   // Add an empty slide at the end
   let emptySlide = document.createElement("div");
   emptySlide.classList.add("bible-verse", "slide");
@@ -81,10 +80,15 @@ export function previewSelectedChapter(chapter) {
     slide.style.transform = "translateY(20px)";
     container.appendChild(slide); // Append to DOM first
 
+    let time = 100 / (index + 1);
+    // let time = Math.pow(4, index) * 50;
+    // let time = index * 50;
+    // console.log(`time: ${50 * Math.pow(0.95, index)}`);
+
     setTimeout(() => {
       slide.style.opacity = "1";
       slide.style.transform = "translateY(0)";
-    }, index * 100);
+    }, time);
   });
 }
 
@@ -165,9 +169,10 @@ export function previewSelectedSong(song) {
     slide.style.transform = "translateY(20px)";
     container.appendChild(slide); // Append to DOM first
 
+    let time = 100 / (index + 1);
     setTimeout(() => {
       slide.style.opacity = "1";
       slide.style.transform = "translateY(0)";
-    }, index * 50);
+    }, time);
   });
 }

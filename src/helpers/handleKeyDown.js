@@ -65,12 +65,12 @@ export function handleKeyDown(e) {
   if (key === "End") {
     let AllSlides = document.querySelectorAll(".slide");
     let AllEffectiveSlides = document.querySelectorAll(
-      '.verse[data-verseNumber]:not([data-verseNumber=""])'
+      '.verse[data-verse-number]:not([data-verse-number=""])'
     );
     console.log(AllEffectiveSlides);
     if (AllEffectiveSlides.length == 0) {
       AllEffectiveSlides = document.querySelectorAll(
-        '.bible-verse[data-verseNumber]:not([data-verseNumber=""])'
+        '.bible-verse[data-verse-number]:not([data-verse-number=""])'
       );
     }
 
@@ -93,7 +93,7 @@ export function handleKeyDown(e) {
     if (AllSlides.length == 0) {
       AllSlides = document.querySelectorAll(`.bible-verse`);
     }
-    // let AllEffectiveSlides = document.querySelectorAll(`[data-verseNumber]`);
+    // let AllEffectiveSlides = document.querySelectorAll(`[data-verse-number]`);
     if (AllSlides) {
       let firstSlide = AllSlides[0];
       // let elements = document.querySelector(".song-preview").children;
@@ -143,12 +143,11 @@ export function handleKeyDown(e) {
       }
     } else if (slideScreen.textContent.trim() !== "") {
       // Log the content
-      console.log(slideScreen.textContent.trim());
       const numberPressed = parseInt(slideScreen.textContent.trim());
-      // console.log(numberPressed);
+      console.log(numberPressed);
 
       let element = document.querySelector(
-        `[data-verseNumber="${numberPressed}"]`
+        `[data-verse-number="${numberPressed}"]`
       );
       if (element) {
         const elements = document.querySelector(".song-preview").children;
