@@ -3,12 +3,11 @@ const Sortable = require("sortablejs");
 const fs = require("fs");
 const path = require("path");
 
-
 const songsDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 );
 const bibleDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "chapters_only.json"), "utf-8")
+  fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
 
 const prevNextIndices = bibleDB.map((_, index) => ({
@@ -25,13 +24,15 @@ const bibleDBIndexed = bibleDB.map((item, index) => {
     prevNum: bibleDB[prevIndex]?.chapter_number,
     nextShort: bibleDB[nextIndex]?.chapter_book_short,
     nextNum: bibleDB[nextIndex]?.chapter_number,
+    custom_ref: `chapter-${index}`,
   };
 });
 
-const songsWithSearchableContent = songsDB.map((song) => {
+const songsWithSearchableContent = songsDB.map((song, index) => {
   return {
     ...song,
     searchableContent: createSearchableContent(song),
+    custom_ref: `song-${index}`,
   };
 });
 
@@ -62,11 +63,10 @@ ipcRenderer.on("log", (event, message) => {
   console.log(message);
 });
 
-ipcRenderer.on('search-results', (event, results) => {
+ipcRenderer.on("search-results", (event, results) => {
   // Handle search results (e.g., update UI with results)
   console.log(results);
 });
-
 
 ipcRenderer.on("shift-to-slide", (event, message) => {
   console.log("shift the slide", message);
@@ -91,12 +91,12 @@ function createSearchableContent(song) {
     title: title,
     chorus: normalize(chorusText),
     verses: normalize(versesText),
-    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : ''
-  }
+    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : "",
+  };
   // Remove duplicate words
   // const uniqueWords = [...new Set(content.split(" "))];
   // const uniqueContent = uniqueWords.join(" ");
-  return searchableSong
+  return searchableSong;
   // return content;
 }
 

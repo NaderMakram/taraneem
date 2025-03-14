@@ -17,7 +17,7 @@ const scrollToTop = document.querySelector("#scroll-top");
 
 const darkModeToggle = document.querySelector("input#dark_mode_input");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
-const waitingModeToggle = document.querySelector("input#waiting_mode_input");
+// const waitingModeToggle = document.querySelector("input#waiting_mode_input");
 
 // import functions
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
@@ -27,7 +27,7 @@ import { pause } from "./helpers/pause.js";
 //   previewSelectedChapter,
 //   previewSelectedSong,
 // } from "./helpers/previewSelectedThing.js";
-import { generateBibleHTML, generateHTML } from "./helpers/htmlGenerators.js";
+import { generate_item_html } from "./helpers/htmlGenerators.js";
 import {
   selectSongEventFunction,
   debounce,
@@ -78,8 +78,8 @@ const previewSiblingChapter = async function (event) {
   if (activeSong) {
     activeSong.classList.remove("selectedSong");
   }
-  document.querySelector("#preview_output").innerHTML =
-    previewSelectedChapter(siblingChapter);
+
+  previewSelectedChapter(siblingChapter);
 };
 
 prevChapterBtn.addEventListener("click", (event) => {
@@ -119,7 +119,7 @@ fontWeightBtn.addEventListener("click", () => {
 fontSizePlus.addEventListener("click", () => {
   let currentValue = parseInt(fontSizeInput.textContent);
   console.log(currentValue);
-  if (currentValue == 50) return;
+  if (currentValue == 20) return;
   fontSizeInput.textContent = currentValue + 1;
   window.myCustomAPI.updateFontSize(currentValue + 1);
 });
@@ -131,40 +131,40 @@ fontSizeMinus.addEventListener("click", () => {
   window.myCustomAPI.updateFontSize(currentValue - 1);
 });
 
-waitingModeToggle.addEventListener("change", (e) => {
-  // Toggle a class on the body based on checkbox state
-  document.body.classList.toggle("waiting-mode", !e.target.checked);
-  waitingModeToggle.blur();
-});
-waitingModeToggle.click();
+// waitingModeToggle.addEventListener("change", (e) => {
+//   // Toggle a class on the body based on checkbox state
+//   document.body.classList.toggle("waiting-mode", !e.target.checked);
+//   waitingModeToggle.blur();
+// });
+// waitingModeToggle.click();
 
 // let waiting = [];
 
 const button = document.getElementById("start-work");
-const worker = new Worker("searchWorker.js");
-worker.addEventListener("message", (event) => {
-  // resultSpan.textContent = event.data;
-  console.log(event.data);
-});
+// const worker = new Worker("searchWorker.js");
+// worker.addEventListener("message", (event) => {
+//   // resultSpan.textContent = event.data;
+//   console.log(event.data);
+// });
 
 // button.addEventListener('click', () => {
 //   worker.postMessage('عند شق الفجر باكر'); // Send a message to the worker
 // });
 
 // for testing
-// setTimeout(() => {
-//   input.value = "الرب";
-//   let waitingToggle = document.querySelector('#waiting_mode_input')
+setTimeout(() => {
+  input.value = "ام 3 8";
+  // let waitingToggle = document.querySelector("#waiting_mode_input");
 
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
-//   waitingToggle.click()
+  // Create a new event
+  const inputEvent = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
+  // waitingToggle.click();
 
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
+  input.dispatchEvent(inputEvent);
+}, 1000);
 
 // let clickDev = new Event("click", {
 //   bubbles: true,

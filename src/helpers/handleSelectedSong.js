@@ -1,4 +1,4 @@
-import { generateHTML, generateBibleHTML } from "./htmlGenerators.js";
+import { generate_item_html } from "./htmlGenerators.js";
 import {
   previewSelectedSong,
   previewSelectedChapter,
@@ -10,7 +10,6 @@ const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 const siblingChaptersBtns = document.querySelector("#siblingChaptersBtns");
 // const fs = require("fs");
-
 
 let sortableOptions = {
   handle: ".handle",
@@ -44,7 +43,7 @@ function array_move(arr, old_index, new_index) {
 
 let res;
 let waiting = [];
-let storedWaiting = localStorage.getItem("waiting");
+let storedWaiting = localStorage.getItem("waiting_list");
 // console.log(storedWaiting);
 if (storedWaiting && storedWaiting != "undefined") {
   // console.log("local", storedWaiting);
@@ -59,7 +58,6 @@ let delay = 200;
 //   fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
 // );
 
-
 // let loader_HTML = `
 // <div class="content-wrapper">
 // <div class="placeholder big song">
@@ -70,14 +68,14 @@ let delay = 200;
 
 // const worker = new Worker('searchWorker.js');
 let currentWorker; // Store a reference to the current worker
-let startSearchTime
+let startSearchTime;
 export async function searchAndDisplayResults(term) {
   // console.log(search_output.innerHTML == loader_HTML)
   // let containsDigit = /\d/.test(term);
   // if (!containsDigit && search_output.innerHTML != loader_HTML) {
   //   search_output.innerHTML = loader_HTML;
   // }
-  console.log('doing a search >>>>>>>', term);
+  console.log("doing a search >>>>>>>", term);
 
   // Terminate the previous worker if it exists
   if (currentWorker) {
@@ -85,46 +83,67 @@ export async function searchAndDisplayResults(term) {
   }
 
   // Create a new worker instance
-  currentWorker = new Worker('searchWorker.js');
-  currentWorker.addEventListener('message', (event) => {
+  currentWorker = new Worker("searchWorker.js");
+  currentWorker.addEventListener("message", (event) => {
     let { term, results, time } = event.data;
-    console.log('time to travel from worker: ', Date.now() - time)
-    generatHTML(term, results);
+    console.log("time to travel from worker: ", Date.now() - time);
+    generateHTML(term, results);
   });
 
-  currentWorker.postMessage({ term, songsWithSearchableContent: myCustomAPI.songsWithSearchableContent, bibleDBIndexed: myCustomAPI.bibleDBIndexed }); // Send the search term to the worker (corrected typo)
+  currentWorker.postMessage({
+    term,
+    songsWithSearchableContent: myCustomAPI.songsWithSearchableContent,
+    bibleDBIndexed: myCustomAPI.bibleDBIndexed,
+  }); // Send the search term to the worker (corrected typo)
   startSearchTime = Date.now(); // Get start time before worker creation
 }
 
-let generatHTML = (term, results) => {
-  const searchTime = Date.now() - startSearchTime; // Calculate time
-  console.log(`total search time: ${searchTime.toFixed(2)} ms`);
+let generateHTML = (term, results) => {
+  search_output.innerHTML = ""; // Clear previous results
 
-  // console.log('search input', document.querySelector('#title-input').value)
-  if (document.querySelector('#title-input').value.length < 3) {
-    return search_output.innerHTML = ''
+  if (document.querySelector("#title-input").value.length < 3) {
+    return;
   }
+
+  console.log(res);
+  res = results;
+
+  let filtered_results = results;
   let containsDigit = /\d/.test(term);
-  res = results.map(({ item, refIndex }) => {
-    // Add a prefix to the bible results to differentiate them from songs with the same index
-    let modifiedRefIndex = containsDigit ? `b-${refIndex}` : refIndex;
-    // Return the modified object
-    return { item, refIndex: modifiedRefIndex };
-  });
-
-  // console.log(typeof res);
-  // console.log("containsDigit: ", containsDigit);
-
   if (containsDigit) {
-    // display bible
-    search_output.innerHTML = generateBibleHTML(res, term);
-  } else {
-    // display songs
-    search_output.innerHTML = generateHTML(res);
-  }
-  // console.log(res);
+    // filter bible chapters to the correct chapter
+    filtered_results = res.filter((item) => {
+      // Match chapter and verse
+      term = term.trim();
+      let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
 
-}
+      let searched_chapter;
+      if (match) {
+        searched_chapter = match[1];
+        return searched_chapter == item.chapter_number;
+      }
+    });
+  }
+
+  console.log("filtered results");
+  console.log(filtered_results);
+
+  for (let i = 0; i < Math.min(15, filtered_results.length); i++) {
+    let slide = document.createElement("div");
+    slide.innerHTML = generate_item_html(filtered_results[i], term);
+    slide.classList.add("slide-item");
+    slide.style.opacity = "0"; // Initially hidden
+    slide.style.transform = "translateY(20px)"; // Slightly lower position
+
+    search_output.appendChild(slide);
+
+    // Staggered animation
+    setTimeout(() => {
+      slide.style.opacity = "1";
+      slide.style.transform = "translateY(0)";
+    }, i * 50); // Delay each slide by 100ms
+  }
+};
 
 export function debounce(func, delay) {
   let timeoutId;
@@ -187,20 +206,20 @@ let toggleFontSizeInput = (isBible) => {
 };
 
 let createAddedFeedback = (container, feedbackClass) => {
-  const feedbackIcon = document.createElement('div');
+  const feedbackIcon = document.createElement("div");
   feedbackIcon.classList.add(feedbackClass);
 
   // Set feedbackIcon position to match container
-  feedbackIcon.style.position = 'absolute';  // Make feedbackIcon position relative to container
-  feedbackIcon.style.top = '-15px';
-  feedbackIcon.style.left = '6px';
+  feedbackIcon.style.position = "absolute"; // Make feedbackIcon position relative to container
+  feedbackIcon.style.top = "-15px";
+  feedbackIcon.style.left = "6px";
 
   container.appendChild(feedbackIcon);
 
   // Rest of your code for animation and removal remains the same
   requestAnimationFrame(() => {
-    feedbackIcon.style.transform = 'translateY(-50px)';
-    feedbackIcon.style.opacity = '0';
+    feedbackIcon.style.transform = "translateY(-50px)";
+    feedbackIcon.style.opacity = "0";
   });
 
   setTimeout(() => {
@@ -221,7 +240,7 @@ export function selectSongEventFunction(e) {
   if (clickedDelete) {
     let clickedRef = e.target.parentNode.getAttribute("data-ref");
     console.log(clickedRef);
-    waiting = waiting.filter((item) => item.refIndex != clickedRef);
+    waiting = waiting.filter((item) => item.custom_ref != clickedRef);
 
     // remove the deleted song/chapter from the dom
     let deletedDiv = document.querySelector(
@@ -230,33 +249,47 @@ export function selectSongEventFunction(e) {
     if (deletedDiv) {
       deletedDiv.parentNode.removeChild(deletedDiv);
     }
-    // displayWaitingList(waiting);
+
+    // update localstorage
+
+    displayWaitingList(waiting);
     return;
   }
   if (clickedPlus) {
     let ref;
+    let verse;
     if (clickedSong) {
       ref = clickedSong.getAttribute("data-ref");
     } else {
       ref = clickedChapter.getAttribute("data-ref");
+      verse = clickedChapter.getAttribute("data-verse");
     }
-    console.log(ref);
-    // console.log(res.find((song) => song.refIndex == ref));
-    console.log(clickedSong)
-    let foundItem = res.find((song) => song.refIndex == ref);
-    if (foundItem && !waiting.some((item) => item.refIndex == ref)) {
+    console.log(ref, verse);
+    // console.log(res.find((song) => song.custom_ref == ref));
+    // console.log(clickedSong);
+    let foundItem = res.find((song) => song.custom_ref == ref);
+    console.log(foundItem);
+    if (foundItem && !waiting.some((item) => item.custom_ref == ref)) {
       waiting.push({
-        item: foundItem.item,
-        refIndex: foundItem.refIndex,
+        ...foundItem,
+        ...(verse !== undefined && { verse }), // Add 'verse' only if it's defined
+        ...(verse !== undefined && { custom_ref: `verse-${verse}` }), // Add 'verse' only if it's defined
       });
-      createAddedFeedback(clickedSong ? clickedSong : clickedChapter, 'yellowCheck')
+      createAddedFeedback(
+        clickedSong ? clickedSong : clickedChapter,
+        "yellowCheck"
+      );
 
-      console.log(foundItem.refIndex);
+      console.log(foundItem.custom_ref);
       console.log(clickedChapter);
     } else {
-      createAddedFeedback(clickedSong ? clickedSong : clickedChapter, 'rightHand')
+      createAddedFeedback(
+        clickedSong ? clickedSong : clickedChapter,
+        "rightHand"
+      );
     }
     displayWaitingList(waiting);
+    console.log(waiting);
     return;
   }
 
@@ -267,7 +300,9 @@ export function selectSongEventFunction(e) {
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
 
-    // if there is a current song in preview, get it's refIndex
+    console.log(`ref: ${ref}`);
+
+    // if there is a current song in preview, get it's custom_ref
     if (currentSong) {
       currentSongRef = currentSong.getAttribute("data-ref");
     }
@@ -283,7 +318,10 @@ export function selectSongEventFunction(e) {
     if (!clickedPlus) {
       clickedSong.classList.add("selectedSong");
     }
+    console.log(`ref: ${ref}`);
+    console.log(`currentSongRef: ${currentSongRef}`);
     if (ref && currentSongRef && ref == currentSongRef) {
+      console.log(`song is in preview `);
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
         // if there is an active element remove it
@@ -297,27 +335,29 @@ export function selectSongEventFunction(e) {
 
       // if the selected song is not in preview, add it to preview
     } else {
-      let targetedSong;
-      if (clickedSong.parentNode.id == "search_output") {
-        targetedSong = res.find((song) => song.refIndex == ref);
+      console.log("not in preview");
+      console.log(clickedSong.parentNode.id);
+      let targetedSong = null;
+      console.log(res);
+      if (clickedSong.parentNode.parentNode.id == "search_output") {
+        targetedSong = res.find((song) => song.custom_ref == ref);
       } else if (clickedSong.parentNode.id == "waiting_output") {
-        targetedSong = waiting.find((song) => song.refIndex == ref);
+        targetedSong = waiting.find((song) => song.custom_ref == ref);
       }
       if (!clickedPlus) {
-        preview_output.innerHTML = previewSelectedSong(
-          targetedSong.item,
-          targetedSong.refIndex
-        );
+        console.log(`target song: ${targetedSong}`);
+        previewSelectedSong(targetedSong);
         newSlide("");
       }
     }
   } else if (clickedChapter) {
     toggleFontSizeInput(true);
     let ref = clickedChapter.getAttribute("data-ref");
+    let verse = clickedChapter.getAttribute("data-verse");
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
 
-    // if there is a current song in preview, get it's refIndex
+    // if there is a current song in preview, get it's custom_ref
     if (currentSong) {
       currentSongRef = currentSong.getAttribute("data-ref");
     }
@@ -333,32 +373,41 @@ export function selectSongEventFunction(e) {
     }
 
     // if the selected song already is in preview, start showing the first slide
+    // if there is verse attribute in the chapter, go to verse slide
     clickedChapter.classList.add("selectedSong");
+    console.log(`chapter ref: ${ref}`);
+    console.log(`currentSongRef: ${currentSongRef}`);
+
     if (ref && currentSongRef && ref == currentSongRef) {
-      let firstSlide = document.querySelector(".slide");
-      if (firstSlide) {
+      let targetSlide;
+      console.log(typeof verse);
+      targetSlide = document.querySelector(
+        `.slide[data-verse-number="${verse ? verse : "1"}"]`
+      );
+      console.log(targetSlide);
+
+      if (targetSlide) {
         // if there is an active element remove it
         if (document.querySelector(".active")) {
           document.querySelector(".active").classList.remove("active");
         }
-        firstSlide.classList.add("active");
-        newSlide(firstSlide.innerHTML);
+        targetSlide.classList.add("active");
+        newSlide(targetSlide.innerHTML);
       }
       return;
 
       // if the selected song is not in preview, add it to preview
     } else {
       let targetedSong;
-      if (clickedChapter.parentNode.id == "search_output") {
-        targetedSong = res.find((song) => song.refIndex == ref);
+      if (clickedChapter.parentNode.parentNode.id == "search_output") {
+        targetedSong = res.find((song) => song.custom_ref == ref);
+        console.log(`in search & targetsong is: ${targetedSong}`);
       } else if (clickedChapter.parentNode.id == "waiting_output") {
-        targetedSong = waiting.find((song) => song.refIndex == ref);
+        targetedSong = waiting.find((song) => song.custom_ref == ref);
+        console.log(`in waiting & targetsong is: ${targetedSong}`);
       }
       if (!clickedPlus) {
-        preview_output.innerHTML = previewSelectedChapter(
-          targetedSong.item,
-          targetedSong.refIndex
-        );
+        previewSelectedChapter(targetedSong);
         newSlide("");
       }
     }

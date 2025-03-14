@@ -1,13 +1,14 @@
 /* @import url("https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap"); */
 /* @import url("https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400..700&display=swap"); */
-.fake {
+
+/* .fake {
   font-family: MyCalibri;
   font-weight: bold;
   color: transparent;
   height: 0px;
   position: absolute;
-  /* display: none; */
-}
+} */
+
 @font-face {
   font-family: MyTimesNewRoman;
   /* src: url(../fonts/times-new-roman.ttf); */
@@ -53,7 +54,7 @@ body {
   /* background-image: url("../img/clean-gray-paper-40.png"); */
   /* background-image: url("../img/cream-paper.png"); */
   background-repeat: repeat;
-  transition: 0.3s;
+  transition: opacity 0.3s;
 }
 
 body::-webkit-scrollbar {
@@ -107,8 +108,18 @@ body::-webkit-scrollbar {
   line-height: 1em;
   font-size: 3.8vw;
   color: var(--primary);
+
+  display: flex;
+  justify-content: center;
+  gap: 5vw;
+}
+.bible-head .chapter-title-en {
+  display: block !important;
 }
 
+.verse-info {
+  display: none !important;
+}
 .bible-body {
   padding-right: 4vw;
   font-size: 6.9vw;
@@ -126,10 +137,13 @@ body::-webkit-scrollbar {
   font-size: 3.5vw;
   transform: translate(2.2vw, -0.3vw);
 }
-
+body:has(.song-body) {
+  font-size: 7vw;
+}
 .song-body {
   padding-right: 3rem;
-  font-size: 5.6rem;
+  /* font-size: 5.6rem; */
+  /* font-size: 7vw; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,7 +170,7 @@ body::-webkit-scrollbar {
 }
 .fade-in-out {
   opacity: 0;
-  transition: opacity 150ms ease-in-out; /* Adjust the duration and timing function as needed */
+  transition: opacity 150ms ease-in-out;
 }
 
 .fade-in-out.show {
