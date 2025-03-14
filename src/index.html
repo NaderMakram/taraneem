@@ -21,28 +21,19 @@
       <!-- bold font button -->
       <button class="gray-hover" id="bold" title="Bold">Bold</button>
 
-      <!-- font size input -->
-      <!-- <input
-        type="number"
-        id="fontSize"
-        name="fontSize"
-        value="16"
-        min="2"
-        max="50"
-        step="1"
-        title="Font Size"
-      /> -->
+      <!-- font size -->
+    
       <div id="fontSizeContainer">
-        <div id="fontSize" title="Font Size">16</div>
-        <div id="fontSizeButtons">
-          <button class="gray-hover" id="fontSizePlus">
-            <img src="./img/plus_yellow.png" />
-          </button>
-          <button class="gray-hover" id="fontSizeMinus">
-            <img src="./img/minus_yellow.png" />
-          </button>
-        </div>
+        <button class="gray-hover fontSizeBtn" id="fontSizeMinus">
+          <img src="./img/minus-bold.png" />
+        </button>
+        <div id="fontSize" title="Font Size">7</div>
+        <button class="gray-hover fontSizeBtn" id="fontSizePlus">
+          <img src="./img/plus-bold.png" />
+        </button>
       </div>
+
+      <!-- deep mode (deprecated) -->
       <input type="checkbox" id="deep_mode_input" name="deep" />
       <label
         for="deep_mode_input"
@@ -50,19 +41,7 @@
         name="deep"
         title="Fast/Slow Mode"
       ></label>
-      <!-- new test for font size -->
-      <!-- <div id="fontSizeContainer">
-        <p id="fontSizeNumber">65</p>
-        <div id="fontSizeButtons">
-          <button id="fontSizeUp">+</button>
-          <button id="fontSizeDown">-</button>
-        </div>
-      </div> -->
-      <!-- dark mode switch -->
-      <!-- <input type="checkbox" id="dark_mode_input" /> -->
-      <!-- <label for="dark_mode_input" title="Dark Mode" id="dark_mode_label"
-        >Toggle</label
-        > -->
+    
 
       <!-- dark mode switch #2 -->
       <label
@@ -76,8 +55,8 @@
         <span class="switch-handle"></span>
       </label>
 
-      <!-- waiting toggle -->
-      <div id="list-toggle-group">
+      <!-- waiting toggle (deprecated) -->
+      <!-- <div id="list-toggle-group">
         <img src="./img/list.png" />
         <input
           class="gray-hover"
@@ -85,7 +64,7 @@
           title="List Mode"
           id="waiting_mode_input"
         />
-      </div>
+      </div> -->
 
       <!-- extend song window -->
       <button
@@ -95,6 +74,10 @@
       >
         <img src="./img/extend.png" />
       </button>
+
+      <!-- verse switch screen -->
+      <div id="slide-screen"></div>
+
     </div>
 
     <!-- sibling chapters -->
@@ -105,21 +88,103 @@
 
     <div id="main-wrapper">
       <div id="search-wrapper">
-        <h2>البحث</h2>
-        <input id="title-input" autocomplete="on" />
-        <div id="search_output"></div>
+        <!-- <h2>البحث</h2> -->
+        <input
+          id="title-input"
+          autocomplete="on"
+          placeholder="أبحث عن ترنيمة أو شاهد كتابي"
+        />
+        <div id="search_output">
+          <!-- start testing songs -->
+
+          <div class="note big bold">
+            لو بتدور في الكتاب المقدس</br>
+            اكتب الشاهد بالاختصار ورقم الأصحاح فقط</br>
+            تك 3</br>
+            1 صم 12</br>
+            <img src="./img/warning.png" class="warning icon" alt="plus">
+          </div>
+
+          
+          
+          <div class="big song" data-ref="206">
+            <h2>باركوا الرب</h2>
+            <div class="chorus">
+              (ق) يباركك الرب من صهيون الصانع السموات والارض
+            </div>
+            <div class="verses">
+              1- باركوا الرب يا جميع عبيد الرب الواقفين في بيت الر…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+          <div class="big song" data-ref="5031">
+            <h2>فرحا افرح بالرب بهجة فرحي</h2>
+            <div class="chorus">(ق) (فرحًا أفرح بالربٍ)2</div>
+            <div class="verses">
+              1- فرحًا أفرح بالربٍ بهجة فرحى إلهى ثياب خلاص البسنى…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+
+          <!-- end testing -->
+        </div>
       </div>
       <div id="waiting-wrapper" class="hide">
-        <h2>قائمة التحضير</h2>
-        <div id="waiting_output"></div>
+        <h2>قائمتي</h2>
+        <div id="waiting_output">
+          <!-- start testing songs -->
+
+          <div class="big song" data-ref="206">
+            <h2>باركوا الرب</h2>
+            <div class="chorus">
+              (ق) يباركك الرب من صهيون الصانع السموات والارض
+            </div>
+            <div class="verses">
+              1- باركوا الرب يا جميع عبيد الرب الواقفين في بيت الر…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+          <div class="big song" data-ref="5031">
+            <h2>فرحا افرح بالرب بهجة فرحي</h2>
+            <div class="chorus">(ق) (فرحًا أفرح بالربٍ)2</div>
+            <div class="verses">
+              1- فرحًا أفرح بالربٍ بهجة فرحى إلهى ثياب خلاص البسنى…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+
+          <!-- end testing -->
+        </div>
       </div>
       <div id="preview-wrapper">
-        <h2>قائمة العرض</h2>
-        <div id="preview_output"></div>
+        <!-- <h2>قائمة العرض</h2> -->
+        <div id="preview_output">
+          <!-- start testing songs -->
+
+          <div class="big song" data-ref="206">
+            <h2>باركوا الرب</h2>
+            <div class="chorus">
+              (ق) يباركك الرب من صهيون الصانع السموات والارض
+            </div>
+            <div class="verses">
+              1- باركوا الرب يا جميع عبيد الرب الواقفين في بيت الر…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+          <div class="big song" data-ref="5031">
+            <h2>فرحا افرح بالرب بهجة فرحي</h2>
+            <div class="chorus">(ق) (فرحًا أفرح بالربٍ)2</div>
+            <div class="verses">
+              1- فرحًا أفرح بالربٍ بهجة فرحى إلهى ثياب خلاص البسنى…
+            </div>
+            <img src="./img/plus.svg" class="plus hide" alt="plus" />
+          </div>
+
+          <!-- end testing -->
+        </div>
       </div>
     </div>
 
-    <div id="slide-screen"></div>
     <div id="scroll-top" class="ripple">
       <img src="./img/up.png" />
     </div>

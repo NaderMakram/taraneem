@@ -1,8 +1,8 @@
-export function previewSelectedChapter(
-  {
-    chapter_name,
+export function previewSelectedChapter(chapter) {
+  let {
     chapter_en,
     chapter_book,
+    chapter_book_short,
     chapter_number,
     verses,
     siblings,
@@ -10,112 +10,179 @@ export function previewSelectedChapter(
     prevNum,
     nextShort,
     nextNum,
-  },
-  refIndex
-) {
+    custom_ref,
+  } = chapter;
   let chapter_number_ar = new Intl.NumberFormat("ar-EG").format(chapter_number);
 
   const prevChapterBtn = document.querySelector("#prevChapter");
   const nextChapterBtn = document.querySelector("#nextChapter");
 
-  prevChapterBtn.setAttribute("data-chapterIndex", siblings[0]);
-  nextChapterBtn.setAttribute("data-chapterIndex", siblings[1]);
-
-  prevChapterBtn.innerHTML = `${prevShort}<br/>${prevNum}`;
-  nextChapterBtn.innerHTML = `${nextShort}<br/>${nextNum}`;
-
-  // window.myCustomAPI.getSiblingChapters(siblings)
-  // console.log(siblings)
-
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${
-    chapter_book + "  " + chapter_number_ar + "    |    " + chapter_en
-  }</h4>`;
-  html += `<div class="song-preview">`;
-  // console.log(verses);
-
-  for (const [key, value] of Object.entries(verses)) {
-    // console.log(`Key: ${key}, Value: ${value}`);
+  if (chapter_book_short == prevShort) {
+    prevChapterBtn.setAttribute("data-chapterIndex", siblings[0]);
+    prevChapterBtn.innerHTML = prevNum;
+    prevChapterBtn.style.display = "block";
+  } else {
+    prevChapterBtn.style.display = "none";
+  }
+  if (chapter_book_short == nextShort) {
+    nextChapterBtn.setAttribute("data-chapterIndex", siblings[1]);
+    nextChapterBtn.innerHTML = nextNum;
+    nextChapterBtn.style.display = "block";
+  } else {
+    nextChapterBtn.style.display = "none";
   }
 
+  // Clear previous content
+  preview_output.innerHTML = "";
+
+  // Create and append the song title immediately (no animation)
+  let titleDiv = document.createElement("div");
+  titleDiv.classList.add("song-title");
+  titleDiv.dataset.ref = custom_ref;
+  titleDiv.innerHTML = `
+    <h4>${chapter_book} ${chapter_number_ar}</h4>
+    <div class="verse-info">
+      <span class="total-verse">${
+        Object.keys(verses).filter((key) => key !== "0").length
+      }</span>
+      <span>/</span>
+      <span class="current-verse"></span>
+    </div>
+  `;
+  preview_output.appendChild(titleDiv);
+
+  // Create and append the chapter title (hidden by default)
+  let chapterTitleEn = document.createElement("h4");
+  chapterTitleEn.classList.add("chapter-title-en");
+  chapterTitleEn.style.display = "none";
+  chapterTitleEn.textContent = chapter_en;
+  preview_output.appendChild(chapterTitleEn);
+
+  // Create and append the container immediately (no animation)
+  let container = document.createElement("div");
+  container.classList.add("song-preview");
+  preview_output.appendChild(container);
+
+  let slides = [];
+
+  // Prepare verse slides without appending them yet
   for (const [key, value] of Object.entries(verses)) {
-    // console.log(value);
-
-    // add verse number for the first line in a verse
-    html += `<div class="bible-verse slide" data-verseNumber="${key}">
-            <span class="verseNumber">${
-              key == 0 ? "" : new Intl.NumberFormat("ar-EG").format(key)
-            }</span>
-            <div>
-            ${value.replace(/\n/g, "<br>")}
-            </div>
-          </div>`;
+    let div = document.createElement("div");
+    div.classList.add("bible-verse", "slide");
+    div.dataset.verseNumber = key;
+    div.innerHTML = `
+      <span class="verseNumber">${new Intl.NumberFormat("ar-EG").format(
+        key
+      )}</span>
+      <div>${value}</div>
+    `;
+    slides.push(div);
   }
+  // Add an empty slide at the end
+  let emptySlide = document.createElement("div");
+  emptySlide.classList.add("bible-verse", "slide");
+  emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;
+  slides.push(emptySlide);
 
-  // add empty slide
-  html += `<div class="bible-verse slide">
-  <span class="verseNumber"></span>
-  <div></div>
-  </div>`;
-  html += `</div>`;
-  return html;
+  // Animate slides one by one
+  slides.forEach((slide, index) => {
+    slide.style.opacity = "0";
+    slide.style.transform = "translateY(20px)";
+    container.appendChild(slide); // Append to DOM first
+
+    let time = 100 / (index + 1);
+    // let time = Math.pow(4, index) * 50;
+    // let time = index * 50;
+    // console.log(`time: ${50 * Math.pow(0.95, index)}`);
+
+    setTimeout(() => {
+      slide.style.opacity = "1";
+      slide.style.transform = "translateY(0)";
+    }, time);
+  });
 }
 
 // preview selected song
-export function previewSelectedSong(
-  { title, chorus, verses, chorusFirst, scale },
-  refIndex
-) {
-  let html = `<h4 class="song-title" data-ref="${refIndex}">${title}</h4>`;
-  html += `<h5 class="song-info">scale: ${scale ? scale : "??"}</h5>`;
-  html += `<div class="song-preview">`;
-  const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
+export function previewSelectedSong(song) {
+  console.log(song);
+  let { title, chorus, verses, chorusFirst, custom_ref } = song;
+  // Clear previous content
+  preview_output.innerHTML = "";
 
-  if ((chorusFirst && chorus && chorus.length > 0) || verses.length == 0) {
+  // Create and append the song title immediately (no animation)
+  let titleDiv = document.createElement("div");
+  titleDiv.classList.add("song-title");
+  titleDiv.dataset.ref = custom_ref;
+  titleDiv.innerHTML = `
+    <h4>${title}</h4>
+    <div class="verse-info">
+      <span class="total-verse">${verses.length}/</span>
+      <span class="current-verse"></span>
+    </div>
+  `;
+  preview_output.appendChild(titleDiv);
+
+  // Create and append the container immediately (no animation)
+  let container = document.createElement("div");
+  container.classList.add("song-preview");
+  preview_output.appendChild(container);
+
+  const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
+  let slides = [];
+
+  // Prepare slides without appending them yet
+  if ((chorusFirst && chorus.length > 0) || verses.length === 0) {
     chorus.forEach((line) => {
-      html += `<div class="chorus slide">${replaceLineBreaks(line)}</div>`;
+      let div = document.createElement("div");
+      div.classList.add("chorus", "slide");
+      div.innerHTML = replaceLineBreaks(line);
+      slides.push(div);
     });
   }
 
-  if (verses && verses.length > 0) {
-    for (let verseIndex = 0; verseIndex < verses.length; verseIndex++) {
-      const verse = verses[verseIndex];
+  if (verses.length > 0) {
+    verses.forEach((verse, verseIndex) => {
+      verse.forEach((line, lineIndex) => {
+        let verseNumber = lineIndex === 0 ? verseIndex + 1 : "";
+        let arabicNumber = verseNumber
+          ? new Intl.NumberFormat("ar-EG").format(verseNumber)
+          : "";
 
-      for (let lineIndex = 0; lineIndex < verse.length; lineIndex++) {
-        const line = verse[lineIndex];
-
-        // add verse number for the first line in a verse
-        let verseNumber = "";
-        let arabicNumber = "";
-        if (lineIndex == 0) {
-          verseNumber = verseIndex + 1;
-          arabicNumber = new Intl.NumberFormat("ar-EG").format(verseNumber);
-        }
-        html += `<div class="verse slide" data-verseNumber="${verseNumber}">
-            <span class="verseNumber">${arabicNumber}</span>
-            <div>
-            ${replaceLineBreaks(line)}
-            </div>
-            </div>`;
-      }
+        let div = document.createElement("div");
+        div.classList.add("verse", "slide");
+        div.dataset.verseNumber = verseNumber;
+        div.innerHTML = `<span class="verseNumber">${arabicNumber}</span><div>${replaceLineBreaks(
+          line
+        )}</div>`;
+        slides.push(div);
+      });
 
       if (chorus && chorus.length > 0) {
-        for (let chorusIndex = 0; chorusIndex < chorus.length; chorusIndex++) {
-          const chorusLine = chorus[chorusIndex];
-          let chorusSymbol = "";
-          if (chorusIndex == 0) {
-            chorusSymbol = "ق";
-          }
-          html += `<div class="chorus slide">
-            <span class="chorusSymbol">${chorusSymbol}</span>
-            ${replaceLineBreaks(chorusLine)}
-            </div>`;
-        }
+        chorus.forEach((chorusLine, chorusIndex) => {
+          let chorusSymbol = chorusIndex === 0 ? "ق" : "";
+
+          let div = document.createElement("div");
+          div.classList.add("chorus", "slide");
+          div.dataset.verseNumber = verseIndex + 1;
+          div.innerHTML = `<span class="chorusSymbol">${chorusSymbol}</span> ${replaceLineBreaks(
+            chorusLine
+          )}`;
+          slides.push(div);
+        });
       }
-    }
+    });
   }
 
-  html += `<div class="chorus slide"></div>`;
+  // Animate slides one by one
+  slides.forEach((slide, index) => {
+    slide.style.opacity = "0";
+    slide.style.transform = "translateY(20px)";
+    container.appendChild(slide); // Append to DOM first
 
-  html += `</div>`;
-  return html;
+    let time = 100 / (index + 1);
+    setTimeout(() => {
+      slide.style.opacity = "1";
+      slide.style.transform = "translateY(0)";
+    }, time);
+  });
 }
