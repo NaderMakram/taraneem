@@ -153,7 +153,7 @@ const button = document.getElementById("start-work");
 
 // for testing
 setTimeout(() => {
-  input.value = "عند شق الفجر";
+  input.value = "ام 3 8";
   // let waitingToggle = document.querySelector("#waiting_mode_input");
 
   // Create a new event

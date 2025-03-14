@@ -2,6 +2,7 @@ export function previewSelectedChapter(chapter) {
   let {
     chapter_en,
     chapter_book,
+    chapter_book_short,
     chapter_number,
     verses,
     siblings,
@@ -16,11 +17,20 @@ export function previewSelectedChapter(chapter) {
   const prevChapterBtn = document.querySelector("#prevChapter");
   const nextChapterBtn = document.querySelector("#nextChapter");
 
-  prevChapterBtn.setAttribute("data-chapterIndex", siblings[0]);
-  nextChapterBtn.setAttribute("data-chapterIndex", siblings[1]);
-
-  prevChapterBtn.innerHTML = `${prevShort}<br/>${prevNum}`;
-  nextChapterBtn.innerHTML = `${nextShort}<br/>${nextNum}`;
+  if (chapter_book_short == prevShort) {
+    prevChapterBtn.setAttribute("data-chapterIndex", siblings[0]);
+    prevChapterBtn.innerHTML = prevNum;
+    prevChapterBtn.style.display = "block";
+  } else {
+    prevChapterBtn.style.display = "none";
+  }
+  if (chapter_book_short == nextShort) {
+    nextChapterBtn.setAttribute("data-chapterIndex", siblings[1]);
+    nextChapterBtn.innerHTML = nextNum;
+    nextChapterBtn.style.display = "block";
+  } else {
+    nextChapterBtn.style.display = "none";
+  }
 
   // Clear previous content
   preview_output.innerHTML = "";
@@ -95,7 +105,7 @@ export function previewSelectedChapter(chapter) {
 // preview selected song
 export function previewSelectedSong(song) {
   console.log(song);
-  let { title, chorus, verses, chorusFirst, scale, custom_ref } = song;
+  let { title, chorus, verses, chorusFirst, custom_ref } = song;
   // Clear previous content
   preview_output.innerHTML = "";
 

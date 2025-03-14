@@ -614,6 +614,10 @@ input[type="checkbox"]::before {
 }
 #siblingChaptersBtns #prevChapter:hover {
   transform: translateY(-3px);
+  border-color: #a0a0a0;
+  box-shadow: rgba(149, 157, 165, 0.15) 0px 9px 15px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  background: var(--gray-2);
 }
 
 #siblingChaptersBtns #nextChapter {
@@ -623,6 +627,10 @@ input[type="checkbox"]::before {
 }
 #siblingChaptersBtns #nextChapter:hover {
   transform: translateY(3px);
+  border-color: #a0a0a0;
+  box-shadow: rgba(149, 157, 165, 0.15) 0px 9px 15px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  background: var(--gray-2);
 }
 
 #siblingChaptersBtns button:hover {
@@ -661,10 +669,6 @@ input[type="checkbox"]::before {
   border: 1px solid rgb(185, 185, 185);
   border-radius: var(--border-radius-1);
   opacity: 0.8;
-}
-
-.sortable-ghost {
-  /* opacity: 0.8; */
 }
 
 .sortable-chosen {

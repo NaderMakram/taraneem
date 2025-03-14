@@ -9,7 +9,7 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
   // console.log(`term: ${term}, songs: ${songsWithSearchableContent}`);
   let songResults = searchSongs(term, songsWithSearchableContent);
   let bibleResults = [];
-  if (term.trim().split(/\s+/).length >= 2) {
+  if (term.trim().split(/\s+/).length >= 3) {
     bibleResults = searchBible(term, bibleVerses);
   }
 
@@ -38,14 +38,16 @@ function performChapterSearch(term, bibleChapters) {
         matchedText = chapter_book_short.substring(index, index + term.length);
       }
 
-      // Check chapter book long (normalized)
-      index = chapter_book_normalized.indexOf(term);
-      if (index !== -1) {
-        score += 5;
-        matchedKey = matchedKey || "chapter_book_normalized"; // Keep first match priority
-        matchedText =
-          matchedText ||
-          chapter_book_normalized.substring(index, index + term.length);
+      // Check chapter book long (normalized) only if term is longer than 3 charachters
+      if (term.length >= 3) {
+        index = chapter_book_normalized.indexOf(term);
+        if (index !== -1) {
+          score += 5;
+          matchedKey = matchedKey || "chapter_book_normalized"; // Keep first match priority
+          matchedText =
+            matchedText ||
+            chapter_book_normalized.substring(index, index + term.length);
+        }
       }
 
       return { ...chapter, score, matchedKey, matchedText };
@@ -258,7 +260,7 @@ self.addEventListener("message", async (event) => {
 
       const deepFuseTime = Date.now() - startDeepFuseTime; // Calculate time
       console.log(
-        `time to create deep & fast fuse: ${deepFuseTime.toFixed(2)} ms`
+        `time to create flat flat map: ${deepFuseTime.toFixed(2)} ms`
       );
       results = performSearch(
         normalize(searchTerm),

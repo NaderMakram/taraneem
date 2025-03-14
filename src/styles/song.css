@@ -170,7 +170,7 @@ body:has(.song-body) {
 }
 .fade-in-out {
   opacity: 0;
-  transition: opacity 150ms ease-in-out; /* Adjust the duration and timing function as needed */
+  transition: opacity 150ms ease-in-out;
 }
 
 .fade-in-out.show {

@@ -9,22 +9,22 @@ export function newSlide(html) {
   const activeElement = document.querySelector(".active");
 
   if (activeElement) {
-    // Check if .active has a non-empty data-versenumber
-    let targetElement = activeElement.getAttribute("data-versenumber")
+    // Check if .active has a non-empty data-verse-number
+    let targetElement = activeElement.getAttribute("data-verse-number")
       ? activeElement
-      : activeElement.previousElementSibling?.closest("[data-versenumber]");
+      : activeElement.previousElementSibling?.closest("[data-verse-number]");
 
     if (targetElement) {
-      const verseNumber = targetElement.getAttribute("data-versenumber");
+      const verseNumber = targetElement.getAttribute("data-verse-number");
 
       if (verseNumber) {
         document.querySelector(".current-verse").textContent = verseNumber;
         document.querySelector(".verse-info").classList.add("active-info");
       } else {
-        console.log("Found an element, but data-versenumber is empty.");
+        console.log("Found an element, but data-verse-number is empty.");
       }
     } else {
-      console.log("No previous element with data-versenumber found.");
+      console.log("No previous element with data-verse-number found.");
     }
   }
   ///////////////////////  //
