@@ -54,7 +54,7 @@ body {
   /* background-image: url("../img/clean-gray-paper-40.png"); */
   /* background-image: url("../img/cream-paper.png"); */
   background-repeat: repeat;
-  transition: 0.3s;
+  transition: opacity 0.3s;
 }
 
 body::-webkit-scrollbar {
