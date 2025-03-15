@@ -51,7 +51,7 @@ if (storedWaiting && storedWaiting != "undefined") {
   displayWaitingList(waiting);
   // displayWaitingList(waiting)
 }
-console.log("waiting", waiting);
+// console.log("waiting", waiting);
 let delay = 200;
 
 // const songsDB = JSON.parse(
@@ -68,14 +68,8 @@ let delay = 200;
 
 // const worker = new Worker('searchWorker.js');
 let currentWorker; // Store a reference to the current worker
-let startSearchTime;
 export async function searchAndDisplayResults(term) {
-  // console.log(search_output.innerHTML == loader_HTML)
-  // let containsDigit = /\d/.test(term);
-  // if (!containsDigit && search_output.innerHTML != loader_HTML) {
-  //   search_output.innerHTML = loader_HTML;
-  // }
-  console.log("doing a search >>>>>>>", term);
+  console.time("Search Execution Time");
 
   // Terminate the previous worker if it exists
   if (currentWorker) {
@@ -85,8 +79,7 @@ export async function searchAndDisplayResults(term) {
   // Create a new worker instance
   currentWorker = new Worker("searchWorker.js");
   currentWorker.addEventListener("message", (event) => {
-    let { term, results, time } = event.data;
-    console.log("time to travel from worker: ", Date.now() - time);
+    let { term, results } = event.data;
     generateHTML(term, results);
   });
 
@@ -94,8 +87,8 @@ export async function searchAndDisplayResults(term) {
     term,
     songsWithSearchableContent: myCustomAPI.songsWithSearchableContent,
     bibleDBIndexed: myCustomAPI.bibleDBIndexed,
-  }); // Send the search term to the worker (corrected typo)
-  startSearchTime = Date.now(); // Get start time before worker creation
+    bibleVerses: myCustomAPI.bibleVerses,
+  });
 }
 
 let generateHTML = (term, results) => {
@@ -105,7 +98,6 @@ let generateHTML = (term, results) => {
     return;
   }
 
-  console.log(res);
   res = results;
 
   let filtered_results = results;
@@ -125,8 +117,8 @@ let generateHTML = (term, results) => {
     });
   }
 
-  console.log("filtered results");
-  console.log(filtered_results);
+  // console.log("filtered results");
+  // console.log(filtered_results);
 
   for (let i = 0; i < Math.min(15, filtered_results.length); i++) {
     let slide = document.createElement("div");
@@ -239,7 +231,7 @@ export function selectSongEventFunction(e) {
 
   if (clickedDelete) {
     let clickedRef = e.target.parentNode.getAttribute("data-ref");
-    console.log(clickedRef);
+    // console.log(clickedRef);
     waiting = waiting.filter((item) => item.custom_ref != clickedRef);
 
     // remove the deleted song/chapter from the dom
@@ -264,11 +256,11 @@ export function selectSongEventFunction(e) {
       ref = clickedChapter.getAttribute("data-ref");
       verse = clickedChapter.getAttribute("data-verse");
     }
-    console.log(ref, verse);
+    // console.log(ref, verse);
     // console.log(res.find((song) => song.custom_ref == ref));
     // console.log(clickedSong);
     let foundItem = res.find((song) => song.custom_ref == ref);
-    console.log(foundItem);
+    // console.log(foundItem);
     if (foundItem && !waiting.some((item) => item.custom_ref == ref)) {
       waiting.push({
         ...foundItem,
@@ -280,8 +272,8 @@ export function selectSongEventFunction(e) {
         "yellowCheck"
       );
 
-      console.log(foundItem.custom_ref);
-      console.log(clickedChapter);
+      // console.log(foundItem.custom_ref);
+      // console.log(clickedChapter);
     } else {
       createAddedFeedback(
         clickedSong ? clickedSong : clickedChapter,
@@ -289,7 +281,7 @@ export function selectSongEventFunction(e) {
       );
     }
     displayWaitingList(waiting);
-    console.log(waiting);
+    // console.log(waiting);
     return;
   }
 
@@ -300,7 +292,7 @@ export function selectSongEventFunction(e) {
     let currentSong = document.querySelector("#preview_output .song-title");
     let currentSongRef = 0;
 
-    console.log(`ref: ${ref}`);
+    // console.log(`ref: ${ref}`);
 
     // if there is a current song in preview, get it's custom_ref
     if (currentSong) {
@@ -318,10 +310,10 @@ export function selectSongEventFunction(e) {
     if (!clickedPlus) {
       clickedSong.classList.add("selectedSong");
     }
-    console.log(`ref: ${ref}`);
-    console.log(`currentSongRef: ${currentSongRef}`);
+    // console.log(`ref: ${ref}`);
+    // console.log(`currentSongRef: ${currentSongRef}`);
     if (ref && currentSongRef && ref == currentSongRef) {
-      console.log(`song is in preview `);
+      // console.log(`song is in preview `);
       let firstSlide = document.querySelector(".slide");
       if (firstSlide) {
         // if there is an active element remove it
@@ -335,17 +327,17 @@ export function selectSongEventFunction(e) {
 
       // if the selected song is not in preview, add it to preview
     } else {
-      console.log("not in preview");
-      console.log(clickedSong.parentNode.id);
+      // console.log("not in preview");
+      // console.log(clickedSong.parentNode.id);
       let targetedSong = null;
-      console.log(res);
+      // console.log(res);
       if (clickedSong.parentNode.parentNode.id == "search_output") {
         targetedSong = res.find((song) => song.custom_ref == ref);
       } else if (clickedSong.parentNode.id == "waiting_output") {
         targetedSong = waiting.find((song) => song.custom_ref == ref);
       }
       if (!clickedPlus) {
-        console.log(`target song: ${targetedSong}`);
+        // console.log(`target song: ${targetedSong}`);
         previewSelectedSong(targetedSong);
         newSlide("");
       }
@@ -362,7 +354,7 @@ export function selectSongEventFunction(e) {
       currentSongRef = currentSong.getAttribute("data-ref");
     }
 
-    console.log(res);
+    // console.log(res);
     // mark the selected song with red border
     const elements = document.querySelectorAll(".big");
 
@@ -375,16 +367,16 @@ export function selectSongEventFunction(e) {
     // if the selected song already is in preview, start showing the first slide
     // if there is verse attribute in the chapter, go to verse slide
     clickedChapter.classList.add("selectedSong");
-    console.log(`chapter ref: ${ref}`);
-    console.log(`currentSongRef: ${currentSongRef}`);
+    // console.log(`chapter ref: ${ref}`);
+    // console.log(`currentSongRef: ${currentSongRef}`);
 
     if (ref && currentSongRef && ref == currentSongRef) {
       let targetSlide;
-      console.log(typeof verse);
+      // console.log(typeof verse);
       targetSlide = document.querySelector(
         `.slide[data-verse-number="${verse ? verse : "1"}"]`
       );
-      console.log(targetSlide);
+      // console.log(targetSlide);
 
       if (targetSlide) {
         // if there is an active element remove it
@@ -401,10 +393,10 @@ export function selectSongEventFunction(e) {
       let targetedSong;
       if (clickedChapter.parentNode.parentNode.id == "search_output") {
         targetedSong = res.find((song) => song.custom_ref == ref);
-        console.log(`in search & targetsong is: ${targetedSong}`);
+        // console.log(`in search & targetsong is: ${targetedSong}`);
       } else if (clickedChapter.parentNode.id == "waiting_output") {
         targetedSong = waiting.find((song) => song.custom_ref == ref);
-        console.log(`in waiting & targetsong is: ${targetedSong}`);
+        // console.log(`in waiting & targetsong is: ${targetedSong}`);
       }
       if (!clickedPlus) {
         previewSelectedChapter(targetedSong);
