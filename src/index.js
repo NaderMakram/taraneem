@@ -294,8 +294,8 @@ app.on("ready", () => {
           `
         );
       }
-      songWindow.maximize();
-      songWindow.show();
+      manageDisplays();
+      mainWindow.focus();
     });
 });
 
@@ -333,39 +333,36 @@ ipcMain.on("toggle-dark-mode", (event, message) => {
   songWindow.webContents.send("toggle-dark-mode");
 });
 
+let manageDisplays = () => {
+  let displays = screen.getAllDisplays();
+
+  if (displays.length > 1) {
+    // Second screen detected
+    let secondScreen = displays[1];
+    songWindow.setBounds({
+      width: secondScreen.size.width,
+      height: secondScreen.size.height,
+      x: secondScreen.bounds.x,
+      y: secondScreen.bounds.y,
+    });
+    songWindow.show();
+    songWindow.setFullScreen(true);
+    songWindow.maximize();
+    mainWindow.focus();
+  } else {
+    // Only one screen remaining
+    songWindow.setFullScreen(false);
+    songWindow.minimize();
+    songWindow.hide();
+  }
+};
+
 app.on("ready", () => {
   screen.on("display-added", (event, newDisplay) => {
-    let displays = screen.getAllDisplays();
-    if (displays.length > 1) {
-      let secondScreen = displays[1];
-      // console.log("secondScreen", displays[1]);
-      songWindow.setBounds({
-        width: secondScreen.size.width,
-        height: secondScreen.size.height,
-        x: secondScreen.bounds.x,
-        y: secondScreen.bounds.y,
-      });
-      songWindow.show();
-      songWindow.setFullScreen(true);
-      songWindow.maximize();
-      mainWindow.focus();
-    }
+    manageDisplays();
   });
   screen.on("display-removed", () => {
-    let displays = screen.getAllDisplays();
-    // console.log("all after remove", displays);
-    if (displays.length == 1) {
-      firstScreen = displays[0];
-      songWindow.setFullScreen(false);
-      songWindow.minimize();
-      songWindow.hide();
-      // songWindow.setBounds({
-      //   width: 500,
-      //   height: 400,
-      //   x: firstScreen.bounds.x,
-      //   y: firstScreen.bounds.y,
-      // });
-    }
+    manageDisplays();
   });
 });
 
