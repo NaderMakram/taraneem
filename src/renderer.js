@@ -27,7 +27,7 @@ import { pause } from "./helpers/pause.js";
 //   previewSelectedChapter,
 //   previewSelectedSong,
 // } from "./helpers/previewSelectedThing.js";
-import { generate_item_html } from "./helpers/htmlGenerators.js";
+// import { generate_item_html } from "./helpers/htmlGenerators.js";
 import {
   selectSongEventFunction,
   debounce,
@@ -153,7 +153,7 @@ const button = document.getElementById("start-work");
 
 // for testing
 setTimeout(() => {
-  input.value = "عند شق الفجر باكر";
+  input.value = "بدء الحكمة مخافة";
   // let waitingToggle = document.querySelector("#waiting_mode_input");
 
   // Create a new event

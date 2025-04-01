@@ -6,43 +6,52 @@ export function displayWaitingList(waiting) {
   // console.log(waiting);
   localStorage.setItem("waiting_list", JSON.stringify(waiting));
   let htmlData = waiting
-    .map(({ title, chorus, verse, verses, chapter_name, custom_ref }) => {
-      // Extract information from the object
-      // console.log(title, chorus, verse, verses, chapter_name, custom_ref);
-      let type = chapter_name ? "chapter" : "song";
-      // Generate HTML for title
-      let titleHTML = title ? `<h2>${title}</h2>` : "";
+    .map(
+      ({
+        title,
+        chorus,
+        verse,
+        verses,
+        chapter_name,
+        custom_ref,
+        wairing_id,
+      }) => {
+        // Extract information from the object
+        // console.log(title, chorus, verse, verses, chapter_name, custom_ref);
+        let type = chapter_name ? "chapter" : "song";
+        // Generate HTML for title
+        let titleHTML = title ? `<h2>${title}</h2>` : "";
 
-      // Generate HTML for chorus if it exists
-      let chorusHTML = chorus
-        ? `<div class="chorus">(ق) ${truncate(
-            chorus.map((line) => `${line}`).join(""),
+        // Generate HTML for chorus if it exists
+        let chorusHTML = chorus
+          ? `<div class="chorus">(ق) ${truncate(
+              chorus.map((line) => `${line}`).join(""),
+              50
+            )}</div>`
+          : "";
+
+        // Generate HTML for verses if they exist
+        let versesHTML = verses
+          ? `<div class="verses">1- ${
+              verses[0] && typeof verses[0][0] == "string"
+                ? truncate(verses[0][0], 50)
+                : ""
+            }</div>`
+          : "";
+
+        // Combine everything into a single HTML block
+        let chapter_first_two_verses;
+        console.log(`custom_ref: ${custom_ref}`);
+        if (!verse) {
+          chapter_first_two_verses = truncate(
+            `1) ${verses[1]} 2) ${verses[2]}`,
             50
-          )}</div>`
-        : "";
-
-      // Generate HTML for verses if they exist
-      let versesHTML = verses
-        ? `<div class="verses">1- ${
-            verses[0] && typeof verses[0][0] == "string"
-              ? truncate(verses[0][0], 50)
-              : ""
-          }</div>`
-        : "";
-
-      // Combine everything into a single HTML block
-      let chapter_first_two_verses;
-      console.log(`custom_ref: ${custom_ref}`);
-      if (!verse) {
-        chapter_first_two_verses = truncate(
-          `1) ${verses[1]} 2) ${verses[2]}`,
-          50
-        );
-      }
-      return `
-      <div class="big ${type}" data-ref="${custom_ref}" ${
-        verse ? `data-verse="${verse}"` : ""
-      }>
+          );
+        }
+        return `
+      <div class="big ${type}" data-ref="${custom_ref}" data-id="${wairing_id}" ${
+          verse ? `data-verse="${verse}"` : ""
+        }>
       <span class="handle"></span>
       <div class="box-head">
       ${
@@ -59,15 +68,37 @@ export function displayWaitingList(waiting) {
         </div>
         <div class="verses">
         ${verse && chapter_name ? verses[verse] : ""}
-        ${custom_ref.includes("chapter") ? chapter_first_two_verses : ""}
+
+        ${
+          chapter_first_two_verses && chapter_name
+            ? chapter_first_two_verses
+            : ""
+        }
         
         ${chapter_name ? "" : chorusHTML + versesHTML}
         </div>
         <img src="./img/minus-64.png" class="delete hide" alt="delete"/>
         </div>
     `;
-    })
+      }
+    )
     .join("");
 
-  waiting_output.innerHTML = htmlData;
+  if (htmlData == "") {
+    waiting_output.innerHTML = `
+       <div id="waiting-placeholder">
+       
+       <h4>
+       اضغط على علامة
+       <img src="./img/plus.svg">
+       </h4>
+            <h4>
+            لإصافة الترنيمة أو الأصحاح هنا
+          </h4>
+            
+            </div>
+      `;
+  } else {
+    waiting_output.innerHTML = htmlData;
+  }
 }

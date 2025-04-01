@@ -14,6 +14,10 @@ export function previewSelectedChapter(chapter) {
   } = chapter;
   let chapter_number_ar = new Intl.NumberFormat("ar-EG").format(chapter_number);
 
+  function truncate(str, max_length) {
+    return str.length > max_length ? str.slice(0, max_length - 1) + "…" : str;
+  }
+
   const prevChapterBtn = document.querySelector("#prevChapter");
   const nextChapterBtn = document.querySelector("#nextChapter");
 
@@ -114,11 +118,11 @@ export function previewSelectedSong(song) {
   titleDiv.classList.add("song-title");
   titleDiv.dataset.ref = custom_ref;
   titleDiv.innerHTML = `
-    <h4>${title}</h4>
-    <div class="verse-info">
-      <span class="total-verse">${verses.length}/</span>
-      <span class="current-verse"></span>
-    </div>
+  <h4>${title}</h4>
+  <div class="verse-info">
+  <span class="total-verse">${verses.length}/</span>
+  <span class="current-verse"></span>
+  </div>
   `;
   preview_output.appendChild(titleDiv);
 
@@ -172,6 +176,12 @@ export function previewSelectedSong(song) {
       }
     });
   }
+
+  // create empty div
+  let emptySlide = document.createElement("div");
+  emptySlide.classList.add("verse", "slide");
+  emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;
+  slides.push(emptySlide);
 
   // Animate slides one by one
   slides.forEach((slide, index) => {

@@ -37,7 +37,7 @@ const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
       verse: verseNum,
       text: verseText,
       verses: chapter.verses,
-      custom_ref: `verse-${index}`,
+      custom_ref: `chapter-${chapter.chapter_en}-verse-${index}`,
       type: "verse",
     })
   )

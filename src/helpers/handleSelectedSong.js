@@ -120,7 +120,7 @@ let generateHTML = (term, results) => {
   // console.log("filtered results");
   // console.log(filtered_results);
 
-  for (let i = 0; i < Math.min(15, filtered_results.length); i++) {
+  for (let i = 0; i < Math.min(20, filtered_results.length); i++) {
     let slide = document.createElement("div");
     slide.innerHTML = generate_item_html(filtered_results[i], term);
     slide.classList.add("slide-item");
@@ -230,13 +230,13 @@ export function selectSongEventFunction(e) {
   // if not song then ignore the click
 
   if (clickedDelete) {
-    let clickedRef = e.target.parentNode.getAttribute("data-ref");
-    // console.log(clickedRef);
-    waiting = waiting.filter((item) => item.custom_ref != clickedRef);
+    let clickedId = e.target.parentNode.getAttribute("data-id");
+    // console.log(clickedId);
+    waiting = waiting.filter((item) => item.wairing_id != clickedId);
 
     // remove the deleted song/chapter from the dom
     let deletedDiv = document.querySelector(
-      `#waiting_output div[data-ref="${clickedRef}"]`
+      `#waiting_output div[data-id="${clickedId}"]`
     );
     if (deletedDiv) {
       deletedDiv.parentNode.removeChild(deletedDiv);
@@ -261,25 +261,26 @@ export function selectSongEventFunction(e) {
     // console.log(clickedSong);
     let foundItem = res.find((song) => song.custom_ref == ref);
     // console.log(foundItem);
-    if (foundItem && !waiting.some((item) => item.custom_ref == ref)) {
-      waiting.push({
-        ...foundItem,
-        ...(verse !== undefined && { verse }), // Add 'verse' only if it's defined
-        ...(verse !== undefined && { custom_ref: `verse-${verse}` }), // Add 'verse' only if it's defined
-      });
-      createAddedFeedback(
-        clickedSong ? clickedSong : clickedChapter,
-        "yellowCheck"
-      );
+    // if (foundItem && !waiting.some((item) => item.custom_ref == ref)) {
+    waiting.push({
+      ...foundItem,
+      wairing_id: Math.floor(Math.random() * (99999999 - 99) + 99), // random id to handle removal of items
+      ...(verse !== undefined && { verse }), // Add 'verse' only if it's defined
+      ...(verse !== undefined && { custom_ref: ref }), // Add 'verse' only if it's defined
+    });
+    createAddedFeedback(
+      clickedSong ? clickedSong : clickedChapter,
+      "yellowCheck"
+    );
 
-      // console.log(foundItem.custom_ref);
-      // console.log(clickedChapter);
-    } else {
-      createAddedFeedback(
-        clickedSong ? clickedSong : clickedChapter,
-        "rightHand"
-      );
-    }
+    // console.log(foundItem.custom_ref);
+    // console.log(clickedChapter);
+    // } else {
+    //   createAddedFeedback(
+    //     clickedSong ? clickedSong : clickedChapter,
+    //     "rightHand"
+    //   );
+    // }
     displayWaitingList(waiting);
     // console.log(waiting);
     return;
@@ -371,6 +372,8 @@ export function selectSongEventFunction(e) {
     // console.log(`currentSongRef: ${currentSongRef}`);
 
     if (ref && currentSongRef && ref == currentSongRef) {
+      console.log(`new ref: ${ref}`);
+      console.log(`current ref: ${currentSongRef}`);
       let targetSlide;
       // console.log(typeof verse);
       targetSlide = document.querySelector(

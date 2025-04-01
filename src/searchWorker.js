@@ -9,7 +9,7 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
   // console.log(`term: ${term}, songs: ${songsWithSearchableContent}`);
   let songResults = searchSongs(term, songsWithSearchableContent);
   let bibleResults = [];
-  if (term.trim().split(/\s+/).length >= 3) {
+  if (term.trim().split(/\s+/).length >= 2) {
     bibleResults = searchBible(term, bibleVerses);
   }
 
@@ -74,12 +74,12 @@ function searchSongs(term, songsWithSearchableContent) {
 
       // Check Chorus
       if (chorus) {
-        index = item.chorus.indexOf(term);
+        index = chorus.indexOf(term);
         if (index !== -1) {
           score += 5;
           matchedKey = matchedKey || "chorus"; // Keep first match priority
           matchedText =
-            matchedText || item.chorus.substring(index, index + term.length);
+            matchedText || chorus.substring(index, index + term.length);
         }
       }
 
@@ -145,7 +145,8 @@ function normalizeBibleVerse(text) {
     .replace(/أ|آ|إ/g, "ا")
     .replace(/ى/g, "ي")
     .replace(/ه/g, "ة")
-    .replace(/ؤ|ئ/g, "ء");
+    .replace(/ؤ|ئ/g, "ء")
+    .replace(/[؟!،.]/g, ""); // Removes ?, !, ،, and .
 }
 
 self.addEventListener("message", async (event) => {
