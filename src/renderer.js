@@ -153,7 +153,7 @@ const button = document.getElementById("start-work");
 
 // for testing
 setTimeout(() => {
-  input.value = "بدء الحكمة مخافة";
+  input.value = "يسوع";
   // let waitingToggle = document.querySelector("#waiting_mode_input");
 
   // Create a new event

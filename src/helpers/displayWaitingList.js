@@ -93,7 +93,7 @@ export function displayWaitingList(waiting) {
        <img src="./img/plus.svg">
        </h4>
             <h4>
-            لإصافة الترنيمة أو الأصحاح هنا
+            لإضافة الترنيمة أو الأصحاح هنا
           </h4>
             
             </div>

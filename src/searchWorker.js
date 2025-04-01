@@ -141,12 +141,14 @@ function normalize(text) {
 }
 
 function normalizeBibleVerse(text) {
-  return text
-    .replace(/أ|آ|إ/g, "ا")
-    .replace(/ى/g, "ي")
-    .replace(/ه/g, "ة")
-    .replace(/ؤ|ئ/g, "ء")
-    .replace(/[؟!،.]/g, ""); // Removes ?, !, ،, and .
+  return (
+    text
+      .replace(/أ|آ|إ/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ه/g, "ة")
+      // .replace(/ؤ|ئ/g, "ء")
+      .replace(/[؟!،.]/g, "")
+  ); // Removes ?, !, ،, and .
 }
 
 self.addEventListener("message", async (event) => {

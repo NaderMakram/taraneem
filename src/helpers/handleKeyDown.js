@@ -171,10 +171,17 @@ export function handleKeyDown(e) {
       left: 0,
       behavior: "smooth",
     });
-    setTimeout(() => {
-      input.focus();
-      input.select();
-    }, window.scrollY / (window.scrollY < 4000 ? 3 : 15));
+
+    const checkIfScrolledToTop = () => {
+      if (window.scrollY === 0) {
+        input.focus();
+        input.select();
+      } else {
+        requestAnimationFrame(checkIfScrolledToTop);
+      }
+    };
+
+    requestAnimationFrame(checkIfScrolledToTop);
   } else if (e.ctrlKey && e.code == "KeyW") {
     pause();
   }
