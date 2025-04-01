@@ -9,7 +9,7 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
   // console.log(`term: ${term}, songs: ${songsWithSearchableContent}`);
   let songResults = searchSongs(term, songsWithSearchableContent);
   let bibleResults = [];
-  if (term.trim().split(/\s+/).length >= 3) {
+  if (term.trim().split(/\s+/).length >= 2) {
     bibleResults = searchBible(term, bibleVerses);
   }
 
@@ -74,12 +74,12 @@ function searchSongs(term, songsWithSearchableContent) {
 
       // Check Chorus
       if (chorus) {
-        index = item.chorus.indexOf(term);
+        index = chorus.indexOf(term);
         if (index !== -1) {
           score += 5;
           matchedKey = matchedKey || "chorus"; // Keep first match priority
           matchedText =
-            matchedText || item.chorus.substring(index, index + term.length);
+            matchedText || chorus.substring(index, index + term.length);
         }
       }
 
@@ -141,18 +141,22 @@ function normalize(text) {
 }
 
 function normalizeBibleVerse(text) {
-  return text
-    .replace(/أ|آ|إ/g, "ا")
-    .replace(/ى/g, "ي")
-    .replace(/ه/g, "ة")
-    .replace(/ؤ|ئ/g, "ء");
+  return (
+    text
+      .replace(/أ|آ|إ/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ه/g, "ة")
+      // .replace(/ؤ|ئ/g, "ء")
+      .replace(/[؟!،.]/g, "")
+  ); // Removes ?, !, ،, and .
 }
 
 self.addEventListener("message", async (event) => {
   startTimeInFuse = Date.now();
   console.log("new message");
   try {
-    const { term, songsWithSearchableContent, bibleDBIndexed } = event.data;
+    const { term, songsWithSearchableContent, bibleDBIndexed, bibleVerses } =
+      event.data;
     const bibleStartSearchTime = Date.now(); // Get start time before worker creation
     const searchTerm = term; // Store the original term
     let containsDigit = /\d/.test(searchTerm);
@@ -168,7 +172,7 @@ self.addEventListener("message", async (event) => {
         .replace(/[^\u0600-\u06FF\s]/g, "")
         .trim();
 
-      console.log(`book_and_chapter: ${book_and_chapter}`);
+      // console.log(`book_and_chapter: ${book_and_chapter}`);
       if (book_and_chapter) {
         let normalChapter = normalizeBibleVerse(book_and_chapter);
         // fix for searching with common spelling
@@ -189,10 +193,10 @@ self.addEventListener("message", async (event) => {
         // });
 
         results = performChapterSearch(normalChapter, bibleDBIndexed);
-        console.log(results);
+        // console.log(results);
       }
     } else {
-      const startDeepFuseTime = Date.now(); // Get start time before worker creation
+      // const startDeepFuseTime = Date.now(); // Get start time before worker creation
 
       // deepFuse = new Fuse(songsWithSearchableContent, {
       //   // includeScore: true,
@@ -212,21 +216,6 @@ self.addEventListener("message", async (event) => {
       //     { name: "searchableContent.verses", weight: 0.2 },
       //   ],
       // });
-
-      const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
-        Object.entries(chapter.normalized_verses).map(
-          ([verseNum, verseText], index) => ({
-            ...chapter,
-            book: chapter.chapter_book_normalized,
-            chapter: chapter.chapter_number,
-            verse: verseNum,
-            text: verseText,
-            verses: chapter.verses,
-            custom_ref: `verse-${index}`,
-            type: "verse",
-          })
-        )
-      );
 
       // bibleTextFuse = new Fuse(bibleVerses, {
       //   includeScore: true,
@@ -258,21 +247,24 @@ self.addEventListener("message", async (event) => {
       //   ],
       // };
 
-      const deepFuseTime = Date.now() - startDeepFuseTime; // Calculate time
-      console.log(
-        `time to create flat flat map: ${deepFuseTime.toFixed(2)} ms`
-      );
+      // const deepFuseTime = Date.now() - startDeepFuseTime; // Calculate time
+      // console.log(
+      //   `time to create flat flat map: ${deepFuseTime.toFixed(2)} ms`
+      // );
+
+      console.time("Time to search bible and songs");
       results = performSearch(
         normalize(searchTerm),
         songsWithSearchableContent,
         bibleVerses
       );
+      console.timeEnd("Time to search bible and songs");
     }
     const data = { term: searchTerm, results, time: Date.now() }; // Combine data in an object
-    console.log(`data: ${data}`);
+    // console.log(`data: ${data}`);
     self.postMessage(data);
-    const timeInFuse = Date.now() - startTimeInFuse; // Calculate time
-    console.log(`time of message in fuse: ${timeInFuse.toFixed(2)} ms`);
+    // const timeInFuse = Date.now() - startTimeInFuse; // Calculate time
+    // console.log(`time of message in fuse: ${timeInFuse.toFixed(2)} ms`);
   } catch (error) {
     console.error("Error in search:", error);
     self.postMessage({ error }); // Send error object back to main process

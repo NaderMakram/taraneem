@@ -37,7 +37,7 @@ export function newSlide(html) {
     let chapter_title =
       document.querySelector(".song-title").outerHTML +
       document.querySelector(".chapter-title-en").outerHTML;
-    console.log(chapter_title);
+    // console.log(chapter_title);
     let combined_html = `<div class="container bible-container">
       <div class="head bible-head">
       ${html.length > 53 ? chapter_title : ""}

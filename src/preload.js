@@ -28,6 +28,21 @@ const bibleDBIndexed = bibleDB.map((item, index) => {
   };
 });
 
+const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
+  Object.entries(chapter.normalized_verses).map(
+    ([verseNum, verseText], index) => ({
+      ...chapter,
+      book: chapter.chapter_book_normalized,
+      chapter: chapter.chapter_number,
+      verse: verseNum,
+      text: verseText,
+      verses: chapter.verses,
+      custom_ref: `chapter-${chapter.chapter_en}-verse-${index}`,
+      type: "verse",
+    })
+  )
+);
+
 const songsWithSearchableContent = songsDB.map((song, index) => {
   return {
     ...song,
@@ -39,6 +54,7 @@ const songsWithSearchableContent = songsDB.map((song, index) => {
 contextBridge.exposeInMainWorld("myCustomAPI", {
   bibleDBIndexed,
   songsWithSearchableContent,
+  bibleVerses,
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
   flipSearchingMode: () => ipcRenderer.send("flip-searching-mode"),
   searchTerm: (term) => ipcRenderer.invoke("search-songs", term),
