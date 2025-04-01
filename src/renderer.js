@@ -46,7 +46,8 @@ whiteButton.addEventListener("click", () => {
   whiteButton.blur();
 });
 
-darkModeToggle.addEventListener("change", () => {
+darkModeToggle.addEventListener("change", (e) => {
+  localStorage.setItem("dark_mode", e.target.checked);
   window.myCustomAPI.toggleDarkMode();
 });
 
@@ -152,19 +153,19 @@ const button = document.getElementById("start-work");
 // });
 
 // for testing
-setTimeout(() => {
-  input.value = "يسوع";
-  // let waitingToggle = document.querySelector("#waiting_mode_input");
+// setTimeout(() => {
+//   input.value = "يسوع";
+//   // let waitingToggle = document.querySelector("#waiting_mode_input");
 
-  // Create a new event
-  const inputEvent = new Event("input", {
-    bubbles: true,
-    cancelable: true,
-  });
-  // waitingToggle.click();
+//   // Create a new event
+//   const inputEvent = new Event("input", {
+//     bubbles: true,
+//     cancelable: true,
+//   });
+//   // waitingToggle.click();
 
-  input.dispatchEvent(inputEvent);
-}, 1000);
+//   input.dispatchEvent(inputEvent);
+// }, 1000);
 
 // let clickDev = new Event("click", {
 //   bubbles: true,

@@ -327,7 +327,7 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -455,7 +455,7 @@ ipcMain.on("update-font-size", (event, message) => {
 ipcMain.on("update-font-weight", (event) => {
   songWindow.webContents.send("update-font-weight");
 });
-ipcMain.on("toggle-dark-mode", (event) => {
+ipcMain.on("toggle-dark-mode", (event, message) => {
   songWindow.webContents.send("toggle-dark-mode");
 });
 
@@ -493,6 +493,22 @@ app.on("ready", () => {
       // });
     }
   });
+});
+
+app.on("ready", () => {
+  mainWindow.webContents
+    .executeJavaScript("({...localStorage});", true)
+    .then((localStorage) => {
+      if (localStorage.dark_mode == "true") {
+        console.log(`dark mode: ${localStorage.dark_mode}`);
+        // ipcMain.emit("toggle-dark-mode");
+        mainWindow.webContents.executeJavaScript(
+          `
+          document.querySelector("input#dark_mode_input").click()
+          `
+        );
+      }
+    });
 });
 
 ipcMain.on("extend-song-window", (event) => {
