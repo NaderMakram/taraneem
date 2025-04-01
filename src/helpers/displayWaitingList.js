@@ -68,16 +68,12 @@ export function displayWaitingList(waiting) {
         </div>
         <div class="verses">
         ${verse && chapter_name ? verses[verse] : ""}
-<<<<<<< HEAD
-        ${custom_ref.includes("chapter") ? chapter_first_two_verses : ""}
-=======
 
         ${
           chapter_first_two_verses && chapter_name
             ? chapter_first_two_verses
             : ""
         }
->>>>>>> merge-test
         
         ${chapter_name ? "" : chorusHTML + versesHTML}
         </div>

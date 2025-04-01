@@ -4,6 +4,20 @@ const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
 
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (event, commandLine, workingDirectory) => {
+    // Focus on the existing main window if another instance is opened
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
 let fastSearch = true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -220,6 +234,8 @@ const createSongWindow = () => {
       },
     });
     songWindow.setFullScreen(true);
+    songWindow.minimize();
+    songWindow.hide();
   } else {
     songWindow = new BrowserWindow({
       show: false,
@@ -259,17 +275,27 @@ function updateVersionMessage(message) {
   mainWindow.webContents.send("log", message);
 }
 
-function appendRestartButton() {
-  mainWindow.webContents.executeJavaScript(
-    `
-    console.log("hi")
-    `
-  );
-}
-
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
 app.on("ready", addIPCs);
+
+app.on("ready", () => {
+  mainWindow.webContents
+    .executeJavaScript("({...localStorage});", true)
+    .then((localStorage) => {
+      if (localStorage.dark_mode == "true") {
+        // console.log(`dark mode: ${localStorage.dark_mode}`);
+        // ipcMain.emit("toggle-dark-mode");
+        mainWindow.webContents.executeJavaScript(
+          `
+          document.querySelector("input#dark_mode_input").click()
+          `
+        );
+      }
+      songWindow.maximize();
+      songWindow.show();
+    });
+});
 
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content, isBible) => {
@@ -310,7 +336,7 @@ app.on("ready", () => {
     let displays = screen.getAllDisplays();
     if (displays.length > 1) {
       let secondScreen = displays[1];
-      console.log("secondScreen", displays[1]);
+      // console.log("secondScreen", displays[1]);
       songWindow.setBounds({
         width: secondScreen.size.width,
         height: secondScreen.size.height,
@@ -325,7 +351,7 @@ app.on("ready", () => {
   });
   screen.on("display-removed", () => {
     let displays = screen.getAllDisplays();
-    console.log("all after remove", displays);
+    // console.log("all after remove", displays);
     if (displays.length == 1) {
       firstScreen = displays[0];
       songWindow.setFullScreen(false);
@@ -339,22 +365,6 @@ app.on("ready", () => {
       // });
     }
   });
-});
-
-app.on("ready", () => {
-  mainWindow.webContents
-    .executeJavaScript("({...localStorage});", true)
-    .then((localStorage) => {
-      if (localStorage.dark_mode == "true") {
-        console.log(`dark mode: ${localStorage.dark_mode}`);
-        // ipcMain.emit("toggle-dark-mode");
-        mainWindow.webContents.executeJavaScript(
-          `
-          document.querySelector("input#dark_mode_input").click()
-          `
-        );
-      }
-    });
 });
 
 ipcMain.on("extend-song-window", (event) => {
