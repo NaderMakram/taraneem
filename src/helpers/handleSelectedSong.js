@@ -121,22 +121,32 @@ let generateHTML = (term, results) => {
   // console.log(filtered_results);
 
   for (let i = 0; i < Math.min(20, filtered_results.length); i++) {
-    let slide = document.createElement("div");
-    slide.innerHTML = generate_item_html(filtered_results[i], term);
-    slide.classList.add("slide-item");
-    slide.style.opacity = "0"; // Initially hidden
-    slide.style.transform = "translateY(20px)"; // Slightly lower position
+    let slide_content = generate_item_html(filtered_results[i], term);
+    if (slide_content) {
+      let slide = document.createElement("div");
+      slide.innerHTML = slide_content;
+      slide.classList.add("slide-item");
+      slide.style.opacity = "0"; // Initially hidden
+      slide.style.transform = "translateY(20px)"; // Slightly lower position
 
-    search_output.appendChild(slide);
+      search_output.appendChild(slide);
 
-    // Staggered animation
-    setTimeout(() => {
-      slide.style.opacity = "1";
-      slide.style.transform = "translateY(0)";
-    }, i * 50); // Delay each slide by 100ms
+      // Staggered animation
+      setTimeout(() => {
+        slide.style.opacity = "1";
+        slide.style.transform = "translateY(0)";
+      }, i * 50); // Delay each slide by 100ms
+    }
   }
   if (search_output.innerHTML == "") {
-    search_output.innerHTML = "not found";
+    search_output.innerHTML = `
+      <div class="note big bold">
+      <img src="./img/warning.png" class="warning"/>
+        عذرًا</br>
+        لم نجد أي نتائج
+      </div>
+
+    `;
   }
 };
 

@@ -27,7 +27,6 @@ import { pause } from "./helpers/pause.js";
 //   previewSelectedChapter,
 //   previewSelectedSong,
 // } from "./helpers/previewSelectedThing.js";
-// import { generate_item_html } from "./helpers/htmlGenerators.js";
 import {
   selectSongEventFunction,
   debounce,
