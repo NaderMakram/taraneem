@@ -135,6 +135,9 @@ let generateHTML = (term, results) => {
       slide.style.transform = "translateY(0)";
     }, i * 50); // Delay each slide by 100ms
   }
+  if (search_output.innerHTML == "") {
+    search_output.innerHTML = "not found";
+  }
 };
 
 export function debounce(func, delay) {
