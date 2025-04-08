@@ -1,0 +1,160 @@
+/*======================================
+    Hero Area CSS
+========================================*/
+.hero-area {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: $theme-color;
+
+
+    .hero-shape {
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        z-index: -1;
+    }
+
+    @media #{$md} {
+        background-image: none;
+    }
+
+    @media #{$xs} {
+        background-image: none;
+    }
+
+    z-index: 0;
+
+    @media #{$md} {
+        padding: 150px 0 100px 0;
+    }
+
+    @media #{$xs} {
+        padding: 110px 0 80px 0;
+    }
+
+    .hero-content {
+        border-radius: 0;
+        position: relative;
+        z-index: 1;
+        text-align: left;
+        padding: 280px 0 220px 0;
+
+        @media #{$md} {
+            padding: 0px 140px;
+        }
+
+        h4 {
+            color: $white;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 38px;
+            line-height: 50px;
+            color: $white;
+            text-transform: capitalize;
+        }
+
+        p {
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 28px;
+            margin-top: 20px;
+            color: $white;
+        }
+
+        .button {
+            margin-top: 50px;
+
+            @media #{$md} {
+                margin-top: 30px !important;
+                width: 100%;
+            }
+
+            @media #{$xs} {
+                margin-top: 30px;
+                width: 100%;
+            }
+
+            .btn {
+                @media #{$xs} {
+                    width: 100%;
+                }
+
+                background-color: $white;
+                color: $black;
+
+                &:hover {
+                    color: $white;
+                    background-color: $black;
+                }
+            }
+        }
+
+        @media #{$lg} {
+            h1 {
+                font-size: 40px;
+            }
+        }
+
+        @media #{$md} {
+            text-align: center;
+
+            h1 {
+                font-size: 30px;
+                font-weight: 700;
+                line-height: 38px;
+            }
+
+            p {
+                font-size: 15px;
+            }
+        }
+
+        @media #{$xs} {
+            padding: 0 10px;
+            text-align: center;
+
+            h1 {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
+            p {
+                margin-top: 15px;
+                font-size: 15px;
+                line-height: 26px;
+            }
+
+            .button {
+                .btn {
+                    width: 60%;
+                    margin: 0;
+                    margin-bottom: 7px;
+
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .hero-image {
+        text-align: center;
+
+        @media #{$md,$xs} {
+            display: none;
+        }
+
+        img {
+            width: 400px;
+        }
+    }
+
+}

@@ -1,0 +1,82 @@
+/*======================================
+	Features CSS
+========================================*/
+.freatures {
+    background-color: $gray;
+
+    .image {
+        img {
+            width: 100%;
+        }
+    }
+
+    .content {
+        @media #{$laptop,$desktop} {
+            padding-left: 70px;
+        }
+
+        @media #{$md} {
+            margin-top: 40px;
+        }
+
+        @media #{$xs} {
+            margin-top: 40px;
+        }
+
+        .heading {
+            font-size: 31px;
+            font-weight: 700;
+            margin-bottom: 70px;
+            line-height: 45px;
+
+            @media #{$md} {
+                font-size: 28px;
+                line-height: 42px;
+            }
+
+            @media #{$xs} {
+                font-size: 22px;
+                line-height: 38px;
+            }
+
+            span {
+                color: $theme-color;
+                display: block;
+                margin-bottom: 10px;
+                font-size: 15px;
+                font-weight: 600;
+            }
+        }
+
+        .single-feature {
+            position: relative;
+            padding-left: 100px;
+            margin-bottom: 50px;
+
+            &:last-child {
+                margin: 0;
+            }
+
+            .f-icon {
+                height: 70px;
+                width: 70px;
+                line-height: 70px;
+                text-align: center;
+                color: $white;
+                background-color: $theme-color;
+                border-radius: 50%;
+                position: absolute;
+                left: 0;
+                font-size: 28px;
+                top: 0;
+            }
+
+            h4 {
+                font-size: 18px;
+                font-weight: 700;
+                display: block;
+                margin-bottom: 15px;
+            }
+        }
+    }
+}

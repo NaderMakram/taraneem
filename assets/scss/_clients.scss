@@ -1,0 +1,27 @@
+/*======================================
+   Clients Logo CSS
+========================================*/
+.client-logo {
+    background-color: $gray;
+    padding: 60px 0;
+
+    .single-logo {
+        padding: 0 30px;
+
+        @media #{$md} {
+            padding: 0 10px;
+        }
+
+        @media #{$xs} {
+            padding: 15px 30px;
+            border: 1px solid #eee;
+            background: #fff;
+        }
+
+        img {
+            @media #{$xs} {
+                width: 75%;
+            }
+        }
+    }
+}

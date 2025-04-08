@@ -1,0 +1,158 @@
+/*======================================
+	Contact CSS
+========================================*/
+.contact-us {
+    position: relative;
+    background-color: $gray;
+
+    .form-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        margin-bottom: 30px;
+
+        @media #{$md} {
+            font-size: 24px;
+            line-height: 35px;
+        }
+
+        @media #{$xs} {
+            font-size: 22px;
+            line-height: 35px;
+        }
+    }
+
+    .contact-form {
+
+        .form-group {
+            margin-bottom: 20px;
+
+            input {
+                height: 52px;
+                border: 1px solid #eee;
+                border-radius: 5px;
+                padding: 0px 20px;
+                width: 100%;
+                transition: all 0.4s ease;
+                background-color: $white;
+
+                &:focus {
+                    border-color: $theme-color;
+                }
+            }
+
+            textarea {
+                height: 200px;
+                border: 1px solid #eee;
+                border-radius: 6px;
+                padding: 20px;
+                resize: none;
+                width: 100%;
+                transition: all 0.4s ease;
+
+                &:focus {
+                    border-color: $theme-color;
+                }
+            }
+        }
+
+        .button {
+            margin-top: 10px;
+        }
+    }
+
+    .contact-widget-wrapper {
+        padding-right: 80px;
+
+        @media #{$md} {
+            padding: 0;
+            padding-right: 200px;
+            margin-bottom: 50px;
+        }
+
+        @media #{$xs} {
+            padding: 0;
+            margin-bottom: 40px;
+        }
+
+        .main-title {
+            margin-bottom: 40px;
+
+            h2 {
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 20px;
+                line-height: 40px;
+
+                @media #{$md} {
+                    font-size: 24px;
+                    line-height: 35px;
+                }
+
+                @media #{$xs} {
+                    font-size: 22px;
+                    line-height: 35px;
+                }
+            }
+
+            p {
+                font-size: 16px;
+            }
+        }
+
+        .contact-widget-block {
+            margin-bottom: 30px;
+
+            &:last-child {
+                margin: 0;
+            }
+
+            h3 {
+                font-size: 16px;
+                font-weight: 700;
+                display: block;
+                margin-bottom: 18px;
+            }
+
+            p {
+                margin-bottom: 3px;
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+
+    }
+}
+
+
+.map-section {
+    background-color: $gray;
+    padding-bottom: 110px;
+
+    @media #{$md} {
+        padding-bottom: 70px;
+    }
+
+    @media #{$xs} {
+        padding-bottom: 60px;
+    }
+
+    .mapouter {
+        padding: 10px;
+        background-color: $white;
+
+        iframe {
+            height: 450px;
+
+            @media #{$md} {
+                height: 400px;
+            }
+
+            @media #{$xs} {
+                height: 300px;
+            }
+        }
+    }
+}

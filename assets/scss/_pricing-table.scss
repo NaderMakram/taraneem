@@ -1,0 +1,163 @@
+/*=============================
+	Pricing Table CSS
+===============================*/
+.pricing-table {
+    background-color: $gray;
+
+    .section-title {
+        margin-bottom: 50px;
+
+        @media #{$md} {
+            margin-bottom: 30px;
+        }
+
+        @media #{$xs} {
+            margin-bottom: 20px;
+        }
+    }
+
+
+    .single-table {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        margin-top: 40px;
+        background-color: $white;
+        transition: all 0.4s ease;
+        padding: 50px 35px;
+        text-align: left;
+        z-index: 0;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+
+        .popular {
+            position: absolute;
+            right: 20px;
+            top: 18px;
+            color: $theme-color;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        &:hover {
+            box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.048);
+        }
+
+        &.middle {
+            .table-head {
+                .title {
+                    border-color: $theme-color;
+                    color: $theme-color;
+                }
+
+            }
+        }
+
+        .table-head {
+
+            .title {
+                font-size: 20px;
+                font-weight: 600;
+                margin-bottom: 8px;
+                color: $theme-color;
+                display: inline-block;
+                border-radius: 30px;
+            }
+
+            .sub-title {
+                margin-bottom: 30px;
+            }
+
+            p {
+                font-weight: 400;
+            }
+
+            .price {
+
+                .amount {
+                    font-size: 45px;
+                    font-weight: 700;
+                    display: inline-block;
+                    position: relative;
+                    padding-left: 16px;
+
+                    .currency {
+                        font-weight: 500;
+                        color: #4f4f4f;
+                        font-size: 17px;
+                        position: absolute;
+                        left: 0;
+                        top: 3px;
+                    }
+
+                    .duration {
+                        display: inline-block;
+                        font-size: 14px;
+                        color: #4f4f4f;
+                        font-weight: 500;
+                        margin-left: 3px;
+                    }
+                }
+            }
+
+        }
+
+        .table-list {
+            margin-top: 40px;
+        }
+
+        .button {
+            margin: 0;
+            margin-top: 50px;
+
+            .btn {
+                i {
+                    display: inline-block;
+                    font-size: 20px;
+                    margin-left: 10px;
+                    position: relative;
+                    top: 2px;
+                }
+            }
+        }
+
+        .no-card {
+            display: block;
+            margin-top: 15px;
+        }
+
+        .table-content {
+
+            .table-list {
+                li {
+                    font-size: 15px;
+                    margin-bottom: 16px;
+                    padding-left: 25px;
+                    font-weight: 400;
+                    color: $black;
+                    position: relative;
+
+                    &::before {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        content: "\ea5a";
+                        font-family: lineIcons;
+                        color: #68D585;
+                        font-size: 15px;
+                    }
+
+                    &.disable {
+                        color: $body-color;
+
+                        &::before {
+                            color: $body-color;
+                            content: "\ea87";
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}

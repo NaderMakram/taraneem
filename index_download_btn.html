@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Download Taraneem</title>
+  </head>
+  <body>
+    <h1>Download Taraneem</h1>
+
+    <div id="download-container">
+      <button id="download-button" disabled>Loading...</button>
+    </div>
+
+    <script>
+      async function fetchAllReleases() {
+        const repoOwner = "NaderMakram";
+        const repoName = "taraneem";
+        const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases`;
+
+        try {
+          const response = await fetch(apiUrl);
+          const releases = await response.json();
+
+          let totalDownloads = 0;
+          let latestExeAsset = null;
+          let latestRelease = releases[0]; // assuming newest release is first
+          const minVersion = "3.0.0"; // minimum version to count downloads
+
+          // Loop over all releases and sum download counts starting from version 3.0.0
+          releases.forEach((release) => {
+            // If release version >= 3.0.0
+            if (compareVersions(release.tag_name, minVersion) >= 0) {
+              release.assets.forEach((asset) => {
+                totalDownloads += asset.download_count;
+                // Check if this is the exe file (e.g., Taraneem-Windows-3.2.1-Setup.exe)
+                if (asset.name.includes("Setup.exe")) {
+                  if (!latestExeAsset) {
+                    latestExeAsset = asset; // Pick the first .exe file found
+                  }
+                }
+              });
+            }
+          });
+
+          // If there's a valid exe asset from the latest release
+          if (latestExeAsset) {
+            const button = document.getElementById("download-button");
+            button.disabled = false;
+            button.textContent = `Download Taraneem for Windows (Latest Version)`;
+            button.onclick = () =>
+              (window.location.href = latestExeAsset.browser_download_url);
+          }
+        } catch (error) {
+          console.error("Error fetching releases:", error);
+        }
+      }
+
+      // Helper function to compare versions
+      function compareVersions(version1, version2) {
+        const v1 = version1.split(".").map(Number);
+        const v2 = version2.split(".").map(Number);
+        for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
+          const diff = (v1[i] || 0) - (v2[i] || 0);
+          if (diff !== 0) return diff;
+        }
+        return 0; // Versions are equal
+      }
+
+      fetchAllReleases();
+    </script>
+  </body>
+</html>

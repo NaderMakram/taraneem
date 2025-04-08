@@ -1,0 +1,227 @@
+/*======================================
+	Account Login CSS
+========================================*/
+.account-login {
+    background-color: $gray;
+
+    .inner-content {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.075);
+    }
+
+    .login-form {
+        padding: 60px 70px;
+        background-color: $white;
+        border: none;
+
+        @media #{$md} {
+            padding: 50px;
+        }
+
+        @media #{$xs} {
+            padding: 50px 35px;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        .title {
+            margin-bottom: 45px;
+            text-align: center;
+
+            @media #{$xs} {
+                margin-bottom: 30px;
+            }
+
+            h3 {
+                font-size: 25px;
+                font-weight: 700;
+                color: $black;
+                margin-bottom: 8px;
+
+                @media #{$xs} {
+                    font-size: 22px;
+                }
+            }
+        }
+
+        .input-head {}
+    }
+
+    .bottom-content {
+        margin-top: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+
+        label {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9;
+        }
+
+        .form-control {
+            padding: 0 18px;
+            transition: all 0.4s ease;
+            border: 1px solid #eee;
+            background-color: $gray;
+            color: #505050;
+            font-size: 15px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            height: 52px;
+            border-radius: 30px !important;
+            overflow: hidden;
+            width: 100%;
+            padding-left: 55px;
+
+            &:focus {
+                border-color: $theme-color;
+                box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.233);
+            }
+        }
+    }
+
+    .lost-pass {
+        color: #888;
+
+        &:hover {
+            color: $theme-color;
+        }
+    }
+
+    .button {
+        margin-top: 40px;
+        text-align: center;
+
+        @media #{$xs} {
+            display: block;
+            margin-top: 30px;
+
+            .btn {
+                margin-bottom: 13px;
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+
+        .btn {
+            padding: 14px 40px;
+            margin-right: 20px;
+            width: 100%;
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+    }
+
+    .or {
+        position: relative;
+        text-align: center;
+        margin: 30px 0;
+        z-index: 0;
+
+        span {
+            text-align: center;
+            font-size: 16px;
+            background-color: $white;
+            padding: 5px 12px;
+        }
+
+        &::before {
+            position: absolute;
+            content: "";
+            left: 0;
+            top: 50%;
+            margin-top: -1px;
+            background-color: #e8e8e8;
+            height: 1px;
+            width: 100%;
+            z-index: -1;
+        }
+    }
+
+    .alt-option {
+        margin-top: 30px;
+        text-align: center;
+
+        .small-title {
+            margin-bottom: 15px;
+            text-align: center;
+            display: block;
+        }
+
+        .option-button {
+            padding: 14px 25px 14px 15px;
+            border: 1px solid #eee;
+            border-radius: 30px;
+            display: inline-block;
+            text-align: center;
+            color: $body-color;
+
+            img {
+                display: inline-block;
+                margin-right: 15px;
+            }
+        }
+
+        @media #{$xs} {
+            margin-top: 30px;
+        }
+
+        li {
+            font-weight: 500;
+
+            @media #{$xs} {
+                margin-top: 5px;
+            }
+
+            span {
+                color: $body-color;
+                display: inline-block;
+            }
+
+            display: inline-block;
+            margin-right: 15px;
+
+            &:last-child {
+                margin: 0;
+            }
+
+            a {
+                color: $theme-color;
+
+                &:hover {
+                    color: $black;
+                }
+            }
+        }
+    }
+
+    .create-account {
+        font-weight: 500;
+        color: $black;
+        text-align: center;
+        margin-top: 35px;
+        font-size: 14px;
+        display: block;
+
+        a {
+            color: $theme-color;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
