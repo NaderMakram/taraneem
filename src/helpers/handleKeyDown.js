@@ -110,7 +110,7 @@ export function handleKeyDown(e) {
   }
 
   // Check if the pressed key is a number
-  if (!isNaN(key)) {
+  if (key.length === 1 && key >= "0" && key <= "9") {
     // Add the pressed key to the sequence
     keySequence.push(key);
 
