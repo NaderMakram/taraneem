@@ -62,7 +62,7 @@ function normalize(text) {
       .replace(/ذ|ظ/g, "ز")
       .replace(/ؤ|ئ/g, "ء")
       // remove tashkeel
-      .replace(/[ًٌٍَُِّْ~ـٰ]/g, "")
+      .replace(/[ًٌٍَُِّْ~ـٰ]/g, "")
       // remove \n
       .replace(/\n/g, " ")
   );
@@ -180,11 +180,38 @@ app.on("ready", () => {
 
 let mainWindow;
 const createMainWindow = () => {
+  // Get primary display dimensions
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width: screenWidth, height: screenHeight } =
+    primaryDisplay.workAreaSize;
+
+  // Calculate main window size (2/3 of screen width for single display)
+  const displays = screen.getAllDisplays();
+  let windowWidth, windowHeight, windowX, windowY;
+
+  if (displays.length > 1) {
+    // Dual display setup - use primary display
+    windowWidth = screenWidth;
+    windowHeight = screenHeight;
+    windowX = 0;
+    windowY = 0;
+  } else {
+    // Single display setup - use 2/3 of width
+    windowWidth = Math.floor((screenWidth * 2) / 3);
+    windowHeight = screenHeight;
+    windowX = 0;
+    windowY = 0;
+  }
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1000,
-    height: 600,
+    width: windowWidth,
+    height: windowHeight,
+    x: windowX,
+    y: windowY,
+    resizable: displays.length > 1, // Only resizable in dual display mode
+    movable: displays.length > 1, // Only movable in dual display mode
     icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
     webPreferences: {
       nodeIntegration: true,
@@ -196,18 +223,20 @@ const createMainWindow = () => {
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
-  mainWindow.maximize();
+
+  if (displays.length > 1) {
+    mainWindow.maximize();
+  }
+
   mainWindow.show();
   mainWindow.focus();
-
-  // mainWindow.maximize();
 
   // remove menu
   mainWindow.removeMenu();
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  // if (isDev) {
+  //   mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -219,7 +248,12 @@ let songWindow;
 
 const createSongWindow = () => {
   let displays = screen.getAllDisplays();
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width: screenWidth, height: screenHeight } =
+    primaryDisplay.workAreaSize;
+
   if (displays.length > 1) {
+    // Dual display setup - use second screen
     const secondScreen = displays[1];
     songWindow = new BrowserWindow({
       width: secondScreen.size.width,
@@ -229,6 +263,8 @@ const createSongWindow = () => {
       y: secondScreen.bounds.y,
       frame: false,
       alwaysOnTop: false,
+      resizable: true,
+      movable: true,
       webPreferences: {
         nodeIntegration: true,
         // contextIsolation: false,
@@ -236,14 +272,21 @@ const createSongWindow = () => {
       },
     });
     songWindow.setFullScreen(true);
-    songWindow.minimize();
-    songWindow.hide();
   } else {
+    // Single display setup - use 1/3 of screen width, positioned on the right
+    const mainWindowWidth = Math.floor((screenWidth * 2) / 3);
+    const songWindowWidth = screenWidth - mainWindowWidth; // Ensure perfect fit
+    const songWindowX = mainWindowWidth;
+
     songWindow = new BrowserWindow({
       show: false,
       frame: false,
-      width: 500,
-      height: 400,
+      width: songWindowWidth,
+      height: screenHeight,
+      x: songWindowX,
+      y: 0,
+      resizable: false, // Prevent resizing in snap mode
+      movable: false, // Prevent moving in snap mode
       icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
       webPreferences: {
         nodeIntegration: true,
@@ -256,6 +299,10 @@ const createSongWindow = () => {
   songWindow.removeMenu();
   // and load the index.html of the app.
   songWindow.loadFile(path.join(__dirname, "song.html"));
+
+  // Always show the song window
+  songWindow.show();
+
   if (isDev) {
     // songWindow.hide();
   }
@@ -264,9 +311,9 @@ const createSongWindow = () => {
   songWindow.on("closed", () => {
     app.quit();
   });
-  if (isDev) {
-    songWindow.webContents.openDevTools();
-  }
+  // if (isDev) {
+  //   songWindow.webContents.openDevTools();
+  // }
 };
 
 // update version message
@@ -335,25 +382,71 @@ ipcMain.on("toggle-dark-mode", (event, message) => {
 
 let manageDisplays = () => {
   let displays = screen.getAllDisplays();
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width: screenWidth, height: screenHeight } =
+    primaryDisplay.workAreaSize;
 
   if (displays.length > 1) {
-    // Second screen detected
+    // Dual display setup
     let secondScreen = displays[1];
+
+    // Remove snap behavior for dual display
+    mainWindow.setResizable(true);
+    songWindow.setResizable(true);
+
+    // Main window on primary display (fullscreen)
+    mainWindow.setBounds({
+      width: screenWidth,
+      height: screenHeight,
+      x: 0,
+      y: 0,
+    });
+    mainWindow.maximize();
+
+    // Song window on second display (fullscreen)
     songWindow.setBounds({
       width: secondScreen.size.width,
       height: secondScreen.size.height,
       x: secondScreen.bounds.x,
       y: secondScreen.bounds.y,
     });
-    songWindow.show();
     songWindow.setFullScreen(true);
-    songWindow.maximize();
+    songWindow.show();
+
     mainWindow.focus();
   } else {
-    // Only one screen remaining
+    // Single display setup - snapped side by side
+    const mainWindowWidth = Math.floor((screenWidth * 2) / 3);
+    const songWindowWidth = screenWidth - mainWindowWidth; // Ensure no gaps
+    const songWindowX = mainWindowWidth;
+
+    // Make windows non-resizable to maintain snap behavior
+    mainWindow.setResizable(false);
+    songWindow.setResizable(false);
+
+    // Main window takes 2/3 of screen - snapped to left
+    mainWindow.setBounds({
+      width: mainWindowWidth,
+      height: screenHeight,
+      x: 0,
+      y: 0,
+    });
+
+    // Song window takes remaining space - snapped to right
     songWindow.setFullScreen(false);
-    songWindow.minimize();
-    songWindow.hide();
+    songWindow.setBounds({
+      width: songWindowWidth,
+      height: screenHeight,
+      x: songWindowX,
+      y: 0,
+    });
+    songWindow.show();
+
+    // Prevent windows from being moved when snapped
+    mainWindow.setMovable(false);
+    songWindow.setMovable(false);
+
+    mainWindow.focus();
   }
 };
 
