@@ -132,14 +132,45 @@ export function previewSelectedSong(song) {
   preview_output.appendChild(container);
 
   const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
+
+  // Helper function to extract first part (before first <br>) from HTML content and remove spans
+  const getFirstPart = (htmlContent) => {
+    let firstPart = htmlContent.split("<br>")[0];
+    // Remove any span tags and their content
+    firstPart = firstPart.replace(/<span[^>]*>.*?<\/span>/gi, "");
+    // remove any html tags
+    firstPart = firstPart.replace(/<\/?[^>]+(>|$)/g, "");
+    return firstPart.trim();
+  };
+
   let slides = [];
+
+  // Function to add next slide starting line to the last slide
+  const addNextSlideStartingLine = (currentSlideContent) => {
+    if (slides.length > 0) {
+      let firstPart = getFirstPart(currentSlideContent);
+      console.log("firstPart", firstPart);
+      firstPart == "" ? (firstPart = "-----------") : firstPart;
+      const nextSlideDiv = document.createElement("div");
+      nextSlideDiv.classList.add("next_slide_starting_line");
+      nextSlideDiv.innerHTML = firstPart;
+      slides[slides.length - 1].appendChild(nextSlideDiv);
+    }
+  };
 
   // Prepare slides without appending them yet
   if ((chorusFirst && chorus.length > 0) || verses.length === 0) {
-    chorus.forEach((line) => {
+    chorus.forEach((line, index) => {
       let div = document.createElement("div");
       div.classList.add("chorus", "slide");
-      div.innerHTML = replaceLineBreaks(line);
+      let content = replaceLineBreaks(line);
+      div.innerHTML = content;
+
+      // Add next slide starting line to previous slide (starting from second slide)
+      if (index > 0) {
+        addNextSlideStartingLine(content);
+      }
+
       slides.push(div);
     });
   }
@@ -155,9 +186,16 @@ export function previewSelectedSong(song) {
         let div = document.createElement("div");
         div.classList.add("verse", "slide");
         div.dataset.verseNumber = verseNumber;
-        div.innerHTML = `<span class="verseNumber">${arabicNumber}</span><div>${replaceLineBreaks(
+        let content = `<span class="verseNumber">${arabicNumber}</span><div>${replaceLineBreaks(
           line
         )}</div>`;
+        div.innerHTML = content;
+
+        // Add next slide starting line to previous slide (starting from second slide)
+        if (slides.length > 0) {
+          addNextSlideStartingLine(content);
+        }
+
         slides.push(div);
       });
 
@@ -168,9 +206,16 @@ export function previewSelectedSong(song) {
           let div = document.createElement("div");
           div.classList.add("chorus", "slide");
           div.dataset.verseNumber = verseIndex + 1;
-          div.innerHTML = `<span class="chorusSymbol">${chorusSymbol}</span> ${replaceLineBreaks(
+          let content = `<span class="chorusSymbol">${chorusSymbol}</span> ${replaceLineBreaks(
             chorusLine
           )}`;
+          div.innerHTML = content;
+
+          // Add next slide starting line to previous slide
+          if (slides.length > 0) {
+            addNextSlideStartingLine(content);
+          }
+
           slides.push(div);
         });
       }
@@ -180,7 +225,14 @@ export function previewSelectedSong(song) {
   // create empty div
   let emptySlide = document.createElement("div");
   emptySlide.classList.add("verse", "slide");
-  emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;
+  let emptyContent = `<span class="verseNumber"></span><div></div>`;
+  emptySlide.innerHTML = emptyContent;
+
+  // Add next slide starting line to previous slide
+  if (slides.length > 0) {
+    addNextSlideStartingLine(emptyContent);
+  }
+
   slides.push(emptySlide);
 
   // Animate slides one by one

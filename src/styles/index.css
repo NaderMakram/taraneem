@@ -368,7 +368,7 @@ button#installBtn {
   display: none;
   font-weight: bold;
 }
-button#extendSongWindowButton {
+button#swapExternalWindows {
   display: flex;
   /* auto extend enabled */
   /* display: none; */
@@ -382,7 +382,7 @@ button#extendSongWindowButton {
   width: 44px;
   padding: 10px;
   } */
-button#extendSongWindowButton img {
+button#swapExternalWindows img {
   width: 30px;
 }
 

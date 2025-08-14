@@ -9,7 +9,7 @@ const fontSizeMinus = document.querySelector("#fontSizeMinus");
 
 // buttons
 const fontWeightBtn = document.querySelector("#bold");
-const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
+const swapExternalWindowsBtn = document.querySelector("#swapExternalWindows");
 const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
@@ -50,8 +50,8 @@ darkModeToggle.addEventListener("change", (e) => {
   window.myCustomAPI.toggleDarkMode();
 });
 
-extendSongWindowBtn.addEventListener("click", () => {
-  window.myCustomAPI.extendSongWindow();
+swapExternalWindowsBtn.addEventListener("click", () => {
+  window.myCustomAPI.swapExternalWindows();
 });
 
 quitAndInstallBtn.addEventListener("click", () => {
@@ -240,4 +240,18 @@ preview_output.addEventListener("click", (e) => {
     element.classList.add("active");
     newSlide(element.innerHTML);
   }
+});
+const extendNotice = document.getElementById("extendDisplayNotice");
+const closeExtendNotice = document.getElementById("closeExtendNotice");
+
+window.myCustomAPI.showExtendNotice(() => {
+  extendNotice.classList.remove("hidden");
+});
+
+window.myCustomAPI.hideExtendNotice(() => {
+  extendNotice.classList.add("hidden");
+});
+
+closeExtendNotice.addEventListener("click", () => {
+  extendNotice.classList.add("hidden");
 });

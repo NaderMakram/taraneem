@@ -14,3 +14,15 @@
 
   --border-radius-1: 12px;
 }
+
+.next_slide_starting_line {
+  color: var(--primary);
+  border-top: 1px dashed gray;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+#first-screen-body .next_slide_starting_line,
+#second-screen-body .next_slide_starting_line {
+  display: none !important;
+}

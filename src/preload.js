@@ -65,7 +65,7 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   },
   updateFontSize: (content) => ipcRenderer.send("update-font-size", content),
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
-  extendSongWindow: () => ipcRenderer.send("extend-song-window"),
+  swapExternalWindows: () => ipcRenderer.send("swap-external-windows"),
   toggleDarkMode: () => ipcRenderer.send("toggle-dark-mode"),
   getSiblingChapter: (content) =>
     ipcRenderer.invoke("get-sibling-chapter", content),
@@ -73,6 +73,11 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),
   createSortable: (el, options) => Sortable.create(el, options),
+
+  showExtendNotice: (callback) =>
+    ipcRenderer.on("show-extend-notice", callback),
+  hideExtendNotice: (callback) =>
+    ipcRenderer.on("hide-extend-notice", callback),
 });
 
 ipcRenderer.on("log", (event, message) => {

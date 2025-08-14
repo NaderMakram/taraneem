@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles/loader.css" />
     <link rel="stylesheet" href="styles/dragula.css" />
   </head>
-  <body class="waiting-mode">
+  <body class="waiting-mode" id="first-screen-body">
     <div id="version"></div>
     <button id="installBtn" class="gray-hover btn ripple">Restart</button>
     <div id="tools_bar">
@@ -67,8 +67,8 @@
       <!-- extend song window -->
       <button
         class="gray-hover"
-        id="extendSongWindowButton"
-        title="extend song window"
+        id="swapExternalWindows"
+        title="swap external windows"
       >
         <img src="./img/extend.png" />
       </button>
@@ -119,6 +119,15 @@
 
     <div id="scroll-top" class="ripple">
       <img src="./img/up.png" />
+    </div>
+
+    <!-- Extend display notice -->
+    <div id="extendDisplayNotice" class="extend-notice hidden">
+      <span class="warning">⚠️</span>
+      لا تنسَ الضغط على
+      <kbd>Windows</kbd> + <kbd>P</kbd>
+      ثم اختيار الخيار الثالث لتمديد العرض
+      <button id="closeExtendNotice">&times;</button>
     </div>
 
     <script src="./helpers/dragula.js"></script>

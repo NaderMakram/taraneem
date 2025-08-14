@@ -145,6 +145,7 @@ body:has(.song-body) {
   /* font-size: 5.6rem; */
   /* font-size: 7vw; */
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
