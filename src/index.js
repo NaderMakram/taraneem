@@ -525,10 +525,10 @@ let manageDisplays = () => {
     songWindow.setFullScreen(false);
 
     // Make them fixed in place like before
-    mainWindow.setResizable(false);
-    mainWindow.setMovable(false);
-    songWindow.setResizable(false);
-    songWindow.setMovable(false);
+    mainWindow.setResizable(true);
+    mainWindow.setMovable(true);
+    songWindow.setResizable(true);
+    songWindow.setMovable(true);
 
     // Main window on left 2/3
     mainWindow.setBounds({

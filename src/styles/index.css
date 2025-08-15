@@ -807,3 +807,39 @@ input[type="checkbox"]::before {
 .note {
   font-weight: bold;
 }
+
+.hidden {
+  display: none !important;
+}
+
+.extend-notice {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 100;
+  background: #f7f7b1;
+  border-radius: 90px;
+  padding: 7px 20px;
+  direction: rtl;
+  transform: translate(-50%, 14px);
+  min-width: 610px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+button#closeExtendNotice {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+button#closeExtendNotice:hover {
+  color: gray;
+}
+.extend-notice img {
+  width: 60px;
+}
