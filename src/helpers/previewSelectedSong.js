@@ -176,7 +176,9 @@ export function previewSelectedSong(song) {
   }
 
   if (verses.length > 0) {
+    let currentVerse;
     verses.forEach((verse, verseIndex) => {
+      currentVerse = verseIndex + 1;
       verse.forEach((line, lineIndex) => {
         let verseNumber = lineIndex === 0 ? verseIndex + 1 : "";
         let arabicNumber = verseNumber
@@ -195,6 +197,14 @@ export function previewSelectedSong(song) {
         if (slides.length > 0) {
           addNextSlideStartingLine(content);
         }
+
+        // add verse info
+        div.innerHTML += `
+        <div class="singers-verse-info">
+        <span class="total-verse">${verses.length}/</span>
+        <span class="current-verse">${currentVerse}</span>
+        </div>
+        `;
 
         slides.push(div);
       });
@@ -215,6 +225,14 @@ export function previewSelectedSong(song) {
           if (slides.length > 0) {
             addNextSlideStartingLine(content);
           }
+
+          // add verse info
+          div.innerHTML += `
+        <div class="singers-verse-info">
+        <span class="total-verse">${verses.length}/</span>
+          <span class="current-verse">${currentVerse}</span>
+        </div>
+        `;
 
           slides.push(div);
         });

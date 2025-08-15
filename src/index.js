@@ -348,13 +348,13 @@ const createThirdWindow = () => {
     thirdWindow.loadFile(path.join(__dirname, "singers.html"));
     thirdWindow.show();
 
-    thirdWindow.on("closed", () => {
-      thirdWindow = null; // Clean up reference
-    });
-
     if (isDev && showDevTools) {
       thirdWindow.webContents.openDevTools();
     }
+
+    thirdWindow.on("closed", () => {
+      thirdWindow = null; // Clean up reference
+    });
   }
 };
 

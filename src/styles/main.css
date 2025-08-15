@@ -26,3 +26,15 @@
 #second-screen-body .next_slide_starting_line {
   display: none !important;
 }
+.singers-verse-info {
+  display: none !important;
+}
+body#third-screen-body .singers-verse-info {
+  display: block !important;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-20vw, 2vw);
+  font-size: 2rem;
+  font-weight: 400;
+}
