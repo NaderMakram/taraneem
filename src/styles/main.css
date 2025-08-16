@@ -17,9 +17,10 @@
 
 .next_slide_starting_line {
   color: var(--primary);
+  font-size: 4rem;
   border-top: 1px dashed gray;
-  padding-top: 10px;
-  margin-top: 10px;
+  margin-top: 2rem !important;
+  line-height: 6rem;
 }
 
 #first-screen-body .next_slide_starting_line,
@@ -31,10 +32,9 @@
 }
 body#third-screen-body .singers-verse-info {
   display: block !important;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  transform: translate(-20vw, 2vw);
+  position: fixed;
+  bottom: 40px;
+  left: 60px;
   font-size: 2rem;
   font-weight: 400;
 }

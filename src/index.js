@@ -341,16 +341,16 @@ const createThirdWindow = () => {
       },
     });
 
+    if (isDev && showDevTools) {
+      thirdWindow.webContents.openDevTools();
+    }
+
     // Remove duplicate setFullScreen call - do it once
     thirdWindow.setFullScreen(true);
 
     thirdWindow.removeMenu();
     thirdWindow.loadFile(path.join(__dirname, "singers.html"));
     thirdWindow.show();
-
-    if (isDev && showDevTools) {
-      thirdWindow.webContents.openDevTools();
-    }
 
     thirdWindow.on("closed", () => {
       thirdWindow = null; // Clean up reference
@@ -443,6 +443,7 @@ let manageDisplays = () => {
     mainWindow.webContents.send("hide-extend-notice");
   }
 
+  // three displays case
   if (displays.length > 2) {
     // ≥3 displays case
     let secondScreen = displays[1];
@@ -613,7 +614,9 @@ ipcMain.on("swap-external-windows", () => {
 
     songWindow.setFullScreen(true);
     thirdWindow.setFullScreen(true);
+    thirdScreen;
   }
+  thirdWindow.webContents.openDevTools();
 });
 
 // verse number shortcut
