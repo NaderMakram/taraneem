@@ -234,9 +234,9 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  // if (isDev) {
-  //   mainWindow.webContents.openDevTools();
-  // }
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -312,7 +312,7 @@ const createSongWindow = () => {
     app.quit();
   });
   // if (isDev) {
-  //   songWindow.webContents.openDevTools();
+  songWindow.webContents.openDevTools();
   // }
 };
 
@@ -335,11 +335,11 @@ app.on("ready", () => {
       if (localStorage.dark_mode == "true") {
         // console.log(`dark mode: ${localStorage.dark_mode}`);
         // ipcMain.emit("toggle-dark-mode");
-        mainWindow.webContents.executeJavaScript(
-          `
-          document.querySelector("input#dark_mode_input").click()
-          `
-        );
+        // mainWindow.webContents.executeJavaScript(
+        //   `
+        //   document.querySelector("input#dark_mode_input").click()
+        //   `
+        // );
       }
       manageDisplays();
       mainWindow.focus();
@@ -376,8 +376,9 @@ ipcMain.on("update-font-size", (event, message) => {
 ipcMain.on("update-font-weight", (event) => {
   songWindow.webContents.send("update-font-weight");
 });
-ipcMain.on("toggle-dark-mode", (event, message) => {
-  songWindow.webContents.send("toggle-dark-mode");
+ipcMain.on("set-theme", (event, theme) => {
+  console.log("theme: ", theme);
+  songWindow.webContents.send("set-theme", theme);
 });
 
 let manageDisplays = () => {
@@ -505,7 +506,7 @@ app.on("activate", () => {
 app.on("ready", function () {
   let currentVersion = app.getVersion();
   updateVersionMessage(`Version: ${currentVersion}`);
-  autoUpdater.checkForUpdates();
+  // autoUpdater.checkForUpdates();
 });
 autoUpdater.on("checking-for-update", () => {
   updateVersionMessage("Checking for new version...");

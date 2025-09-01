@@ -5,8 +5,12 @@ ipcRenderer.on("update-font-size", (event, message) => {
   document.querySelector("body").style.fontSize = `${parseInt(message)}vw`;
 });
 
-ipcRenderer.on("toggle-dark-mode", (event, message) => {
-  document.body.classList.toggle("dark");
+ipcRenderer.on("set-theme", (event, theme) => {
+  // set body attribute
+  document.body.setAttribute("data-theme", theme);
+
+  // also keep it in localStorage if you want persistence
+  // localStorage.setItem("theme", theme);
 });
 
 ipcRenderer.on("update-font-weight", (event, message) => {

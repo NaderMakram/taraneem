@@ -15,7 +15,7 @@ const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
 const scrollToTop = document.querySelector("#scroll-top");
 
-const darkModeToggle = document.querySelector("input#dark_mode_input");
+const themeSelect = document.getElementById("theme_select");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
 // const waitingModeToggle = document.querySelector("input#waiting_mode_input");
 
@@ -45,9 +45,18 @@ whiteButton.addEventListener("click", () => {
   whiteButton.blur();
 });
 
-darkModeToggle.addEventListener("change", (e) => {
-  localStorage.setItem("dark_mode", e.target.checked);
-  window.myCustomAPI.toggleDarkMode();
+// darkModeToggle.addEventListener("change", (e) => {
+//   localStorage.setItem("dark_mode", e.target.checked);
+//   window.myCustomAPI.toggleDarkMode();
+// });
+themeSelect.addEventListener("change", (e) => {
+  const theme = e.target.value; // "light", "dark", "solarized-dark", etc.
+
+  // save choice
+  localStorage.setItem("theme", theme);
+
+  // send to main / apply immediately
+  window.myCustomAPI.setTheme(theme);
 });
 
 extendSongWindowBtn.addEventListener("click", () => {

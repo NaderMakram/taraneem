@@ -24,7 +24,7 @@
     artifactName: "${productName}-Windows-${version}-Setup.${ext}",
     publish: ["github"],
   },
-  icon: "./src/assets/taraneem.ico",
+  icon: "./src/assets/taraneem-dark.ico",
   nsis: {
     oneClick: true,
     perMachine: false,

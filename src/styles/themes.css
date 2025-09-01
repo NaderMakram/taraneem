@@ -1,0 +1,59 @@
+/* light theme */
+body[data-theme="light"] {
+  color: rgb(25, 25, 25);
+  background-color: #f9f9f9;
+}
+body[data-theme="light"] .chorusSymbol,
+body[data-theme="light"] .verseNumber,
+body[data-theme="dark"] .chorusSymbol,
+body[data-theme="dark"] .verseNumber,
+body[data-theme="dark"] .bible-head {
+  color: var(--primary);
+}
+
+/* dark theme */
+body[data-theme="dark"] {
+  background-image: none;
+  background-color: var(--dark);
+  color: whitesmoke;
+  text-shadow: none;
+}
+
+body[data-theme="dark"] * {
+  text-shadow: none;
+}
+
+/* wedding 1 */
+/* songs */
+body[data-theme="wedding1"] {
+  background-image: url("../img/wedding1.jpg");
+  background-size: cover;
+  color: #2c1e13;
+}
+
+/* bible style */
+body[data-theme="wedding1"]:has(#content > .bible-container) {
+  background: #fff6ef;
+  background-image: none;
+}
+
+/* wedding 2 */
+/* songs */
+body[data-theme="wedding2"] {
+  background-image: url("../img/wedding2.png");
+  background-size: cover;
+  color: #2f3d4e;
+}
+
+/* bible style */
+body[data-theme="wedding2"]:has(#content > .bible-container) {
+  background-image: url("../img/wedding2-bible.png");
+}
+
+/* accent */
+body[data-theme="wedding2"] .chorusSymbol,
+body[data-theme="wedding2"] .verseNumber,
+body[data-theme="wedding2"] .bible-head {
+  /* color: #f5d486; */
+  color: #985744;
+}

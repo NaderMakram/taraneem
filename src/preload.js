@@ -66,7 +66,8 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateFontSize: (content) => ipcRenderer.send("update-font-size", content),
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
   extendSongWindow: () => ipcRenderer.send("extend-song-window"),
-  toggleDarkMode: () => ipcRenderer.send("toggle-dark-mode"),
+  setTheme: (theme) => ipcRenderer.send("set-theme", theme),
+
   getSiblingChapter: (content) =>
     ipcRenderer.invoke("get-sibling-chapter", content),
   quitAndInstall: () => ipcRenderer.send("quit-and-install"),

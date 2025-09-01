@@ -40,19 +40,12 @@ html {
 }
 body {
   color: rgb(25, 25, 25);
-  /* color: rgb(21, 23, 29); */
-  /* background-color: #fcfcfc; */
   background-color: #f9f9f9;
   user-select: none;
 
   min-height: 90vh;
   padding: 5vh 6vw;
   margin: 0;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
-  /* background-image: url("../img/clean-gray-paper-40.png"); */
-  /* background-image: url("../img/cream-paper.png"); */
   background-repeat: repeat;
   transition: opacity 0.3s;
 }
@@ -107,7 +100,6 @@ body::-webkit-scrollbar {
   /* padding-top: 1vw; */
   line-height: 1em;
   font-size: 3.8vw;
-  color: var(--primary);
 
   display: flex;
   justify-content: center;
@@ -159,15 +151,14 @@ body:has(.song-body) {
 }
 
 /* song style */
-.dark {
-  /* background-color: rgba(0, 0, 0, 0.95); */
+/* .dark {
   background-image: none;
   background-color: var(--dark);
   color: whitesmoke;
 }
 .dark * {
   text-shadow: none;
-}
+} */
 .fade-in-out {
   opacity: 0;
   transition: opacity 150ms ease-in-out;
@@ -180,7 +171,6 @@ body:has(.song-body) {
 .bold {
   font-weight: bold;
 }
-
 .chorusSymbol,
 .verseNumber {
   position: absolute;
@@ -189,5 +179,4 @@ body:has(.song-body) {
   transform: translate(0.7rem, -0.3rem);
   display: block;
   font-size: 0.5em;
-  color: var(--primary);
 }
