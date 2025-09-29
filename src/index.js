@@ -311,9 +311,9 @@ const createSongWindow = () => {
   songWindow.on("closed", () => {
     app.quit();
   });
-  // if (isDev) {
-  songWindow.webContents.openDevTools();
-  // }
+  if (isDev) {
+    songWindow.webContents.openDevTools();
+  }
 };
 
 // update version message
