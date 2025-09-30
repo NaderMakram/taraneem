@@ -3,9 +3,6 @@ const Sortable = require("sortablejs");
 const fs = require("fs");
 const path = require("path");
 
-const songsDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
-);
 const bibleDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
@@ -43,18 +40,49 @@ const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
   )
 );
 
-const songsWithSearchableContent = songsDB.map((song, index) => {
-  return {
-    ...song,
-    searchableContent: createSearchableContent(song),
-    custom_ref: `song-${index}`,
-  };
-});
+function loadSongs() {
+  let localSongsDB = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "localTaraneemDB.json"), "utf-8")
+  );
+
+  let localSongsWithSearchableContent = localSongsDB.map((song, index) => {
+    return {
+      ...song,
+      searchableContent: createSearchableContent(song),
+      custom_ref: `local-song-${index}`,
+    };
+  });
+
+  const songsDB = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
+  );
+
+  let songsWithSearchableContent = songsDB.map((song, index) => {
+    return {
+      ...song,
+      searchableContent: createSearchableContent(song),
+      custom_ref: `song-${index}`,
+    };
+  });
+
+  return [...songsWithSearchableContent, ...localSongsWithSearchableContent];
+}
+
+// Initial load
+let songsWithSearchableContent = loadSongs();
 
 contextBridge.exposeInMainWorld("myCustomAPI", {
   bibleDBIndexed,
-  songsWithSearchableContent,
+  getSongs: () => songsWithSearchableContent,
+
+  reloadSongs: () => {
+    songsWithSearchableContent = loadSongs();
+    return songsWithSearchableContent;
+  },
+
   bibleVerses,
+  saveSong: (song) => ipcRenderer.invoke("save-song", song),
+
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
   flipSearchingMode: () => ipcRenderer.send("flip-searching-mode"),
   searchTerm: (term) => ipcRenderer.invoke("search-songs", term),

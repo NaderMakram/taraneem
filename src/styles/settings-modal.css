@@ -1,0 +1,236 @@
+/* settings-modal.css (copy to your CSS folder) */
+
+.settings-modal {
+  position: fixed;
+  inset: 0;
+  display: none; /* hidden by default */
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial;
+}
+
+.settings-modal.open {
+  display: flex;
+}
+
+/* overlay */
+.settings-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(1px);
+}
+
+/* panel */
+.settings-panel {
+  position: relative;
+  z-index: 2;
+  width: min(920px, calc(100% - 48px));
+  max-height: calc(100vh - 80px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* header */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+.settings-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.settings-back-btn,
+.settings-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+/* body */
+.settings-body {
+  padding: 18px;
+  overflow: auto;
+  min-height: 240px;
+}
+
+/* pages */
+.settings-page {
+  display: block;
+}
+.settings-page[hidden] {
+  display: none;
+}
+
+/* simple buttons */
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+.btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+/* small responsive tweaks */
+@media (max-width: 560px) {
+  .settings-panel {
+    width: calc(100% - 24px);
+    border-radius: 8px;
+  }
+}
+
+/* Song form styles */
+.song-form .form-group {
+  margin-bottom: 20px;
+}
+
+.song-form label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.song-form input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px dashed #aaa;
+  border-radius: 6px;
+}
+
+.song-form textarea {
+  width: 100%;
+  min-height: 60px;
+  resize: none;
+  padding: 8px;
+  border: 1px dashed #aaa;
+  border-radius: 6px;
+  line-height: 1.4;
+  font-family: inherit;
+  margin-bottom: 8px;
+}
+
+.slides-container,
+.verses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Slide wrapper */
+.slide-box {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  background: #fafafa;
+}
+
+.slide-box button.delete-btn {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border: none;
+  background: none;
+  color: #b00;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Add buttons */
+.add-btn {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+
+.btn.primary {
+  background: #0078d4;
+  border: 1px solid #0078d4;
+  color: white;
+}
+
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* testing */
+.section {
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f8f8f8;
+}
+
+.section h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #444;
+}
+
+.verse-box {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px dashed #bbb;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.verse-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.slide-box {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.slide-box textarea {
+  width: 100%;
+  min-height: 50px;
+  resize: none;
+  padding: 8px;
+  background: #eee;
+  border: 1px dashed #aaa;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.slide-box button.delete-slide {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 12px;
+  background: #ff6b6b;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+}

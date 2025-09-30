@@ -85,7 +85,7 @@ export async function searchAndDisplayResults(term) {
 
   currentWorker.postMessage({
     term,
-    songsWithSearchableContent: myCustomAPI.songsWithSearchableContent,
+    songsWithSearchableContent: myCustomAPI.getSongs(),
     bibleDBIndexed: myCustomAPI.bibleDBIndexed,
     bibleVerses: myCustomAPI.bibleVerses,
   });

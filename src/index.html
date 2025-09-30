@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/index.css" />
     <link rel="stylesheet" href="styles/loader.css" />
     <link rel="stylesheet" href="styles/dragula.css" />
+    <link rel="stylesheet" href="styles/settings-modal.css" />
   </head>
   <body class="waiting-mode">
     <div id="version"></div>
@@ -73,6 +74,14 @@
         <img src="./img/extend.png" />
       </button>
 
+      <button
+        id="open-settings-btn"
+        class="icon-btn"
+        aria-label="Open settings"
+      >
+        ⚙️
+      </button>
+
       <!-- verse switch screen -->
       <div id="slide-screen"></div>
     </div>
@@ -117,11 +126,117 @@
       </div>
     </div>
 
+    <!-- positioned absolute -->
+
     <div id="scroll-top" class="ripple">
       <img src="./img/up.png" />
     </div>
 
-    <script src="./helpers/dragula.js"></script>
+    <div
+      id="settings-modal"
+      class="settings-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="settings-overlay" data-action="close"></div>
+
+      <div
+        class="settings-panel"
+        role="document"
+        aria-labelledby="settings-title"
+      >
+        <header class="settings-header">
+          <button
+            class="settings-back-btn"
+            aria-label="Back"
+            title="Back"
+            hidden
+          >
+            ←
+          </button>
+          <h2 id="settings-title" class="settings-title">Settings</h2>
+          <button class="settings-close-btn" aria-label="Close" title="Close">
+            ✕
+          </button>
+        </header>
+
+        <main class="settings-body">
+          <!-- Page: Menu -->
+          <section class="settings-page" data-page="menu">
+            <ul class="settings-options">
+              <li>
+                <button class="settings-option" data-nav-to="songs-management">
+                  Songs management
+                </button>
+              </li>
+              <!-- future options go here -->
+            </ul>
+          </section>
+
+          <!-- Page: Songs Management (list stub) -->
+          <section class="settings-page" data-page="songs-management" hidden>
+            <h3>Songs Management</h3>
+            <div class="songs-actions">
+              <button class="" data-nav-to="add-new-song">Add new song</button>
+            </div>
+
+            <!-- later: table/list/search UI will go here -->
+          </section>
+
+          <!-- Page: Add New Song (placeholder) -->
+          <section class="settings-page" data-page="add-new-song" hidden>
+            <!-- Form Container -->
+            <div class="form-container">
+              <h2>Add New Song</h2>
+
+              <!-- Title -->
+              <label for="song-title">Title *</label>
+              <input
+                type="text"
+                id="song-title"
+                placeholder="Enter song title"
+                required
+              />
+
+              <!-- Chorus First -->
+              <div class="field">
+                <label>
+                  <input type="checkbox" id="chorus-first" />
+                  Start with Chorus
+                </label>
+              </div>
+
+              <!-- Chorus Section -->
+              <div id="chorus-section" class="section">
+                <h3>Chorus</h3>
+                <div class="slides-container" id="chorus-slides"></div>
+                <button type="button" id="add-chorus-slide">
+                  + Add Chorus Slide
+                </button>
+              </div>
+
+              <!-- Verses Section -->
+              <div id="verses-section" class="section">
+                <h3>Verses</h3>
+                <div id="verses-container"></div>
+                <button type="button" id="add-verse">+ Add Verse</button>
+              </div>
+
+              <!-- Save -->
+              <button id="save-song">Save Song</button>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- renderer -->
     <script src="renderer.js" type="module"></script>
+    <!-- dragula -->
+    <script src="./helpers/dragula.js"></script>
+    <!-- modal -->
+    <script src="./helpers/settings-modal.js"></script>
+    <script src="./helpers/addNewSong.js"></script>
   </body>
 </html>
