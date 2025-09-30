@@ -35,6 +35,13 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  direction: rtl;
+  --primary-color: #007bff;
+  --primary-color-hover: #0056b3;
+  --border-color: #ced4da;
+  --background-color: #f8f9fa;
+  --text-color: #212529;
+  --label-color: #495057;
 }
 
 /* header */
@@ -81,13 +88,6 @@
   cursor: pointer;
   font-size: 18px;
 }
-.btn {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #fafafa;
-  cursor: pointer;
-}
 
 /* small responsive tweaks */
 @media (max-width: 560px) {
@@ -97,140 +97,166 @@
   }
 }
 
-/* Song form styles */
-.song-form .form-group {
-  margin-bottom: 20px;
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.song-form label {
+.settings-body h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0;
+}
+
+.settings-body h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.settings-body label {
   font-weight: 500;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.song-form input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  border: 1px dashed #aaa;
-  border-radius: 6px;
-}
-
-.song-form textarea {
-  width: 100%;
-  min-height: 60px;
-  resize: none;
-  padding: 8px;
-  border: 1px dashed #aaa;
-  border-radius: 6px;
-  line-height: 1.4;
-  font-family: inherit;
+  color: var(--label-color);
   margin-bottom: 8px;
+  display: block;
+  text-align: right;
+}
+
+.settings-body input[type="text"],
+.settings-body textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.settings-body input[type="text"]:focus,
+.settings-body textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.settings-body .field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-body .section {
+  background-color: var(--background-color);
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 10px 0;
+}
+
+.settings-body button,
+.settings-body .btn {
+  padding: 10px 16px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+.settings-body .btn.primary,
+.settings-body #save-song {
+  background-color: var(--primary-color);
+  color: white;
+  align-self: flex-start;
+  border: none;
+}
+
+.settings-body .btn.primary:hover,
+.settings-body #save-song:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.settings-body #add-chorus-slide,
+.settings-body #add-verse {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.settings-body #add-chorus-slide:hover,
+.settings-body #add-verse:hover {
+  background-color: #5a6268;
 }
 
 .slides-container,
 .verses-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
-/* Slide wrapper */
-.slide-box {
-  position: relative;
-  border: 1px solid #ddd;
+.settings-body .slide-box {
+  background-color: white;
+  border: 1px solid #dee2e6;
   border-radius: 8px;
-  padding: 8px;
-  background: #fafafa;
+  padding: 12px;
+  position: relative;
 }
 
-.slide-box button.delete-btn {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  border: none;
-  background: none;
-  color: #b00;
-  font-weight: bold;
-  cursor: pointer;
+.settings-body .slide-box textarea {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
 }
 
-/* Add buttons */
-.add-btn {
-  margin-top: 8px;
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  background: #f8f8f8;
-  border-radius: 6px;
-  cursor: pointer;
-  padding: 6px 10px;
-}
-
-.btn.primary {
-  background: #0078d4;
-  border: 1px solid #0078d4;
-  color: white;
+.settings-body .slide-box .delete-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .form-actions {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
 }
 
-/* testing */
-.section {
-  margin: 20px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #f8f8f8;
+.settings-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.section h3 {
-  margin-top: 0;
-  font-size: 16px;
-  color: #444;
+.settings-option {
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: none;
+    text-align: right;
+    font-size: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
 }
 
-.verse-box {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px dashed #bbb;
-  border-radius: 4px;
-  background: #fafafa;
+.settings-option:hover {
+    background-color: #f8f9fa;
 }
 
-.verse-box h4 {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  color: #555;
-}
-
-.slide-box {
-  position: relative;
-  margin-bottom: 10px;
-}
-
-.slide-box textarea {
-  width: 100%;
-  min-height: 50px;
-  resize: none;
-  padding: 8px;
-  background: #eee;
-  border: 1px dashed #aaa;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.slide-box button.delete-slide {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  font-size: 12px;
-  background: #ff6b6b;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 2px 6px;
+.songs-actions {
+    margin-bottom: 16px;
 }

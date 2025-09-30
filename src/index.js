@@ -235,9 +235,9 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  // if (isDev) {
+  //   mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.on("closed", () => {
     app.quit();

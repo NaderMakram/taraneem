@@ -77,7 +77,7 @@
       <button
         id="open-settings-btn"
         class="icon-btn"
-        aria-label="Open settings"
+        aria-label="إعدادات"
       >
         ⚙️
       </button>
@@ -149,14 +149,14 @@
         <header class="settings-header">
           <button
             class="settings-back-btn"
-            aria-label="Back"
-            title="Back"
+            aria-label="رجوع"
+            title="رجوع"
             hidden
           >
-            ←
+            →
           </button>
-          <h2 id="settings-title" class="settings-title">Settings</h2>
-          <button class="settings-close-btn" aria-label="Close" title="Close">
+          <h2 id="settings-title" class="settings-title">الإعدادات</h2>
+          <button class="settings-close-btn" aria-label="إغلاق" title="إغلاق">
             ✕
           </button>
         </header>
@@ -167,7 +167,7 @@
             <ul class="settings-options">
               <li>
                 <button class="settings-option" data-nav-to="songs-management">
-                  Songs management
+                  إدارة الترانيم
                 </button>
               </li>
               <!-- future options go here -->
@@ -176,9 +176,9 @@
 
           <!-- Page: Songs Management (list stub) -->
           <section class="settings-page" data-page="songs-management" hidden>
-            <h3>Songs Management</h3>
+            <h3>إدارة الترانيم</h3>
             <div class="songs-actions">
-              <button class="" data-nav-to="add-new-song">Add new song</button>
+              <button class="btn" data-nav-to="add-new-song">إضافة ترنيمة جديدة</button>
             </div>
 
             <!-- later: table/list/search UI will go here -->
@@ -188,14 +188,14 @@
           <section class="settings-page" data-page="add-new-song" hidden>
             <!-- Form Container -->
             <div class="form-container">
-              <h2>Add New Song</h2>
+              <h2>إضافة ترنيمة جديدة</h2>
 
               <!-- Title -->
-              <label for="song-title">Title *</label>
+              <label for="song-title">العنوان *</label>
               <input
                 type="text"
                 id="song-title"
-                placeholder="Enter song title"
+                placeholder="ادخل عنوان الترنيمة"
                 required
               />
 
@@ -203,28 +203,28 @@
               <div class="field">
                 <label>
                   <input type="checkbox" id="chorus-first" />
-                  Start with Chorus
+                  البدء بالقرار
                 </label>
               </div>
 
               <!-- Chorus Section -->
               <div id="chorus-section" class="section">
-                <h3>Chorus</h3>
+                <h3>القرار</h3>
                 <div class="slides-container" id="chorus-slides"></div>
-                <button type="button" id="add-chorus-slide">
-                  + Add Chorus Slide
+                <button type="button" id="add-chorus-slide" class="btn">
+                  + إضافة شريحة قرار
                 </button>
               </div>
 
               <!-- Verses Section -->
               <div id="verses-section" class="section">
-                <h3>Verses</h3>
+                <h3>الأبيات</h3>
                 <div id="verses-container"></div>
-                <button type="button" id="add-verse">+ Add Verse</button>
+                <button type="button" id="add-verse" class="btn">+ إضافة بيت</button>
               </div>
 
               <!-- Save -->
-              <button id="save-song">Save Song</button>
+              <button id="save-song" class="btn primary">حفظ الترنيمة</button>
             </div>
           </section>
         </main>
