@@ -109,7 +109,7 @@ export function previewSelectedChapter(chapter) {
 // preview selected song
 export function previewSelectedSong(song) {
   console.log(song);
-  let { title, chorus, verses, chorusFirst, custom_ref } = song;
+  let { title, chorus, verses, chorusFirst, custom_ref, lastKnownVerse } = song;
   // Clear previous content
   preview_output.innerHTML = "";
 
@@ -174,10 +174,19 @@ export function previewSelectedSong(song) {
           slides.push(div);
         });
       }
+
+      console.log(verseIndex, lastKnownVerse);
+      // add empty slide after last known verse
+      if (verseIndex === lastKnownVerse - 1) {
+        let emptySlide = document.createElement("div");
+        emptySlide.classList.add("verse", "slide", "lastKnownVerse");
+        emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;
+        slides.push(emptySlide);
+      }
     });
   }
 
-  // create empty div
+  // create empty div at the end
   let emptySlide = document.createElement("div");
   emptySlide.classList.add("verse", "slide");
   emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;

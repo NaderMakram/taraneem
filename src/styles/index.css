@@ -137,9 +137,24 @@ h2 {
     background-color 200ms ease-in-out;
 }
 
+.slide.lastKnownVerse {
+  position: relative;
+  margin-bottom: 55px;
+}
+
+.slide.lastKnownVerse:after {
+  content: "الأعداد التالية غير معروفة للكل";
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: -35px;
+  color: var(--primary);
+}
+
 .song-preview .slide:hover,
 .song-preview .slide.active {
-  background: rgba(149, 157, 165, 0.03);
+  /* background: rgba(149, 157, 165, 0.03); */
+  background: #fcfcfc;
 }
 
 .song-preview .slide div {
