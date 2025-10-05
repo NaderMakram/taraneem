@@ -131,7 +131,23 @@ export function previewSelectedSong(song) {
   container.classList.add("song-preview");
   preview_output.appendChild(container);
 
-  const replaceLineBreaks = (text) => text.replace(/\n/g, "<br>");
+  const replaceLineBreaks = (text) => {
+    const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+
+    return (
+      "<div>" +
+      text.replace(/\n/g, "</div><div>").replace(/\d+/g, (match) => {
+        // Convert each digit to its Arabic equivalent
+        const arabicNumber = match
+          .split("")
+          .map((digit) => arabicDigits[parseInt(digit)])
+          .join("");
+        return `<span class="repeat-number">${arabicNumber}</span>`;
+      }) +
+      "</div>"
+    );
+  };
+
   let slides = [];
 
   // Prepare slides without appending them yet

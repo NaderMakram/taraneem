@@ -104,7 +104,7 @@ function createSearchableContent(song) {
     : "";
   // const content = normalize(`${title} ${chorusText} ${versesText}`);
   let searchableSong = {
-    title: title,
+    title: normalize(title),
     chorus: normalize(chorusText),
     verses: normalize(versesText),
     firstVerse: verses[0] ? normalize(verses[0].join(" ")) : "",

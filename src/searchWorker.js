@@ -56,6 +56,7 @@ function performChapterSearch(term, bibleChapters) {
     .sort((a, b) => b.score - a.score); // Sort by score (highest first)
 }
 
+// let i = 0;
 function searchSongs(term, songsWithSearchableContent) {
   return songsWithSearchableContent
     .map((item) => {
@@ -66,6 +67,12 @@ function searchSongs(term, songsWithSearchableContent) {
 
       // Check Title
       let index = title.indexOf(term);
+      // if (i < 4) {
+      //   console.log("term: " + term);
+      //   console.log("title: " + title);
+      //   console.log(item.searchableContent);
+      //   i++;
+      // }
       if (index !== -1) {
         score += 10;
         matchedKey = "title";
