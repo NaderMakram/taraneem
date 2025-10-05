@@ -244,7 +244,12 @@ export function selectSongEventFunction(e) {
 
   if (clickedDelete) {
     let clickedId = e.target.parentNode.getAttribute("data-id");
-    // console.log(clickedId);
+    let currentSelectedSong = document.querySelector(
+      "#waiting_output .selectedSong"
+    );
+    let currentSelectedSongId = currentSelectedSong
+      ? currentSelectedSong.getAttribute("data-id")
+      : null;
     waiting = waiting.filter((item) => item.wairing_id != clickedId);
 
     // remove the deleted song/chapter from the dom
@@ -258,6 +263,13 @@ export function selectSongEventFunction(e) {
     // update localstorage
 
     displayWaitingList(waiting);
+    if (currentSelectedSongId && clickedId != currentSelectedSongId) {
+      document
+        .querySelector(
+          "#waiting_output div[data-id='" + currentSelectedSongId + "']"
+        )
+        .classList.add("selectedSong");
+    }
     return;
   }
   if (clickedPlus) {
