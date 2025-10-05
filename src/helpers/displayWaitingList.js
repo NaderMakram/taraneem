@@ -4,6 +4,12 @@ function truncate(str, max_length) {
 export function displayWaitingList(waiting) {
   // console.log("waiting");
   // console.log(waiting);
+  let currentSelectedSong = document.querySelector(
+    "#waiting_output .selectedSong"
+  );
+  let currentSelectedSongId = currentSelectedSong
+    ? currentSelectedSong.getAttribute("data-id")
+    : null;
   localStorage.setItem("waiting_list", JSON.stringify(waiting));
   let htmlData = waiting
     .map(
@@ -100,5 +106,13 @@ export function displayWaitingList(waiting) {
       `;
   } else {
     waiting_output.innerHTML = htmlData;
+    if (currentSelectedSongId) {
+      let newCurrentSelectedSongId = document.querySelector(
+        "#waiting_output div[data-id='" + currentSelectedSongId + "']"
+      );
+      if (newCurrentSelectedSongId) {
+        newCurrentSelectedSongId.classList.add("selectedSong");
+      }
+    }
   }
 }
