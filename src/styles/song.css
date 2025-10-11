@@ -192,3 +192,14 @@ body:has(.song-body) {
   font-size: 0.5em;
   color: var(--primary);
 }
+
+.verse-line {
+  display: flex;
+  justify-content: center;
+}
+
+.repeat-number {
+  margin-right: 15px;
+  font-size: 0.7em;
+  transform: translateY(0.3em);
+}

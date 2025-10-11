@@ -135,15 +135,17 @@ export function previewSelectedSong(song) {
     const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
 
     return (
-      "<div>" +
-      text.replace(/\n/g, "</div><div>").replace(/\d+/g, (match) => {
-        // Convert each digit to its Arabic equivalent
-        const arabicNumber = match
-          .split("")
-          .map((digit) => arabicDigits[parseInt(digit)])
-          .join("");
-        return `<span class="repeat-number">${arabicNumber}</span>`;
-      }) +
+      "<div class='verse-line'>" +
+      text
+        .replace(/\n/g, "</div><div class='verse-line'>")
+        .replace(/\d+/g, (match) => {
+          // Convert each digit to its Arabic equivalent
+          const arabicNumber = match
+            .split("")
+            .map((digit) => arabicDigits[parseInt(digit)])
+            .join("");
+          return `<span class="repeat-number">${arabicNumber}</span>`;
+        }) +
       "</div>"
     );
   };
