@@ -1,0 +1,237 @@
+section[data-page="add-new-song"] {
+  width: 500px;
+  margin: 0 auto;
+  padding: 30px 0;
+}
+
+.new-song-notes {
+  cursor: unset;
+}
+
+.new-song-notes ul {
+  text-align: right;
+  line-height: 1.5em;
+}
+
+section[data-page="add-new-song"] input#song-title {
+  direction: rtl;
+  text-align: center;
+  background: rgb(243, 243, 243);
+  border-radius: var(--border-radius-1);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 2em;
+  z-index: 100;
+  overflow: hidden;
+  border: none;
+  padding: 12px;
+}
+input[type="checkbox"] {
+  transform: scale(1.5);
+  margin-left: 10px;
+  cursor: pointer;
+}
+.slide-textarea {
+  text-align: center;
+  direction: rtl;
+  padding: 2rem 1rem;
+  font-family: "MyCalibri";
+  font-size: 1.15rem;
+  border: 2px dashed rgb(216, 216, 216);
+  border-radius: var(--border-radius-1);
+  cursor: pointer;
+  transition: opacity 200ms ease-out, transform 200ms ease-out,
+    background-color 200ms ease-in-out;
+  width: 450px;
+  overflow: hidden;
+  height: 4.5em;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* .settings-body input[type="text"],
+.settings-body textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+} */
+
+.settings-body input[type="text"]:focus,
+.settings-body textarea:focus {
+  outline: none;
+  /* border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); */
+}
+
+.settings-body .field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#chorus-section,
+.verse-box {
+  background-color: var(--background-color);
+  border: 1px solid #dee2e6;
+  border-radius: var(--border-radius-1);
+  padding: 16px;
+}
+.verse-box {
+  margin-bottom: 30px;
+}
+
+/* .settings-body button,
+.settings-body .btn {
+  padding: 10px 16px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+} */
+
+.add-new-slide-btn,
+.add-new-verse-btn {
+  font-size: 1rem;
+  padding: 10px 15px;
+  border-radius: var(--border-radius-1);
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+  background: none !important;
+  color: gray !important;
+  border: 1px solid gray !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.add-new-slide-btn img,
+.add-new-verse-btn img {
+  width: 20px;
+}
+.delete-verse-btn {
+  background: var(--primary);
+}
+.settings-body .btn.primary,
+.settings-body #save-song {
+  background-color: var(--secondary);
+  color: white;
+  align-self: flex-start;
+  border: none;
+  width: 100%;
+  font-size: 1.5rem;
+  padding: 15px;
+  border-radius: var(--border-radius-1);
+  margin-top: 30px;
+  cursor: pointer;
+}
+
+.settings-body .btn.primary:hover,
+.settings-body #save-song:hover {
+  background-color: var(--secondary-hover);
+}
+
+.settings-body #add-chorus-slide,
+.settings-body #add-verse {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.settings-body #add-chorus-slide:hover,
+.settings-body #add-verse:hover {
+  background-color: #5a6268;
+}
+
+.slides-container,
+.verses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-body .slide-box {
+  border-radius: var(--border-radius-1);
+  position: relative;
+}
+
+/* .settings-body .slide-box textarea {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+} */
+
+.delete-slide {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 12px;
+  left: 26px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+
+  opacity: 0.8;
+  transition: transform 200ms;
+}
+
+.delete-slide:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.delete-slide img {
+  width: 24px;
+}
+
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.settings-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.settings-option {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  text-align: right;
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.settings-option:hover {
+  background-color: #f8f9fa;
+}
+
+.songs-actions {
+  margin-bottom: 16px;
+}
+
+#new-song-section h5 {
+  margin-bottom: 0px;
+  font-size: 1.2rem;
+}

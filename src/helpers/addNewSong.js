@@ -3,27 +3,55 @@ document.addEventListener("DOMContentLoaded", () => {
   const addChorusSlideBtn = document.getElementById("add-chorus-slide");
   const versesContainer = document.getElementById("verses-container");
   const addVerseBtn = document.getElementById("add-verse");
+  const noChorus = document.getElementById("no-chorus");
   const saveBtn = document.getElementById("save-song");
 
-  // Utility: auto-grow textareas
-  function autoGrow(el) {
-    el.style.height = "auto";
-    el.style.height = el.scrollHeight + "px";
+  // Utility: limit textareas to 5 lines max
+  function limitToFiveLines(el) {
+    const lines = el.value.split("\n");
+    if (lines.length > 5) {
+      el.value = lines.slice(0, 5).join("\n");
+    } else {
+      el.style.height = `calc(${lines.length + 2} * 1.5em)`;
+    }
   }
 
   // Create Slide Box
-  function createSlideBox(placeholder = "Enter slide text") {
+  function createSlideBox(placeholder = "اكتب النص هنا...") {
     const slideBox = document.createElement("div");
     slideBox.className = "slide-box";
 
     const textarea = document.createElement("textarea");
     textarea.placeholder = placeholder;
-    textarea.addEventListener("input", () => autoGrow(textarea));
+    textarea.className = "slide-textarea";
+
+    // Style constraints
+    textarea.style.resize = "none";
+    textarea.style.overflow = "hidden";
+    textarea.style.lineHeight = "1.5em";
+    textarea.rows = 5;
+
+    // Limit input to 5 lines
+    textarea.addEventListener("input", () => limitToFiveLines(textarea));
 
     const delBtn = document.createElement("button");
     delBtn.className = "delete-slide";
-    delBtn.textContent = "×";
-    delBtn.addEventListener("click", () => slideBox.remove());
+    delBtn.innerHTML = "<img src='./img/minus-64.png'/>";
+
+    delBtn.addEventListener("click", () => {
+      const slidesContainer = slideBox.parentElement;
+      const verseBox = slidesContainer.closest(".verse-box");
+      slideBox.remove();
+
+      // Automatically delete verse if it has no slides left
+      if (
+        slidesContainer.classList.contains("slides-container") &&
+        slidesContainer.children.length === 0
+      ) {
+        verseBox.remove();
+        updateVerseTitles();
+      }
+    });
 
     slideBox.appendChild(delBtn);
     slideBox.appendChild(textarea);
@@ -32,7 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add chorus slide
   addChorusSlideBtn.addEventListener("click", () => {
-    chorusSlidesContainer.appendChild(createSlideBox("Enter chorus slide"));
+    chorusSlidesContainer.appendChild(
+      createSlideBox("اكمل كتابة القرار هنا...")
+    );
   });
 
   // Add verse
@@ -43,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     verseBox.className = "verse-box";
 
     const verseTitle = document.createElement("h4");
-    verseTitle.textContent = `Verse ${verseIndex}`;
+    verseTitle.textContent = `عدد ${verseIndex}`;
     verseBox.appendChild(verseTitle);
 
     const slidesContainer = document.createElement("div");
@@ -51,25 +81,29 @@ document.addEventListener("DOMContentLoaded", () => {
     verseBox.appendChild(slidesContainer);
 
     // First slide automatically
-    slidesContainer.appendChild(createSlideBox("Enter verse slide"));
+    slidesContainer.appendChild(createSlideBox("ابدأ بكتابة العدد هنا..."));
 
     const addSlideBtn = document.createElement("button");
     addSlideBtn.type = "button";
-    addSlideBtn.textContent = "+ Add Verse Slide";
+    addSlideBtn.className = "add-new-slide-btn";
+    addSlideBtn.innerHTML =
+      "أضف شريحة جيدة لهذا العدد<img src='./img/plus.svg' />";
     addSlideBtn.addEventListener("click", () => {
-      slidesContainer.appendChild(createSlideBox("Enter verse slide"));
+      slidesContainer.appendChild(createSlideBox("اكمل كتابة العدد هنا..."));
     });
     verseBox.appendChild(addSlideBtn);
 
-    const deleteVerseBtn = document.createElement("button");
-    deleteVerseBtn.type = "button";
-    deleteVerseBtn.textContent = "Delete Verse";
-    deleteVerseBtn.style.marginTop = "10px";
-    deleteVerseBtn.addEventListener("click", () => {
-      verseBox.remove();
-      updateVerseTitles();
-    });
-    verseBox.appendChild(deleteVerseBtn);
+    // const deleteVerseBtn = document.createElement("button");
+    // deleteVerseBtn.type = "button";
+    // deleteVerseBtn.className = "delete-verse-btn";
+    // deleteVerseBtn.innerHTML = "أحذف العدد<img src='./img/minus-64.png' />";
+
+    // deleteVerseBtn.style.marginTop = "10px";
+    // deleteVerseBtn.addEventListener("click", () => {
+    //   verseBox.remove();
+    //   updateVerseTitles();
+    // });
+    // verseBox.appendChild(deleteVerseBtn);
 
     versesContainer.appendChild(verseBox);
   }
@@ -80,23 +114,39 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateVerseTitles() {
     [...versesContainer.children].forEach((verseBox, i) => {
       const title = verseBox.querySelector("h4");
-      title.textContent = `Verse ${i + 1}`;
+      title.textContent = `عدد ${i + 1}`;
     });
   }
 
-  // Save (for now console log)
+  noChorus.addEventListener("change", function () {
+    console.log(this.checked);
+    if (this.checked) {
+      document.querySelector("#chorus-title").style.display = "none";
+      document.querySelector("#chorus-section").style.display = "none";
+      document.querySelector(".chorus-first-wrapper").style.display = "none";
+    } else {
+      document.querySelector("#chorus-title").style.display = "unset";
+      document.querySelector("#chorus-section").style.display = "unset";
+      document.querySelector(".chorus-first-wrapper").style.display = "unset";
+    }
+  });
+  // Save
   saveBtn.addEventListener("click", async () => {
     const title = document.getElementById("song-title").value.trim();
     if (!title) {
-      alert("Title is required");
+      alert("برجاء إدخال عنوان الترنيمة");
       return;
     }
 
     const chorusFirst = document.getElementById("chorus-first").checked;
+    const noChorus = document.getElementById("no-chorus").checked;
 
-    const chorus = [...chorusSlidesContainer.querySelectorAll("textarea")]
-      .map((ta) => ta.value.trim())
-      .filter((t) => t);
+    let chorus = [];
+    if (!noChorus) {
+      chorus = [...chorusSlidesContainer.querySelectorAll("textarea")]
+        .map((ta) => ta.value.trim())
+        .filter((t) => t);
+    }
 
     const verses = [...versesContainer.children]
       .map((verseBox) => {
@@ -110,8 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const song = {
       title,
       chorusFirst,
-      chorus,
       verses,
+      ...(noChorus ? {} : { chorus }), // ✅ only add `chorus` if not noChorus
     };
 
     try {
@@ -127,7 +177,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Initial State ---
   // 1 chorus slide ready
-  chorusSlidesContainer.appendChild(createSlideBox("Enter chorus slide"));
+  chorusSlidesContainer.appendChild(
+    createSlideBox("ابدأ بكتابة القرار هنا...")
+  );
   // 1 verse with 1 slide ready
   addVerse();
 });

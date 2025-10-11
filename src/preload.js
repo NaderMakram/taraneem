@@ -3,6 +3,16 @@ const Sortable = require("sortablejs");
 const fs = require("fs");
 const path = require("path");
 
+const userDataArg = process.argv.find((arg) =>
+  arg.startsWith("--userDataPath=")
+);
+const userDataPath = userDataArg
+  ? userDataArg.replace("--userDataPath=", "")
+  : null;
+
+// ✅ You can now use this path *inside preload.js*
+console.log("User Data Path:", userDataPath);
+
 const bibleDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
@@ -39,31 +49,39 @@ const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
     })
   )
 );
-
 function loadSongs() {
-  let localSongsDB = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "localTaraneemDB.json"), "utf-8")
-  );
+  // Use the userDataPath we got from additionalArguments
+  const fs = require("fs");
+  const path = require("path");
 
-  let localSongsWithSearchableContent = localSongsDB.map((song, index) => {
-    return {
-      ...song,
-      searchableContent: createSearchableContent(song),
-      custom_ref: `local-song-${index}`,
-    };
-  });
+  // Use app data folder for local DBs (writable)
+  const localDBPath = path.join(userDataPath, "localTaraneemDB.json");
 
-  const songsDB = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
-  );
+  // Use __dirname for read-only bundled DB
+  const mainDBPath = path.join(__dirname, "taraneemDB.json");
 
-  let songsWithSearchableContent = songsDB.map((song, index) => {
-    return {
-      ...song,
-      searchableContent: createSearchableContent(song),
-      custom_ref: `song-${index}`,
-    };
-  });
+  // Make sure local file exists, otherwise create empty one
+  if (!fs.existsSync(localDBPath)) {
+    fs.writeFileSync(localDBPath, "[]", "utf-8");
+  }
+
+  // Read local songs
+  const localSongsDB = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+
+  const localSongsWithSearchableContent = localSongsDB.map((song, index) => ({
+    ...song,
+    searchableContent: createSearchableContent(song),
+    custom_ref: `local-song-${index}`,
+  }));
+
+  // Read main bundled songs
+  const songsDB = JSON.parse(fs.readFileSync(mainDBPath, "utf-8"));
+
+  const songsWithSearchableContent = songsDB.map((song, index) => ({
+    ...song,
+    searchableContent: createSearchableContent(song),
+    custom_ref: `song-${index}`,
+  }));
 
   return [...songsWithSearchableContent, ...localSongsWithSearchableContent];
 }

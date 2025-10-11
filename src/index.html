@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/switch.css" />
     <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/new-song.css" />
     <link rel="stylesheet" href="styles/loader.css" />
     <link rel="stylesheet" href="styles/dragula.css" />
     <link rel="stylesheet" href="styles/settings-modal.css" />
@@ -74,11 +75,7 @@
         <img src="./img/extend.png" />
       </button>
 
-      <button
-        id="open-settings-btn"
-        class="icon-btn"
-        aria-label="إعدادات"
-      >
+      <button id="open-settings-btn" class="icon-btn" aria-label="إعدادات">
         ⚙️
       </button>
 
@@ -147,17 +144,12 @@
         aria-labelledby="settings-title"
       >
         <header class="settings-header">
-          <button
-            class="settings-back-btn"
-            aria-label="رجوع"
-            title="رجوع"
-            hidden
-          >
-            →
-          </button>
-          <h2 id="settings-title" class="settings-title">الإعدادات</h2>
           <button class="settings-close-btn" aria-label="إغلاق" title="إغلاق">
             ✕
+          </button>
+          <h2 id="settings-title" class="settings-title">الإعدادات</h2>
+          <button class="settings-back-btn" aria-label="رجوع" title="رجوع">
+            〉
           </button>
         </header>
 
@@ -176,22 +168,38 @@
 
           <!-- Page: Songs Management (list stub) -->
           <section class="settings-page" data-page="songs-management" hidden>
-            <h3>إدارة الترانيم</h3>
             <div class="songs-actions">
-              <button class="btn" data-nav-to="add-new-song">إضافة ترنيمة جديدة</button>
+              <ul id="my-local-songs"></ul>
+              <button data-nav-to="add-new-song">إضافة ترنيمة جديدة</button>
             </div>
 
             <!-- later: table/list/search UI will go here -->
           </section>
 
           <!-- Page: Add New Song (placeholder) -->
-          <section class="settings-page" data-page="add-new-song" hidden>
+          <section
+            id="new-song-section"
+            class="settings-page"
+            data-page="add-new-song"
+            hidden
+          >
             <!-- Form Container -->
             <div class="form-container">
-              <h2>إضافة ترنيمة جديدة</h2>
-
+              <div class="big new-song-notes">
+                <img src="./img/warning.png" class="warning" />
+                <ul>
+                  <li>الحد الأقصى لكل شريحة هو 5 أسطر فقط.</li>
+                  <li>
+                    هذه الترنيمة ستكون محفوظة على جهازك، ولن يتم ازالتها عند
+                    تثبيت التحديثات القادمة.
+                  </li>
+                  <li>
+                    سوف تتمكن من تعديل هذه الترنيمة لاحقًا في قائمة ادارة
+                    الترانيم.
+                  </li>
+                </ul>
+              </div>
               <!-- Title -->
-              <label for="song-title">العنوان *</label>
               <input
                 type="text"
                 id="song-title"
@@ -199,28 +207,44 @@
                 required
               />
 
-              <!-- Chorus First -->
+              <!-- No Chorus -->
               <div class="field">
                 <label>
+                  <input type="checkbox" id="no-chorus" />
+                  هذه الترنيمة عبارة عن أعداد فقط ولا تحتوي على قرار.
+                </label>
+              </div>
+
+              <!-- Chorus First -->
+              <div class="field chorus-first-wrapper">
+                <label>
                   <input type="checkbox" id="chorus-first" />
-                  البدء بالقرار
+                  هذه الترنيمة تبدأ بالقرار أولًا ثم الأعداد.
                 </label>
               </div>
 
               <!-- Chorus Section -->
+              <h5 id="chorus-title">القرار</h5>
               <div id="chorus-section" class="section">
-                <h3>القرار</h3>
                 <div class="slides-container" id="chorus-slides"></div>
-                <button type="button" id="add-chorus-slide" class="btn">
-                  + إضافة شريحة قرار
+                <button
+                  type="button"
+                  id="add-chorus-slide"
+                  class="add-new-slide-btn"
+                >
+                  أضف شريحة جديدة للقرار
+                  <img src="./img/plus.svg" />
                 </button>
               </div>
 
               <!-- Verses Section -->
+              <h5>الأعداد</h5>
               <div id="verses-section" class="section">
-                <h3>الأبيات</h3>
                 <div id="verses-container"></div>
-                <button type="button" id="add-verse" class="btn">+ إضافة بيت</button>
+                <button type="button" id="add-verse" class="add-new-verse-btn">
+                  أضف عدد جديد
+                  <img src="./img/plus.svg" />
+                </button>
               </div>
 
               <!-- Save -->

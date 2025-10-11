@@ -25,13 +25,13 @@
     });
     // update header title per page (customize as you like)
     const titles = {
-      menu: "Settings",
-      "songs-management": "Songs Management",
-      "add-new-song": "Add New Song",
+      menu: "الإعدادات",
+      "songs-management": "إدارة الترانيم",
+      "add-new-song": "إضافة ترنيمة جديدة",
     };
     titleEl.textContent = titles[name] || "Settings";
     // back button visible only when stack deeper than 1
-    backBtn.hidden = stack.length <= 1;
+    backBtn.style.visibility = stack.length <= 1 ? "hidden" : "visible";
   }
 
   function render() {

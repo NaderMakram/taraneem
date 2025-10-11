@@ -28,7 +28,8 @@ if (require("electron-squirrel-startup")) {
 const bibleDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
-const localDBPath = path.join(__dirname, "localTaraneemDB.json");
+const userDataPath = app.getPath("userData");
+const localDBPath = path.join(userDataPath, "localTaraneemDB.json");
 
 const prevNextIndices = bibleDB.map((_, index) => ({
   prevIndex: index - 1 >= 0 ? index - 1 : null,
@@ -204,6 +205,8 @@ const createMainWindow = () => {
     windowY = 0;
   }
 
+  const userDataPath = app.getPath("userData");
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: false,
@@ -219,6 +222,7 @@ const createMainWindow = () => {
       nodeIntegrationInWorker: true,
       // contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
+      additionalArguments: [`--userDataPath=${userDataPath}`],
     },
   });
 
@@ -235,9 +239,9 @@ const createMainWindow = () => {
   // remove menu
   mainWindow.removeMenu();
 
-  // if (isDev) {
-  //   mainWindow.webContents.openDevTools();
-  // }
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on("closed", () => {
     app.quit();
@@ -502,18 +506,12 @@ app.on("activate", () => {
 });
 // saving songs to local json file
 
-function ensureLocalDB() {
-  if (!fs.existsSync(localDBPath)) {
-    fs.writeFileSync(localDBPath, JSON.stringify([], null, 2), "utf-8");
-  }
-}
-
 ipcMain.handle("save-song", async (event, song) => {
   ensureLocalDB();
 
-  const raw = fs.readFileSync(localDBPath, "utf-8");
   let songs = [];
   try {
+    const raw = fs.readFileSync(localDBPath, "utf-8");
     songs = JSON.parse(raw);
   } catch (e) {
     console.error("Failed to parse localTaraneemDB.json", e);
@@ -533,8 +531,20 @@ ipcMain.handle("save-song", async (event, song) => {
 
   fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
 
-  return newSong; // send back to renderer if needed
+  return newSong;
 });
+
+function ensureLocalDB() {
+  // Ensure directory exists
+  if (!fs.existsSync(userDataPath)) {
+    fs.mkdirSync(userDataPath, { recursive: true });
+  }
+
+  // Create file if missing
+  if (!fs.existsSync(localDBPath)) {
+    fs.writeFileSync(localDBPath, JSON.stringify([], null, 2), "utf-8");
+  }
+}
 
 // auto update
 

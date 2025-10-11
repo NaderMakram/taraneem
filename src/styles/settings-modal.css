@@ -1,5 +1,17 @@
 /* settings-modal.css (copy to your CSS folder) */
 
+#open-settings-btn {
+  margin-left: auto;
+  transition: transform ease 0.3s;
+}
+
+#open-settings-btn:hover {
+  transform: rotate(30deg);
+}
+
+html:has(.settings-modal.open) {
+  overflow: hidden;
+}
 .settings-modal {
   position: fixed;
   inset: 0;
@@ -7,8 +19,7 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial;
+  font-family: MyCalibri;
 }
 
 .settings-modal.open {
@@ -33,9 +44,10 @@
   display: flex;
   flex-direction: column;
   background: #fff;
-  border-radius: 12px;
+  border-radius: var(--border-radius-1);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   direction: rtl;
+  max-width: 700px;
   --primary-color: #007bff;
   --primary-color-hover: #0056b3;
   --border-color: #ced4da;
@@ -89,20 +101,6 @@
   font-size: 18px;
 }
 
-/* small responsive tweaks */
-@media (max-width: 560px) {
-  .settings-panel {
-    width: calc(100% - 24px);
-    border-radius: 8px;
-  }
-}
-
-.form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
 .settings-body h2 {
   font-size: 1.5rem;
   font-weight: 600;
@@ -111,10 +109,10 @@
 }
 
 .settings-body h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 16px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 16px;
 }
 
 .settings-body label {
@@ -123,140 +121,4 @@
   margin-bottom: 8px;
   display: block;
   text-align: right;
-}
-
-.settings-body input[type="text"],
-.settings-body textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.settings-body input[type="text"]:focus,
-.settings-body textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-}
-
-.settings-body .field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.settings-body .section {
-  background-color: var(--background-color);
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 10px 0;
-}
-
-.settings-body button,
-.settings-body .btn {
-  padding: 10px 16px;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-}
-
-.settings-body .btn.primary,
-.settings-body #save-song {
-  background-color: var(--primary-color);
-  color: white;
-  align-self: flex-start;
-  border: none;
-}
-
-.settings-body .btn.primary:hover,
-.settings-body #save-song:hover {
-  background-color: var(--primary-color-hover);
-}
-
-.settings-body #add-chorus-slide,
-.settings-body #add-verse {
-  background-color: #6c757d;
-  color: white;
-  border: none;
-}
-
-.settings-body #add-chorus-slide:hover,
-.settings-body #add-verse:hover {
-  background-color: #5a6268;
-}
-
-.slides-container,
-.verses-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.settings-body .slide-box {
-  background-color: white;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 12px;
-  position: relative;
-}
-
-.settings-body .slide-box textarea {
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-}
-
-.settings-body .slide-box .delete-btn {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.form-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-start;
-}
-
-.settings-options {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.settings-option {
-    width: 100%;
-    padding: 12px;
-    background: none;
-    border: none;
-    text-align: right;
-    font-size: 1rem;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-}
-
-.settings-option:hover {
-    background-color: #f8f9fa;
-}
-
-.songs-actions {
-    margin-bottom: 16px;
 }
