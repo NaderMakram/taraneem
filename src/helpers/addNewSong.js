@@ -7,13 +7,42 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("save-song");
 
   // Utility: limit textareas to 5 lines max
-  function limitToFiveLines(el) {
+  // Utility: limit textareas to 5 lines and preserve trailing spaces as NBSP
+  function limitToFiveLinesAndFixSpaces(el) {
+    // preserve selection
+    const selStart = el.selectionStart;
+    const selEnd = el.selectionEnd;
+
+    // split into lines
     const lines = el.value.split("\n");
+
+    // limit lines to 5
     if (lines.length > 5) {
-      el.value = lines.slice(0, 5).join("\n");
-    } else {
-      el.style.height = `calc(${lines.length + 2} * 1.5em)`;
+      lines.length = 5;
     }
+
+    // replace trailing normal spaces with NBSP on each line
+    // we keep the same length so selection indices don't need major recalculation
+    const newLines = lines.map((line) => {
+      // replace sequences of normal space at end of line with NBSPs of same length
+      return line.replace(/ +$/g, (m) => "\u00A0".repeat(m.length));
+    });
+
+    const newVal = newLines.join("\n");
+
+    if (el.value !== newVal) {
+      el.value = newVal;
+      // restore caret (same indices because replacements keep same length)
+      try {
+        el.setSelectionRange(selStart, selEnd);
+      } catch (e) {
+        // ignore if not possible
+      }
+    }
+
+    // adjust visual height (optional)
+    const visibleLines = newLines.length;
+    el.style.height = `calc(${visibleLines} * 1.5em + 2rem)`; // 2rem for vertical padding you use
   }
 
   // Create Slide Box
@@ -32,7 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
     textarea.rows = 5;
 
     // Limit input to 5 lines
-    textarea.addEventListener("input", () => limitToFiveLines(textarea));
+    textarea.addEventListener("input", () =>
+      limitToFiveLinesAndFixSpaces(textarea)
+    );
 
     const delBtn = document.createElement("button");
     delBtn.className = "delete-slide";
