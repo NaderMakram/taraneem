@@ -201,5 +201,5 @@ body:has(.song-body) {
 .repeat-number {
   margin-right: 15px;
   font-size: 0.7em;
-  transform: translateY(0.3em);
+  transform: translateY(10px);
 }
