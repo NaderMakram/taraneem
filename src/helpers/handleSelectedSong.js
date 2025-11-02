@@ -142,9 +142,14 @@ let generateHTML = (term, results) => {
     search_output.innerHTML = `
       <div class="note big bold">
       <img src="./img/warning.png" class="warning"/>
-        عذرًا</br>
-        لم نجد أي نتائج
-      </div>
+        لو بتدور على شاهد كتابي
+        </br>
+        جرب تكتب بالاختصارات زي
+        </br>
+        يو 3 16
+       </br>
+       1 كو 13
+        </div>
 
     `;
   }
