@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // adjust visual height (optional)
     const visibleLines = newLines.length;
-    el.style.height = `calc(${visibleLines} * 1.5em + 2rem)`; // 2rem for vertical padding you use
+    el.style.height = `calc(${visibleLines} * 1em + 4rem)`; // 2rem for vertical padding you use
   }
 
   // Create Slide Box

@@ -45,6 +45,7 @@ input[type="checkbox"] {
   width: 450px;
   overflow: hidden;
   height: 4.5em;
+  line-height: 1em;
 }
 
 .form-container {
@@ -207,24 +208,38 @@ input[type="checkbox"] {
 }
 
 .settings-options {
-  list-style: none;
+  display: flex;
+  gap: 10px;
   padding: 0;
   margin: 0;
 }
 
 .settings-option {
-  width: 100%;
-  padding: 12px;
-  background: none;
-  border: none;
-  text-align: right;
-  font-size: 1rem;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
+    width: 25%;
+    padding: 12px;
+    background: var(--gray-1);
+    border: none;
+    text-align: center;
+    border-radius: var(--border-radius-1);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    height: 65px;
+    overflow: hidden;
 }
-
+button.settings-option.soon{
+ 
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: transparent;
+    border: 1px dashed gray;
+}
+button.settings-option.soon span{
+    display: block;
+    font-size: 10px;
+}
 .settings-option:hover {
-  background-color: #f8f9fa;
+  background-color: var;
 }
 
 .songs-actions {

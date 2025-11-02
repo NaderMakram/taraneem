@@ -156,12 +156,20 @@
         <main class="settings-body">
           <!-- Page: Menu -->
           <section class="settings-page" data-page="menu">
-            <ul class="settings-options">
-              <li>
-                <button class="settings-option" data-nav-to="songs-management">
-                  إدارة الترانيم
+            <div class="settings-options">
+            
+                <button class="settings-option ripple" data-nav-to="songs-management">
+                  الترانيم
                 </button>
-              </li>
+                <button class="settings-option soon" data-nav-to="">
+                  الخلفيات
+                  <span>قريبًا</span>
+                </button>
+                <button class="settings-option soon" data-nav-to="">
+                  البث المباشر
+                  <span>قريبًا</span>
+                </button>
+            
               <!-- future options go here -->
             </ul>
           </section>
@@ -169,8 +177,8 @@
           <!-- Page: Songs Management (list stub) -->
           <section class="settings-page" data-page="songs-management" hidden>
             <div class="songs-actions">
+              <button data-nav-to="add-new-song" class="settings-option">إضافة ترنيمة جديدة</button>
               <ul id="my-local-songs"></ul>
-              <button data-nav-to="add-new-song">إضافة ترنيمة جديدة</button>
             </div>
 
             <!-- later: table/list/search UI will go here -->
