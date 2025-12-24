@@ -178,7 +178,11 @@
           <section class="settings-page" data-page="songs-management" hidden>
             <div class="songs-actions">
               <button data-nav-to="add-new-song" class="settings-option">إضافة ترنيمة جديدة</button>
-              <ul id="my-local-songs"></ul>
+              <div id="my-local-songs-wrapper">
+
+                <h3>قائمة ترانيمي</h3>
+                <ul id="my-local-songs"></ul>
+              </div>
             </div>
 
             <!-- later: table/list/search UI will go here -->
@@ -193,7 +197,7 @@
           >
             <!-- Form Container -->
             <div class="form-container">
-              <div class="big new-song-notes">
+              <div class="new-song-notes">
                 <img src="./img/warning.png" class="warning" />
                 <ul>
                   <li>الحد الأقصى لكل شريحة هو 5 أسطر فقط.</li>
@@ -257,6 +261,26 @@
 
               <!-- Save -->
               <button id="save-song" class="btn primary">حفظ الترنيمة</button>
+          </section>
+
+          <!-- Page: Success Message -->
+          <section class="settings-page" data-page="success-message" hidden>
+            <div class="success-message">
+              <div class="success-animation">
+                <svg class="progress-ring" width="120" height="120">
+                  <circle
+                    class="progress-ring__circle"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="transparent"
+                    r="52"
+                    cx="60"
+                    cy="60"
+                  />
+                </svg>
+                <img src="./img/success.png" alt="Success" />
+              </div>
+              <p>تم حفظ الترنيمة بنجاح</p>
             </div>
           </section>
         </main>

@@ -40,14 +40,13 @@
     showPage(current);
   }
 
-  function openSettings(initialPage = "menu") {
+  function openSettings(initialPage = "menu", options = {}) {
     if (!modal) return;
     lastFocusedElement = document.activeElement;
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
-    // push initial page only if stack empty
-    stack = [initialPage];
-    render();
+    stack = []; // Clear stack on open
+    navigateTo(initialPage, options);
     // focus the close button for keyboard users
     closeBtn.focus();
     // trap basic keyboard
@@ -67,10 +66,13 @@
     document.removeEventListener("keydown", onKeyDown);
   }
 
-  function navigateTo(pageName) {
+  function navigateTo(pageName, options = {}) {
     if (!pages[pageName]) {
       console.warn("Unknown settings page:", pageName);
       return;
+    }
+    if (pageName === "add-new-song" && window.addNewSong && !options.isEditing) {
+      window.addNewSong.resetForm();
     }
     stack.push(pageName);
     render();
@@ -107,7 +109,7 @@
   }
 
   // event wiring
-  if (openBtn) openBtn.addEventListener("click", () => openSettings("menu"));
+  if (openBtn) openBtn.addEventListener("click", () => openSettings("menu", {}));
   if (closeBtn) closeBtn.addEventListener("click", closeSettings);
   if (overlay) overlay.addEventListener("click", closeSettings);
   if (backBtn) backBtn.addEventListener("click", goBack);
@@ -120,7 +122,7 @@
       const target = nav.dataset.navTo;
       // simple map from button to page name (we're using same names)
       // if you want to pass params later, encode them using data-* attributes
-      navigateTo(target);
+      navigateTo(target, {});
     });
   }
 

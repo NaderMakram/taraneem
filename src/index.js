@@ -546,6 +546,39 @@ function ensureLocalDB() {
   }
 }
 
+ipcMain.handle("get-local-songs", async (event) => {
+  ensureLocalDB();
+  try {
+    const raw = fs.readFileSync(localDBPath, "utf-8");
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to parse localTaraneemDB.json", e);
+    return [];
+  }
+});
+
+ipcMain.handle("get-song", async (event, songId) => {
+  ensureLocalDB();
+  const songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  return songs[songId];
+});
+
+ipcMain.handle("update-song", async (event, songId, updatedSong) => {
+  ensureLocalDB();
+  let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  songs[songId] = { ...songs[songId], ...updatedSong, dateEdited: new Date().toISOString() };
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+  return songs[songId];
+});
+
+ipcMain.handle("delete-song", async (event, songId) => {
+  ensureLocalDB();
+  let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  songs.splice(songId, 1);
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+  return true;
+});
+
 // auto update
 
 app.on("ready", function () {

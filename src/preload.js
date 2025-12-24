@@ -49,6 +49,7 @@ const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
     })
   )
 );
+
 function loadSongs() {
   // Use the userDataPath we got from additionalArguments
   const fs = require("fs");
@@ -97,6 +98,11 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
     songsWithSearchableContent = loadSongs();
     return songsWithSearchableContent;
   },
+
+  getLocalSongs: () => ipcRenderer.invoke("get-local-songs"),
+  getSong: (songId) => ipcRenderer.invoke("get-song", songId),
+  updateSong: (songId, song) => ipcRenderer.invoke("update-song", songId, song),
+  deleteSong: (songId) => ipcRenderer.invoke("delete-song", songId),
 
   bibleVerses,
   saveSong: (song) => ipcRenderer.invoke("save-song", song),
