@@ -71,3 +71,34 @@ body[data-theme="wedding2"] .bible-head {
   /* color: #f5d486; */
   color: #a02323;
 }
+
+/* Christmas  */
+/* default */
+body[data-theme="christmas"] {
+  background-image: url("../img/christmas.png");
+  background-size: cover;
+  color: #273546;
+}
+
+/* song style */
+body[data-theme="christmas"]:has(#content > .song-container) {
+  background-image: url("../img/christmas.png");
+  font-family: ibm-plex;
+}
+
+body[data-theme="christmas"] .song-body {
+  line-height: 1.45em;
+}
+
+/* bible style */
+body[data-theme="christmas"]:has(#content > .bible-container) {
+  background-image: url("../img/christmas-bible.png");
+}
+
+/* accent */
+body[data-theme="christmas"] .chorusSymbol,
+body[data-theme="christmas"] .verseNumber,
+body[data-theme="christmas"] .bible-head {
+  /* color: #f5d486; */
+  color: #a02323;
+}
