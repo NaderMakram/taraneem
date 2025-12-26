@@ -5,7 +5,9 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
     <title>Taraneem - ترانيم</title>
     <link rel="stylesheet" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/switch.css" />
+    <!-- <link rel="stylesheet" href="styles/switch.css" /> -->
+    <link rel="stylesheet" href="styles/dropdown.css" />
+
     <link rel="stylesheet" href="styles/index.css" />
     <link rel="stylesheet" href="styles/loader.css" />
     <link rel="stylesheet" href="styles/dragula.css" />
@@ -41,8 +43,8 @@
         title="Fast/Slow Mode"
       ></label>
 
-      <!-- dark mode switch #2 -->
-      <label
+      <!-- dark mode switch #2  (deprecated)-->
+      <!-- <label
         class="switch"
         for="dark_mode_input"
         title="Dark/Light Mode"
@@ -51,7 +53,21 @@
         <input class="switch-input" type="checkbox" id="dark_mode_input" />
         <span class="switch-label" data-on="Dark" data-off="Light"></span>
         <span class="switch-handle"></span>
-      </label>
+      </label> -->
+
+      <!-- themes dropdown - new -->
+      <div class="theme-picker">
+        <!-- <label for="theme_select" id="dark_mode_label" title="Theme"
+          >Theme</label
+        > -->
+        <select id="theme_select" class="theme-select" aria-label="Theme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="wedding1">Wedding 1</option>
+          <option value="wedding2">Wedding 2</option>
+          <option value="christmas">Christmas</option>
+        </select>
+      </div>
 
       <!-- waiting toggle (deprecated) -->
       <!-- <div id="list-toggle-group">
