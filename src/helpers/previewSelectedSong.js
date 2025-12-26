@@ -153,7 +153,7 @@ export function previewSelectedSong(song) {
   let slides = [];
 
   // Prepare slides without appending them yet
-  if ((chorusFirst && chorus.length > 0) || verses.length === 0) {
+  if ((chorus && chorusFirst && chorus.length > 0) || verses.length === 0) {
     chorus.forEach((line) => {
       let div = document.createElement("div");
       div.classList.add("chorus", "slide");

@@ -28,6 +28,8 @@ if (require("electron-squirrel-startup")) {
 const bibleDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
+const userDataPath = app.getPath("userData");
+const localDBPath = path.join(userDataPath, "localTaraneemDB.json");
 
 const prevNextIndices = bibleDB.map((_, index) => ({
   prevIndex: index - 1 >= 0 ? index - 1 : null,
@@ -203,6 +205,8 @@ const createMainWindow = () => {
     windowY = 0;
   }
 
+  const userDataPath = app.getPath("userData");
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: false,
@@ -218,6 +222,7 @@ const createMainWindow = () => {
       nodeIntegrationInWorker: true,
       // contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
+      additionalArguments: [`--userDataPath=${userDataPath}`],
     },
   });
 
@@ -499,6 +504,80 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+// saving songs to local json file
+
+ipcMain.handle("save-song", async (event, song) => {
+  ensureLocalDB();
+
+  let songs = [];
+  try {
+    const raw = fs.readFileSync(localDBPath, "utf-8");
+    songs = JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to parse localTaraneemDB.json", e);
+  }
+
+  // Add metadata
+  const now = new Date().toISOString();
+  const newSong = {
+    id: Date.now().toString(), // simple unique id
+    dateCreated: now,
+    dateEdited: now,
+    uploaded: false,
+    ...song,
+  };
+
+  songs.push(newSong);
+
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+
+  return newSong;
+});
+
+function ensureLocalDB() {
+  // Ensure directory exists
+  if (!fs.existsSync(userDataPath)) {
+    fs.mkdirSync(userDataPath, { recursive: true });
+  }
+
+  // Create file if missing
+  if (!fs.existsSync(localDBPath)) {
+    fs.writeFileSync(localDBPath, JSON.stringify([], null, 2), "utf-8");
+  }
+}
+
+ipcMain.handle("get-local-songs", async (event) => {
+  ensureLocalDB();
+  try {
+    const raw = fs.readFileSync(localDBPath, "utf-8");
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to parse localTaraneemDB.json", e);
+    return [];
+  }
+});
+
+ipcMain.handle("get-song", async (event, songId) => {
+  ensureLocalDB();
+  const songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  return songs[songId];
+});
+
+ipcMain.handle("update-song", async (event, songId, updatedSong) => {
+  ensureLocalDB();
+  let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  songs[songId] = { ...songs[songId], ...updatedSong, dateEdited: new Date().toISOString() };
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+  return songs[songId];
+});
+
+ipcMain.handle("delete-song", async (event, songId) => {
+  ensureLocalDB();
+  let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  songs.splice(songId, 1);
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+  return true;
 });
 
 // auto update

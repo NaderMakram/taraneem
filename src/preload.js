@@ -3,9 +3,16 @@ const Sortable = require("sortablejs");
 const fs = require("fs");
 const path = require("path");
 
-const songsDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "taraneemDB.json"), "utf-8")
+const userDataArg = process.argv.find((arg) =>
+  arg.startsWith("--userDataPath=")
 );
+const userDataPath = userDataArg
+  ? userDataArg.replace("--userDataPath=", "")
+  : null;
+
+// ✅ You can now use this path *inside preload.js*
+console.log("User Data Path:", userDataPath);
+
 const bibleDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
@@ -43,18 +50,63 @@ const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
   )
 );
 
-const songsWithSearchableContent = songsDB.map((song, index) => {
-  return {
+function loadSongs() {
+  // Use the userDataPath we got from additionalArguments
+  const fs = require("fs");
+  const path = require("path");
+
+  // Use app data folder for local DBs (writable)
+  const localDBPath = path.join(userDataPath, "localTaraneemDB.json");
+
+  // Use __dirname for read-only bundled DB
+  const mainDBPath = path.join(__dirname, "taraneemDB.json");
+
+  // Make sure local file exists, otherwise create empty one
+  if (!fs.existsSync(localDBPath)) {
+    fs.writeFileSync(localDBPath, "[]", "utf-8");
+  }
+
+  // Read local songs
+  const localSongsDB = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+
+  const localSongsWithSearchableContent = localSongsDB.map((song, index) => ({
+    ...song,
+    searchableContent: createSearchableContent(song),
+    custom_ref: `local-song-${index}`,
+  }));
+
+  // Read main bundled songs
+  const songsDB = JSON.parse(fs.readFileSync(mainDBPath, "utf-8"));
+
+  const songsWithSearchableContent = songsDB.map((song, index) => ({
     ...song,
     searchableContent: createSearchableContent(song),
     custom_ref: `song-${index}`,
-  };
-});
+  }));
+
+  return [...songsWithSearchableContent, ...localSongsWithSearchableContent];
+}
+
+// Initial load
+let songsWithSearchableContent = loadSongs();
 
 contextBridge.exposeInMainWorld("myCustomAPI", {
   bibleDBIndexed,
-  songsWithSearchableContent,
+  getSongs: () => songsWithSearchableContent,
+
+  reloadSongs: () => {
+    songsWithSearchableContent = loadSongs();
+    return songsWithSearchableContent;
+  },
+
+  getLocalSongs: () => ipcRenderer.invoke("get-local-songs"),
+  getSong: (songId) => ipcRenderer.invoke("get-song", songId),
+  updateSong: (songId, song) => ipcRenderer.invoke("update-song", songId, song),
+  deleteSong: (songId) => ipcRenderer.invoke("delete-song", songId),
+
   bibleVerses,
+  saveSong: (song) => ipcRenderer.invoke("save-song", song),
+
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
   flipSearchingMode: () => ipcRenderer.send("flip-searching-mode"),
   searchTerm: (term) => ipcRenderer.invoke("search-songs", term),

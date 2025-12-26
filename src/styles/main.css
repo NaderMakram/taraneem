@@ -1,3 +1,10 @@
+@font-face {
+  font-family: MyCalibri;
+  /* src: url(../fonts/calibri.ttf); */
+  /* to go back to having bold button remove next line, uncomment the past line, and uncomment the next @font-face */
+  src: url(../fonts/calibri-bold.ttf);
+}
+
 :root {
   /* --primary: #ff7e67; */
   /* --primary: #67ff6a; */
@@ -8,6 +15,7 @@
   --dark: #15171d;
 
   --secondary: #07689f;
+  --secondary-hover: #046096;
   --gray-hover: rgba(221, 221, 221, 0.4);
   --gray-1: rgba(221, 221, 221, 0.3);
   --gray-2: rgba(221, 221, 221, 0.5);

@@ -1,0 +1,225 @@
+/* settings-modal.css (copy to your CSS folder) */
+
+#open-settings-btn {
+  margin-left: auto;
+  transition: transform ease 0.3s;
+}
+
+#open-settings-btn:hover {
+  transform: rotate(30deg);
+}
+
+html:has(.settings-modal.open) {
+  overflow: hidden;
+}
+.settings-modal {
+  position: fixed;
+  inset: 0;
+  display: none; /* hidden by default */
+
+  align-items: flex-start;
+
+  padding-top: 50px;
+  justify-content: center;
+  z-index: 9999;
+  font-family: MyCalibri;
+}
+
+.settings-modal.open {
+  display: flex;
+}
+
+/* overlay */
+.settings-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(1px);
+}
+
+/* panel */
+.settings-panel {
+  position: relative;
+  z-index: 2;
+  width: min(920px, calc(100% - 48px));
+  max-height: calc(100vh - 100px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: var(--border-radius-1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  direction: rtl;
+  max-width: 700px;
+  --primary-color: #007bff;
+  --primary-color-hover: #0056b3;
+  --border-color: #ced4da;
+  --background-color: #f8f9fa;
+  --text-color: #212529;
+  --label-color: #495057;
+}
+
+/* header */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+.settings-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.settings-back-btn,
+.settings-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+/* body */
+.settings-body {
+  padding: 18px;
+  overflow: auto;
+  min-height: 240px;
+}
+
+/* pages */
+.settings-page {
+  display: block;
+}
+.settings-page[hidden] {
+  display: none;
+}
+
+/* simple buttons */
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.settings-body h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0;
+}
+
+.settings-body h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.settings-body label {
+  font-weight: 500;
+  color: var(--label-color);
+  margin-bottom: 8px;
+  display: block;
+  text-align: right;
+}
+
+.success-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.success-animation {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+}
+
+.success-animation img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+}
+
+.progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.progress-ring__circle {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  stroke: var(--secondary);
+}
+
+.success-animation.animate .progress-ring__circle {
+  animation: progress-animation 3s linear forwards;
+}
+
+@keyframes progress-animation {
+  from {
+    stroke-dashoffset: 326.56; /* circumference of the circle */
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.success-message p {
+  font-size: 30px;
+}
+#my-local-songs-wrapper {
+  padding: 10px;
+  margin-top: 30px;
+  border: 1px dashed var(--gray-2);
+  border-radius: 12px;
+}
+
+ul#my-local-songs {
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  padding: 0px;
+}
+ul#my-local-songs li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+ul#my-local-songs li:nth-child(odd) {
+  background-color: var(--gray-1);
+}
+
+button.edit-local-song,
+button.delete-local-song {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+button.edit-local-song:hover,
+button.delete-local-song:hover {
+  background-color: var(--gray-1);
+}
+.edit-local-song img,
+.delete-local-song img {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}

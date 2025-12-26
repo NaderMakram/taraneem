@@ -13,6 +13,10 @@ export function handleKeyDown(e) {
   if (e.target.id == "fontSize") {
     return;
   }
+  if(document.getElementById("settings-modal").classList.contains('open')
+){
+  return;
+}
   if (e.key === "ArrowUp" || e.key === "ArrowDown") {
     const previewOutput = document.getElementById("preview_output");
     const activeElement = previewOutput.querySelector(".active");
