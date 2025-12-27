@@ -13,10 +13,9 @@ export function handleKeyDown(e) {
   if (e.target.id == "fontSize") {
     return;
   }
-  if(document.getElementById("settings-modal").classList.contains('open')
-){
-  return;
-}
+  if (document.getElementById("settings-modal").classList.contains("open")) {
+    return;
+  }
   if (e.key === "ArrowUp" || e.key === "ArrowDown") {
     const previewOutput = document.getElementById("preview_output");
     const activeElement = previewOutput.querySelector(".active");
@@ -113,6 +112,24 @@ export function handleKeyDown(e) {
     return;
   }
 
+  // Arabic letter quick focus & start typing
+  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+
+  if (
+    e.key.length === 1 && // single character
+    arabicRegex.test(e.key) && // Arabic letter
+    focusedElementType !== "input" // avoid overriding real typing
+  ) {
+    e.preventDefault();
+
+    // Focus input and insert Arabic letter
+    input.focus();
+    input.value = ""; // clear previous search
+    input.value = e.key; // insert first typed letter
+
+    return;
+  }
+
   // Check if the pressed key is a number
   if (key.length === 1 && key >= "0" && key <= "9") {
     // Add the pressed key to the sequence
@@ -186,7 +203,7 @@ export function handleKeyDown(e) {
     };
 
     requestAnimationFrame(checkIfScrolledToTop);
-  } else if (e.ctrlKey && e.code == "KeyW") {
+  } else if ((e.ctrlKey && e.code === "KeyW") || e.code === "Escape") {
     pause();
   }
 }
