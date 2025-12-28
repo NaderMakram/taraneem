@@ -116,6 +116,7 @@ export function handleKeyDown(e) {
   const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
 
   if (
+    !e.ctrlKey && // make sure Ctrl is NOT pressed
     e.key.length === 1 && // single character
     arabicRegex.test(e.key) && // Arabic letter
     focusedElementType !== "input" // avoid overriding real typing
