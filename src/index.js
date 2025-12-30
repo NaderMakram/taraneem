@@ -385,6 +385,10 @@ ipcMain.on("set-theme", (event, theme) => {
   console.log("theme: ", theme);
   songWindow.webContents.send("set-theme", theme);
 });
+ipcMain.on("set-alignment", (event, alignment) => {
+  console.log("alignment: ", alignment);
+  songWindow.webContents.send("set-alignment", alignment);
+});
 
 let manageDisplays = () => {
   let displays = screen.getAllDisplays();
@@ -567,7 +571,11 @@ ipcMain.handle("get-song", async (event, songId) => {
 ipcMain.handle("update-song", async (event, songId, updatedSong) => {
   ensureLocalDB();
   let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
-  songs[songId] = { ...songs[songId], ...updatedSong, dateEdited: new Date().toISOString() };
+  songs[songId] = {
+    ...songs[songId],
+    ...updatedSong,
+    dateEdited: new Date().toISOString(),
+  };
   fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
   return songs[songId];
 });

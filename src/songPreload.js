@@ -12,6 +12,13 @@ ipcRenderer.on("set-theme", (event, theme) => {
   // also keep it in localStorage if you want persistence
   // localStorage.setItem("theme", theme);
 });
+ipcRenderer.on("set-alignment", (event, alignment) => {
+  // set body attribute
+  document.body.setAttribute("data-alignment", alignment);
+
+  // also keep it in localStorage if you want persistence
+  // localStorage.setItem("alignment", alignment);
+});
 
 ipcRenderer.on("update-font-weight", (event, message) => {
   document.querySelector("#content").classList.toggle("bold");

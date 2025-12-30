@@ -65,9 +65,12 @@
         <select id="theme_select" class="theme-select" aria-label="Theme">
           <option value="light">Light</option>
           <option value="dark">Dark</option>
-          <option value="wedding1">Wedding 1</option>
-          <option value="wedding2">Wedding 2</option>
+          <!-- <option value="wedding1">Wedding 1</option>
+          <option value="wedding2">Wedding 2</option> -->
           <option value="christmas">Christmas</option>
+          <option value="christmas-simple">Christmas Simple</option>
+          <option value="christmas-dark">Christmas Dark</option>
+          <option value="christmas-dark-simple">Christmas Dark Simple</option>
         </select>
       </div>
 
@@ -83,13 +86,26 @@
       </div> -->
 
       <!-- extend song window -->
-      <button
+      <!-- <button
         class="gray-hover"
         id="extendSongWindowButton"
         title="extend song window"
       >
         <img src="./img/extend.png" />
-      </button>
+      </button> -->
+
+
+      <!-- text align button -->
+      
+   <button id="alignBtn" class="material-btn" value="default" aria-label="Change Alignment">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+            <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
+            <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
+            <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
+        </svg>
+    </button>
+
+
 
       <button id="open-settings-btn" class="icon-btn" aria-label="إعدادات">
         ⚙️

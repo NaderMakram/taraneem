@@ -105,15 +105,18 @@ export function previewSelectedChapter(chapter) {
     }, time);
   });
 }
-
 // preview selected song
 export function previewSelectedSong(song) {
-  console.log(song);
+  const alignMode = document.querySelector("#alignBtn").value;
+  // Expected values: "default", "top-1", "top-2", "bottom-1", "bottom-2"
+  console.log("Alignment Mode:", alignMode);
+
   let { title, chorus, verses, chorusFirst, custom_ref, lastKnownVerse } = song;
+
   // Clear previous content
   preview_output.innerHTML = "";
 
-  // Create and append the song title immediately (no animation)
+  // Create and append the song title immediately
   let titleDiv = document.createElement("div");
   titleDiv.classList.add("song-title");
   titleDiv.dataset.ref = custom_ref;
@@ -126,20 +129,19 @@ export function previewSelectedSong(song) {
   `;
   preview_output.appendChild(titleDiv);
 
-  // Create and append the container immediately (no animation)
+  // Create and append the container immediately
   let container = document.createElement("div");
   container.classList.add("song-preview");
   preview_output.appendChild(container);
 
+  // --- Helper: Format Text (HTML & Arabic Digits) ---
   const replaceLineBreaks = (text) => {
     const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
-
     return (
       "<div class='verse-line'>" +
       text
         .replace(/\n/g, "</div><div class='verse-line'>")
         .replace(/\d+/g, (match) => {
-          // Convert each digit to its Arabic equivalent
           const arabicNumber = match
             .split("")
             .map((digit) => arabicDigits[parseInt(digit)])
@@ -150,51 +152,96 @@ export function previewSelectedSong(song) {
     );
   };
 
+  // --- Helper: Split Logic based on Alignment State ---
+  const splitTextIntoChunks = (text) => {
+    // 1. If default, do not split
+    if (alignMode === "default") return [text];
+
+    // 2. Determine max lines allowed based on the state name
+    // If it contains "-1", max is 1. If "-2", max is 2.
+    let maxLines = 2; // Fallback
+    if (alignMode.includes("-1")) maxLines = 1;
+    if (alignMode.includes("-2")) maxLines = 2;
+
+    const lines = text.split("\n");
+
+    // 3. Optimization: if current lines <= maxLines, return as single chunk
+    if (lines.length <= maxLines) return [text];
+
+    // 4. Chunk the lines
+    const chunks = [];
+    for (let i = 0; i < lines.length; i += maxLines) {
+      // Slice the array from current index to current index + limit
+      const chunk = lines.slice(i, i + maxLines).join("\n");
+      chunks.push(chunk);
+    }
+    return chunks;
+  };
+
   let slides = [];
 
-  // Prepare slides without appending them yet
+  // --- 1. Initial Chorus ---
   if ((chorus && chorusFirst && chorus.length > 0) || verses.length === 0) {
     chorus.forEach((line) => {
-      let div = document.createElement("div");
-      div.classList.add("chorus", "slide");
-      div.innerHTML = replaceLineBreaks(line);
-      slides.push(div);
+      const chunks = splitTextIntoChunks(line); // Split based on mode
+
+      chunks.forEach((chunkText) => {
+        let div = document.createElement("div");
+        div.classList.add("chorus", "slide");
+        div.innerHTML = replaceLineBreaks(chunkText);
+        slides.push(div);
+      });
     });
   }
 
+  // --- 2. Verses Loop ---
   if (verses.length > 0) {
     verses.forEach((verse, verseIndex) => {
       verse.forEach((line, lineIndex) => {
-        let verseNumber = lineIndex === 0 ? verseIndex + 1 : "";
-        let arabicNumber = verseNumber
-          ? new Intl.NumberFormat("ar-EG").format(verseNumber)
-          : "";
+        const chunks = splitTextIntoChunks(line); // Split based on mode
 
-        let div = document.createElement("div");
-        div.classList.add("verse", "slide");
-        div.dataset.verseNumber = verseNumber;
-        div.innerHTML = `<span class="verseNumber">${arabicNumber}</span><div>${replaceLineBreaks(
-          line
-        )}</div>`;
-        slides.push(div);
-      });
+        chunks.forEach((chunkText, chunkIndex) => {
+          // Logic: Only show number on the FIRST chunk of the verse line
+          let showNumber = lineIndex === 0 && chunkIndex === 0;
+          let verseNumber = showNumber ? verseIndex + 1 : "";
 
-      if (chorus && chorus.length > 0) {
-        chorus.forEach((chorusLine, chorusIndex) => {
-          let chorusSymbol = chorusIndex === 0 ? "ق" : "";
+          let arabicNumber = verseNumber
+            ? new Intl.NumberFormat("ar-EG").format(verseNumber)
+            : "";
 
           let div = document.createElement("div");
-          div.classList.add("chorus", "slide");
-          div.dataset.verseNumber = verseIndex + 1;
-          div.innerHTML = `<span class="chorusSymbol">${chorusSymbol}</span> ${replaceLineBreaks(
-            chorusLine
-          )}`;
+          div.classList.add("verse", "slide");
+          div.dataset.verseNumber = verseNumber;
+
+          div.innerHTML = `<span class="verseNumber">${arabicNumber}</span><div>${replaceLineBreaks(
+            chunkText
+          )}</div>`;
           slides.push(div);
+        });
+      });
+
+      // --- 3. Chorus after Verse ---
+      if (chorus && chorus.length > 0) {
+        chorus.forEach((chorusLine, chorusIndex) => {
+          const chunks = splitTextIntoChunks(chorusLine); // Split based on mode
+
+          chunks.forEach((chunkText, chunkIndex) => {
+            // Logic: Only show 'ق' on the FIRST chunk of the first chorus line
+            let showSymbol = chorusIndex === 0 && chunkIndex === 0;
+            let chorusSymbol = showSymbol ? "ق" : "";
+
+            let div = document.createElement("div");
+            div.classList.add("chorus", "slide");
+            div.dataset.verseNumber = verseIndex + 1;
+            div.innerHTML = `<span class="chorusSymbol">${chorusSymbol}</span> ${replaceLineBreaks(
+              chunkText
+            )}`;
+            slides.push(div);
+          });
         });
       }
 
-      console.log(verseIndex, lastKnownVerse);
-      // add empty slide after last known verse
+      // Add empty slide after last known verse
       if (verseIndex === lastKnownVerse - 1) {
         let emptySlide = document.createElement("div");
         emptySlide.classList.add("verse", "slide", "lastKnownVerse");
@@ -214,7 +261,7 @@ export function previewSelectedSong(song) {
   slides.forEach((slide, index) => {
     slide.style.opacity = "0";
     slide.style.transform = "translateY(20px)";
-    container.appendChild(slide); // Append to DOM first
+    container.appendChild(slide);
 
     let time = 100 / (index + 1);
     setTimeout(() => {

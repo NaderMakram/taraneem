@@ -2,6 +2,18 @@
   font-family: ibm-plex;
   src: url(../fonts/IBMPlexSansArabic-SemiBold.ttf);
 }
+
+/* alignment */
+
+body[data-alignment="top-1"] .song-container,
+body[data-alignment="top-2"] .song-container {
+  justify-content: flex-start;
+}
+body[data-alignment="bottom-1"] .song-container,
+body[data-alignment="bottom-2"] .song-container {
+  justify-content: flex-end;
+}
+
 /* light theme */
 body[data-theme="light"] {
   color: rgb(25, 25, 25);
@@ -101,4 +113,105 @@ body[data-theme="christmas"] .verseNumber,
 body[data-theme="christmas"] .bible-head {
   /* color: #f5d486; */
   color: #a02323;
+}
+
+/* Christmas Simple */
+/* default */
+body[data-theme="christmas-simple"] {
+  background-image: url("../img/christmas-bible.png");
+  background-size: cover;
+  color: #273546;
+}
+
+/* song style */
+body[data-theme="christmas-simple"]:has(#content > .song-container) {
+  background-image: url("../img/christmas-bible.png");
+  font-family: ibm-plex;
+}
+
+body[data-theme="christmas-simple"] .song-body {
+  line-height: 1.45em;
+}
+
+/* bible style */
+body[data-theme="christmas-simple"]:has(#content > .bible-container) {
+  background-image: url("../img/christmas-bible.png");
+}
+
+/* accent */
+body[data-theme="christmas-simple"] .chorusSymbol,
+body[data-theme="christmas-simple"] .verseNumber,
+body[data-theme="christmas-simple"] .bible-head {
+  /* color: #f5d486; */
+  color: #a02323;
+}
+
+/* Christmas Dark */
+/* default */
+body[data-theme="christmas-dark"] {
+  background-image: url("../img/christmas-dark.jpg");
+  background-size: cover;
+  color: whitesmoke;
+}
+
+/* song style */
+body[data-theme="christmas-dark"]:has(#content > .song-container) {
+  background-image: url("../img/christmas-dark.jpg");
+  font-family: ibm-plex;
+}
+
+body[data-theme="christmas-dark"] .song-body {
+  line-height: 1.45em;
+}
+
+/* bible style */
+body[data-theme="christmas-dark"]:has(#content > .bible-container) {
+  background-image: url("../img/christmas-dark-bible.jpg");
+}
+
+/* accent */
+body[data-theme="christmas-dark"] .chorusSymbol,
+body[data-theme="christmas-dark"] .verseNumber,
+body[data-theme="christmas-dark"] .bible-head {
+  /* color: #f5d486; */
+  color: #a02323;
+}
+
+body[data-theme="christmas-dark"] * {
+  text-shadow: none;
+}
+
+/* Christmas Dark Simple */
+/* default */
+body[data-theme="christmas-dark-simple"] {
+  background-image: url("../img/christmas-dark-bible.jpg");
+  background-size: cover;
+  color: whitesmoke;
+}
+
+/* song style */
+body[data-theme="christmas-dark-simple"]:has(#content > .song-container) {
+  background-image: url("../img/christmas-dark-bible.jpg");
+  font-family: ibm-plex;
+}
+
+body[data-theme="christmas-dark-simple"] .song-body {
+  line-height: 1.45em;
+}
+
+/* bible style */
+body[data-theme="christmas-dark-simple"]:has(#content > .bible-container) {
+  background-image: url("../img/christmas-dark-bible.jpg");
+}
+
+/* accent */
+body[data-theme="christmas-dark-simple"] .chorusSymbol,
+body[data-theme="christmas-dark-simple"] .verseNumber,
+body[data-theme="christmas-dark-simple"] .bible-head {
+  /* color: #f5d486; */
+  color: #a02323;
+}
+
+body[data-theme="christmas-dark-simple"] * {
+  text-shadow: none;
 }

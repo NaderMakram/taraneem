@@ -119,6 +119,7 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
   extendSongWindow: () => ipcRenderer.send("extend-song-window"),
   setTheme: (theme) => ipcRenderer.send("set-theme", theme),
+  setAlignment: (alignment) => ipcRenderer.send("set-alignment", alignment),
 
   getSiblingChapter: (content) =>
     ipcRenderer.invoke("get-sibling-chapter", content),

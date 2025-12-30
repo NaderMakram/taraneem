@@ -822,3 +822,72 @@ input[type="checkbox"]::before {
 .note {
   font-weight: bold;
 }
+.material-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  -webkit-tap-highlight-color: transparent;
+  transform: rotate(-90deg);
+  border: 1px dashed rgb(194, 194, 194);
+}
+
+.material-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.material-btn:active {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+/* 3. SVG Icon Styles (Rotated 90deg) */
+.icon-svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  transform: rotate(90deg);
+}
+
+/* The Bars inside the SVG */
+.bar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* --- STATE LOGIC --- */
+
+/* TOP-2: 2 Lines (Top + Small Mid) */
+.material-btn[value="top-2"] .bar.mid {
+  x: 7; /* Center align small width */
+  width: 10px; /* Small width */
+}
+.material-btn[value="top-2"] .bar.bot {
+  opacity: 0; /* Hide Bottom */
+}
+
+/* TOP-1: 1 Line (Top Only) */
+.material-btn[value="top-1"] .bar.mid,
+.material-btn[value="top-1"] .bar.bot {
+  opacity: 0; /* Hide Middle and Bottom */
+}
+
+/* BOTTOM-2: 2 Lines (Bottom + Small Mid) */
+.material-btn[value="bottom-2"] .bar.top {
+  opacity: 0; /* Hide Top */
+}
+.material-btn[value="bottom-2"] .bar.mid {
+  x: 7; /* Center align small width */
+  width: 10px; /* Small width */
+}
+
+/* BOTTOM-1: 1 Line (Bottom Only) */
+.material-btn[value="bottom-1"] .bar.top,
+.material-btn[value="bottom-1"] .bar.mid {
+  opacity: 0; /* Hide Top and Middle */
+}

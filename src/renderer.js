@@ -9,7 +9,7 @@ const fontSizeMinus = document.querySelector("#fontSizeMinus");
 
 // buttons
 const fontWeightBtn = document.querySelector("#bold");
-const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
+// const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
 const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
@@ -18,6 +18,7 @@ const scrollToTop = document.querySelector("#scroll-top");
 const themeSelect = document.getElementById("theme_select");
 const deepModeToggle = document.querySelector("input#deep_mode_input");
 // const waitingModeToggle = document.querySelector("input#waiting_mode_input");
+const alignmentToggle = document.querySelector("button#alignBtn");
 
 // import functions
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
@@ -59,9 +60,9 @@ themeSelect.addEventListener("change", (e) => {
   window.myCustomAPI.setTheme(theme);
 });
 
-extendSongWindowBtn.addEventListener("click", () => {
-  window.myCustomAPI.extendSongWindow();
-});
+// extendSongWindowBtn.addEventListener("click", () => {
+//   window.myCustomAPI.extendSongWindow();
+// });
 
 quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
@@ -249,4 +250,22 @@ preview_output.addEventListener("click", (e) => {
     element.classList.add("active");
     newSlide(element.innerHTML);
   }
+});
+
+// alignment toggle
+
+// Define the order of states
+const states = ["default", "top-2", "top-1", "bottom-2", "bottom-1"];
+let currentIndex = 0;
+
+alignmentToggle.addEventListener("click", () => {
+  // 1. Calculate next index (loop back to 0 if at end)
+  currentIndex = (currentIndex + 1) % states.length;
+
+  // 2. Update the value attribute
+  // The CSS will instantly react to this change and animate the SVG
+  alignmentToggle.setAttribute("value", states[currentIndex]);
+
+  console.log("Current State:", states[currentIndex]); // For debugging
+  window.myCustomAPI.setAlignment(states[currentIndex]);
 });
