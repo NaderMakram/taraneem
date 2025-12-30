@@ -30,7 +30,7 @@ ipcRenderer.on("update-song-window", (event, content, isBible) => {
     // reset html font size
     let text = document.querySelector(".bible-body div");
     if (text) {
-      text.style.fontSize = `6.9vw`;
+      text.style.fontSize = `7.3vw`;
     }
     // update slide
     const contentElement = document.getElementById("content");
@@ -57,6 +57,7 @@ function fadeContent(content) {
   }, 150); // Adjust the duration to match the transition duration
 }
 
+// bible font size
 function adjustFontSizeToFit() {
   let container = document.querySelector(".bible-body");
   let text = document.querySelector(".bible-body div");
@@ -68,7 +69,7 @@ function adjustFontSizeToFit() {
     console.time("OptimizedFontSizeCalculation"); // Start measuring time for the optimized font size calculation
 
     let minFontSize = 4; // Minimum font size
-    let maxFontSize = 6.9; // Maximum font size (adjust as needed)
+    let maxFontSize = 7.3; // Maximum font size (adjust as needed)
     let finalFontSize = -1; // Variable to store the final font size
 
     // Binary search for the optimal font size

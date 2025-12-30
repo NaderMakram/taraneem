@@ -64,7 +64,7 @@ body[data-theme="wedding2"] {
 /* song style */
 body[data-theme="wedding2"]:has(#content > .song-container) {
   background-image: url("../img/wedding2.png");
-  font-family: ibm-plex;
+  /* font-family: ibm-plex; */
 }
 
 body[data-theme="wedding2"] .song-body {
@@ -95,7 +95,7 @@ body[data-theme="christmas"] {
 /* song style */
 body[data-theme="christmas"]:has(#content > .song-container) {
   background-image: url("../img/christmas.png");
-  font-family: ibm-plex;
+  /* font-family: ibm-plex; */
 }
 
 body[data-theme="christmas"] .song-body {
@@ -126,7 +126,7 @@ body[data-theme="christmas-simple"] {
 /* song style */
 body[data-theme="christmas-simple"]:has(#content > .song-container) {
   background-image: url("../img/christmas-bible.png");
-  font-family: ibm-plex;
+  /* font-family: ibm-plex; */
 }
 
 body[data-theme="christmas-simple"] .song-body {
@@ -157,7 +157,7 @@ body[data-theme="christmas-dark"] {
 /* song style */
 body[data-theme="christmas-dark"]:has(#content > .song-container) {
   background-image: url("../img/christmas-dark.jpg");
-  font-family: ibm-plex;
+  /* font-family: ibm-plex; */
 }
 
 body[data-theme="christmas-dark"] .song-body {
@@ -192,7 +192,7 @@ body[data-theme="christmas-dark-simple"] {
 /* song style */
 body[data-theme="christmas-dark-simple"]:has(#content > .song-container) {
   background-image: url("../img/christmas-dark-bible.jpg");
-  font-family: ibm-plex;
+  /* font-family: ibm-plex; */
 }
 
 body[data-theme="christmas-dark-simple"] .song-body {

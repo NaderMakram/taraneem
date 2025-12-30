@@ -109,9 +109,11 @@ body::-webkit-scrollbar {
 .verse-info {
   display: none !important;
 }
+
+/* bible font size */
 .bible-body {
   padding-right: 4vw;
-  font-size: 6.9vw;
+  font-size: 7.3vw;
   line-height: 1.45em;
   height: 80vh;
 }

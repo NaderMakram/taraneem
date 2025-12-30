@@ -332,22 +332,29 @@ function updateVersionMessage(message) {
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
 app.on("ready", addIPCs);
-
 app.on("ready", () => {
+  // 1. Get localStorage data from the renderer
   mainWindow.webContents
     .executeJavaScript("({...localStorage});", true)
     .then((localStorage) => {
-      if (localStorage.dark_mode == "true") {
-        // console.log(`dark mode: ${localStorage.dark_mode}`);
-        // ipcMain.emit("toggle-dark-mode");
-        // mainWindow.webContents.executeJavaScript(
-        //   `
-        //   document.querySelector("input#dark_mode_input").click()
-        //   `
-        // );
+      if (localStorage.theme) {
+        // This is fine (IPC communication)
+        songWindow.webContents.send("set-theme", localStorage.theme);
+
+        // 2. FIX: Inject the DOM manipulation back into mainWindow
+        // We pass the theme variable into the script string safely
+        const setSelectScript = `
+          const themeSelect = document.querySelector("#theme_select");
+          if (themeSelect) {
+            themeSelect.value = "${localStorage.theme}";
+            const event = new Event("change");
+            themeSelect.dispatchEvent(event);
+          }
+        `;
+
+        // Execute the script inside the window
+        mainWindow.webContents.executeJavaScript(setSelectScript);
       }
-      manageDisplays();
-      mainWindow.focus();
     });
 });
 
