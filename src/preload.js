@@ -152,22 +152,22 @@ ipcRenderer.on("shift-to-slide", (event, message) => {
 
 function createSearchableContent(song) {
   const { title, chorus, verses } = song;
-  const chorusText = chorus ? chorus.join(" ") : "";
-  const versesText = verses
-    ? verses.map((verse) => verse.join(" ")).join(" ")
-    : "";
-  // const content = normalize(`${title} ${chorusText} ${versesText}`);
+
+  // Helper to normalize an array of strings (lines)
+  const normalizeLines = (lines) =>
+    lines ? lines.map((line) => normalize(line)) : [];
+
+  // Helper to normalize an array of arrays (verses -> lines)
+  const normalizeVerses = (verses) =>
+    verses ? verses.map((verse) => normalizeLines(verse)) : [];
+
   let searchableSong = {
     title: normalize(title),
-    chorus: normalize(chorusText),
-    verses: normalize(versesText),
-    firstVerse: verses[0] ? normalize(verses[0].join(" ")) : "",
+    chorus: normalizeLines(chorus), // Keeps array structure: ["line 1", "line 2"]
+    verses: normalizeVerses(verses), // Keeps nested structure: [["v1l1", "v1l2"], ["v2l1"]]
   };
-  // Remove duplicate words
-  // const uniqueWords = [...new Set(content.split(" "))];
-  // const uniqueContent = uniqueWords.join(" ");
+
   return searchableSong;
-  // return content;
 }
 
 // normalize song text

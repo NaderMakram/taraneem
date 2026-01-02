@@ -60,52 +60,101 @@ function performChapterSearch(term, bibleChapters) {
 function searchSongs(term, songsWithSearchableContent) {
   return songsWithSearchableContent
     .map((item) => {
-      let { title, chorus, firstVerse, verses } = item.searchableContent;
+      let { title, chorus, verses } = item.searchableContent;
       let score = 0;
+      
+      let matchInTitle = false;
+      let matchInChorus = null; // { lineIndex, text }
+      let matchInVerse = null;  // { verseIndex, lineIndex, text }
+
+      // 1. Check Title
+      if (title.includes(term)) {
+        score += 10;
+        matchInTitle = true;
+      }
+
+      // 2. Check Chorus
+      if (chorus && chorus.length > 0) {
+        for (let i = 0; i < chorus.length; i++) {
+          if (chorus[i].includes(term)) {
+            score += 5;
+            if (!matchInChorus) {
+              matchInChorus = { lineIndex: i, text: chorus[i] };
+            }
+          }
+        }
+      }
+
+      // 3. Check Verses
+      if (verses && verses.length > 0) {
+        for (let v = 0; v < verses.length; v++) {
+          let verseLines = verses[v];
+          for (let l = 0; l < verseLines.length; l++) {
+            if (verseLines[l].includes(term)) {
+              score += 2;
+              if (!matchInVerse) {
+                matchInVerse = { verseIndex: v, lineIndex: l, text: verseLines[l] };
+              }
+            }
+          }
+        }
+      }
+
+      // --- DETERMINE LOCATIONS ---
       let matchedKey = null;
       let matchedText = null;
+      let matchLocation = null; // For UI Display (Badge & Highlight)
+      let jumpLocation = null;  // For Click Action (Which slide to activate)
 
-      // Check Title
-      let index = title.indexOf(term);
-      // if (i < 4) {
-      //   console.log("term: " + term);
-      //   console.log("title: " + title);
-      //   console.log(item.searchableContent);
-      //   i++;
-      // }
-      if (index !== -1) {
-        score += 10;
+      // Priority 1: Title
+      if (matchInTitle) {
         matchedKey = "title";
-        matchedText = title.substring(index, index + term.length);
-      }
+        matchedText = title;
+        matchLocation = { section: "title" };
 
-      // Check Chorus
-      if (chorus) {
-        index = chorus.indexOf(term);
-        if (index !== -1) {
-          score += 5;
-          matchedKey = matchedKey || "chorus"; // Keep first match priority
-          matchedText =
-            matchedText || chorus.substring(index, index + term.length);
+        // Even if Title matches, we check if we can jump to a specific slide
+        if (matchInChorus) {
+            jumpLocation = { 
+                section: "chorus", 
+                slideIndex: matchInChorus.lineIndex 
+            };
+        } else if (matchInVerse) {
+            jumpLocation = { 
+                section: "verse", 
+                verseIndex: matchInVerse.verseIndex, 
+                slideIndex: matchInVerse.lineIndex 
+            };
         }
+      } 
+      // Priority 2: Chorus
+      else if (matchInChorus) {
+        matchedKey = "chorus";
+        matchedText = matchInChorus.text;
+        matchLocation = { 
+            section: "chorus", 
+            slideIndex: matchInChorus.lineIndex 
+        };
+        jumpLocation = matchLocation; // Same for jump
+      } 
+      // Priority 3: Verse
+      else if (matchInVerse) {
+        matchedKey = "verses";
+        matchedText = matchInVerse.text;
+        matchLocation = { 
+            section: "verse", 
+            verseIndex: matchInVerse.verseIndex, 
+            slideIndex: matchInVerse.lineIndex 
+        };
+        jumpLocation = matchLocation; // Same for jump
       }
 
-      // Check Verses
-      if (verses) {
-        index = verses.indexOf(term);
-        if (index !== -1) {
-          score += 2;
-          matchedKey = matchedKey || "verses";
-          matchedText =
-            matchedText || verses.substring(index, index + term.length);
-        }
-      }
-
-      return { ...item, score, matchedKey, matchedText };
+      return { ...item, score, matchedKey, matchedText, matchLocation, jumpLocation };
     })
-    .filter((item) => item.score > 0) // Keep only matches
-    .sort((a, b) => b.score - a.score); // Sort by score (highest first)
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
 }
+
+
 function searchBible(term, bibleDBIndexed) {
   return bibleDBIndexed
     .map((verse) => {

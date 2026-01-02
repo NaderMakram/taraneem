@@ -891,3 +891,39 @@ input[type="checkbox"]::before {
 .material-btn[value="bottom-1"] .bar.mid {
   opacity: 0; /* Hide Top and Middle */
 }
+
+
+/* Highlights the specific word found */
+.text-highlight {
+  
+    background-color: rgb(241, 196, 15, 0.7);
+    color: #000;
+    border-radius: 5px;
+    padding-bottom: 6px;
+}
+
+/* Badge for Verse/Chorus/Title */
+.match-badge {
+  font-size: 0.8em;
+  background-color: #eee;
+  color: #555;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 10px; /* Adjust based on RTL/LTR */
+  float: left; /* Or inline-block based on your layout */
+}
+
+/* General Layout */
+.song-result {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.song-preview {
+  font-size: 0.9em;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

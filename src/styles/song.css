@@ -191,3 +191,8 @@ body:has(.song-body) {
   font-size: 0.7em;
   transform: translateY(10px);
 }
+
+span.author{
+    font-style: italic;
+    font-size: 5rem;
+    margin-top: 56px;}

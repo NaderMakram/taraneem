@@ -92,68 +92,97 @@ export async function searchAndDisplayResults(term) {
 }
 
 let generateHTML = (term, results) => {
-  search_output.innerHTML = ""; // Clear previous results
+  // FIX 1: Update the global variable so the click handler works
+  window.res = results; 
+  
+  search_output.innerHTML = ""; 
 
-  if (document.querySelector("#title-input").value.length < 3) {
+  let inputVal = document.querySelector("#title-input").value;
+  if (inputVal.length < 3) {
     return;
   }
 
-  res = results;
-
   let filtered_results = results;
   let containsDigit = /\d/.test(term);
+  
   if (containsDigit) {
-    // filter bible chapters to the correct chapter
-    filtered_results = res.filter((item) => {
-      // Match chapter and verse
-      term = term.trim();
-      let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
-
-      let searched_chapter;
-      if (match) {
-        searched_chapter = match[1];
-        return searched_chapter == item.chapter_number;
+    filtered_results = results.filter((item) => {
+      if (item.chapter_number) {
+        let cleanTerm = term.trim();
+        let match = cleanTerm.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
+        if (match) {
+          let searched_chapter = match[1];
+          return searched_chapter == item.chapter_number;
+        }
       }
+      return false; 
     });
   }
 
-  // console.log("filtered results");
-  // console.log(filtered_results);
+  const maxResults = Math.min(20, filtered_results.length);
 
-  for (let i = 0; i < Math.min(20, filtered_results.length); i++) {
+  for (let i = 0; i < maxResults; i++) {
     let slide_content = generate_item_html(filtered_results[i], term);
+    
     if (slide_content) {
       let slide = document.createElement("div");
       slide.innerHTML = slide_content;
       slide.classList.add("slide-item");
-      slide.style.opacity = "0"; // Initially hidden
-      slide.style.transform = "translateY(20px)"; // Slightly lower position
+      slide.style.opacity = "0"; 
+      slide.style.transform = "translateY(20px)"; 
+      
+
+      // OPTIONAL: Attach the specific object to the DOM element directly
+      // This is safer than relying on global 'res' index
+      slide.songData = filtered_results[i]; 
 
       search_output.appendChild(slide);
 
-      // Staggered animation
       setTimeout(() => {
         slide.style.opacity = "1";
         slide.style.transform = "translateY(0)";
-      }, i * 50); // Delay each slide by 100ms
+      }, i * 50); 
     }
   }
+
   if (search_output.innerHTML == "") {
     search_output.innerHTML = `
       <div class="note big bold">
-      <img src="./img/warning.png" class="warning"/>
-        لو بتدور على شاهد كتابي
-        </br>
-        جرب تكتب بالاختصارات زي
-        </br>
-        يو 3 16
-       </br>
-       1 كو 13
-        </div>
-
+        <img src="./img/warning.png" class="warning"/>
+        لو بتدور على شاهد كتابي<br>جرب تكتب بالاختصارات
+      </div>
     `;
   }
 };
+
+// Helper: Smart Fuzzy Highlight for Arabic
+function highlightMatch(text, term) {
+  if (!text || !term) return text;
+  
+  // 1. Build a "Fuzzy" Regex Pattern
+  // This maps common variations so "alf" matches "alf with hamza", etc.
+  let safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  
+  let fuzzyPattern = safeTerm.split('').map(char => {
+    // Match any form of Alef
+    if (/[اأإآ]/.test(char)) return '[اأإآ]';
+    // Match Ya or Alif Maqsura
+    if (/[يى]/.test(char)) return '[يى]';
+    // Match Ha or Taa Marbuta
+    if (/[هة]/.test(char)) return '[هة]';
+    // Allow for existing Regex chars or English text
+    return char; 
+  }).join('[\\u064B-\\u065F]*'); // Allow optional Arabic diacritics (Tashkeel) between chars
+
+  try {
+    // Create regex: Global, Case-insensitive
+    const regex = new RegExp(`(${fuzzyPattern})`, 'gi');
+    return text.replace(regex, '<span class="text-highlight" style="background-color: #f1c40f; color: #000; border-radius: 3px;">$1</span>');
+  } catch (e) {
+    console.error("Regex error", e);
+    return text;
+  }
+}
 
 export function debounce(func, delay) {
   let timeoutId;
@@ -239,44 +268,23 @@ let createAddedFeedback = (container, feedbackClass) => {
 
 export function selectSongEventFunction(e) {
   if (e.target.classList.contains("handle")) return;
+
   let clickedSong = e.target.closest(".song");
   let clickedChapter = e.target.closest(".chapter");
   let clickedPlus = e.target.classList.contains("plus");
   let clickedDelete = e.target.classList.contains("delete");
-  // console.log("clickedSong: " + clickedSong);
-  // console.log("clickedChapter: " + clickedChapter);
-  // if not song then ignore the click
 
+  // --- DELETE LOGIC (Unchanged) ---
   if (clickedDelete) {
     let clickedId = e.target.parentNode.getAttribute("data-id");
-    // let currentSelectedSong = document.querySelector(
-    //   "#waiting_output .selectedSong"
-    // );
-    // let currentSelectedSongId = currentSelectedSong
-    //   ? currentSelectedSong.getAttribute("data-id")
-    //   : null;
     waiting = waiting.filter((item) => item.wairing_id != clickedId);
-
-    // remove the deleted song/chapter from the dom
-    let deletedDiv = document.querySelector(
-      `#waiting_output div[data-id="${clickedId}"]`
-    );
-    if (deletedDiv) {
-      deletedDiv.parentNode.removeChild(deletedDiv);
-    }
-
-    // update localstorage
-
+    let deletedDiv = document.querySelector(`#waiting_output div[data-id="${clickedId}"]`);
+    if (deletedDiv) deletedDiv.parentNode.removeChild(deletedDiv);
     displayWaitingList(waiting);
-    // if (currentSelectedSongId && clickedId != currentSelectedSongId) {
-    //   document
-    //     .querySelector(
-    //       "#waiting_output div[data-id='" + currentSelectedSongId + "']"
-    //     )
-    //     .classList.add("selectedSong");
-    // }
     return;
   }
+
+  // --- ADD TO WAITING LIST (Unchanged) ---
   if (clickedPlus) {
     let ref;
     let verse;
@@ -286,133 +294,82 @@ export function selectSongEventFunction(e) {
       ref = clickedChapter.getAttribute("data-ref");
       verse = clickedChapter.getAttribute("data-verse");
     }
-    // console.log(ref, verse);
-    // console.log(res.find((song) => song.custom_ref == ref));
-    // console.log(clickedSong);
-    let foundItem = res.find((song) => song.custom_ref == ref);
-    // console.log(foundItem);
-    // if (foundItem && !waiting.some((item) => item.custom_ref == ref)) {
+    let foundItem = window.res.find((song) => song.custom_ref == ref);
     waiting.push({
       ...foundItem,
-      wairing_id: Math.floor(Math.random() * (99999999 - 99) + 99), // random id to handle removal of items
-      ...(verse !== undefined && { verse }), // Add 'verse' only if it's defined
-      ...(verse !== undefined && { custom_ref: ref }), // Add 'verse' only if it's defined
+      wairing_id: Math.floor(Math.random() * (99999999 - 99) + 99),
+      ...(verse !== undefined && { verse }),
+      ...(verse !== undefined && { custom_ref: ref }),
     });
-    createAddedFeedback(
-      clickedSong ? clickedSong : clickedChapter,
-      "yellowCheck"
-    );
-
-    // console.log(foundItem.custom_ref);
-    // console.log(clickedChapter);
-    // } else {
-    //   createAddedFeedback(
-    //     clickedSong ? clickedSong : clickedChapter,
-    //     "rightHand"
-    //   );
-    // }
+    createAddedFeedback(clickedSong ? clickedSong : clickedChapter, "yellowCheck");
     displayWaitingList(waiting);
-    // console.log(waiting);
     return;
   }
 
+  // --- SONG SELECTION LOGIC ---
   if (clickedSong) {
     toggleFontSizeInput(false);
-    // get info about the song
+    
     let ref = clickedSong.getAttribute("data-ref");
     let currentSong = document.querySelector("#preview_output .song-title");
-    let currentSongRef = 0;
+    let currentSongRef = currentSong ? currentSong.getAttribute("data-ref") : 0;
 
-    // console.log(`ref: ${ref}`);
-
-    // if there is a current song in preview, get it's custom_ref
-    if (currentSong) {
-      currentSongRef = currentSong.getAttribute("data-ref");
-    }
-
-    // mark the selected song with red border
+    // Remove red border from all
     const elements = document.querySelectorAll(".big");
+    elements.forEach(el => el.classList.remove("selectedSong"));
 
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].classList.remove("selectedSong");
-    }
-
-    // if the selected song already is in preview, start showing the first slide
     if (!clickedPlus) {
       clickedSong.classList.add("selectedSong");
     }
-    // console.log(`ref: ${ref}`);
-    // console.log(`currentSongRef: ${currentSongRef}`);
-    if (ref && currentSongRef && ref == currentSongRef) {
-      // console.log(`song is in preview `);
-      let firstSlide = document.querySelector(".slide");
-      if (firstSlide) {
-        // if there is an active element remove it
-        if (document.querySelector(".active")) {
-          document.querySelector(".active").classList.remove("active");
-        }
-        firstSlide.classList.add("active");
-        newSlide(firstSlide.innerHTML);
-      }
-      return;
 
-      // if the selected song is not in preview, add it to preview
-    } else {
-      // console.log("not in preview");
-      // console.log(clickedSong.parentNode.id);
+    // == CHECK IF SONG IS ALREADY IN PREVIEW ==
+    if (ref && currentSongRef && ref == currentSongRef) {
+      
+      // -- SECOND CLICK: GO LIVE -- 
+      
       let targetedSong = null;
-      // console.log(res);
       if (clickedSong.parentNode.parentNode.id == "search_output") {
-        targetedSong = res.find((song) => song.custom_ref == ref);
+        targetedSong = window.res.find((song) => song.custom_ref == ref);
       } else if (clickedSong.parentNode.id == "waiting_output") {
         targetedSong = waiting.find((song) => song.custom_ref == ref);
       }
-      if (!clickedPlus) {
-        // console.log(`target song: ${targetedSong}`);
-        previewSelectedSong(targetedSong);
-        newSlide("");
+
+      // 1. Get the search term
+      let inputVal = document.querySelector("#title-input").value;
+      let term = normalize(inputVal).trim(); // Normalize the search term
+
+      // 2. Determine which slide to activate
+      let targetSlide = document.querySelector(".slide"); // Default to first slide
+      let allSlides = document.querySelectorAll("#preview_output .slide");
+      
+      if (targetedSong && targetedSong.jumpLocation && term.length > 0) {
+        
+        let jumpLoc = targetedSong.jumpLocation;
+
+        for (let i = 0; i < allSlides.length; i++) {
+          let slide = allSlides[i];
+          let slideText = normalize(slide.innerText); // Normalize slide text
+
+          // LOGIC:
+          // If the jump location is NOT title (meaning it's in verse or chorus),
+          // and this is the very first slide (which is usually the Title Slide),
+          // skip it! We don't want to match the title if the user is looking for lyrics.
+          if (jumpLoc.section !== 'title' && i === 0) {
+             // Assuming first slide is always title. 
+             // If your title matches the lyric word (e.g. "Grace"), we skip it 
+             // to find "Grace" in the lyrics slide.
+             continue; 
+          }
+
+          if (slideText.includes(term)) {
+            targetSlide = slide;
+            break; // Stop at the first valid match
+          }
+        }
       }
-    }
-  } else if (clickedChapter) {
-    toggleFontSizeInput(true);
-    let ref = clickedChapter.getAttribute("data-ref");
-    let verse = clickedChapter.getAttribute("data-verse");
-    let currentSong = document.querySelector("#preview_output .song-title");
-    let currentSongRef = 0;
 
-    // if there is a current song in preview, get it's custom_ref
-    if (currentSong) {
-      currentSongRef = currentSong.getAttribute("data-ref");
-    }
-
-    // console.log(res);
-    // mark the selected song with red border
-    const elements = document.querySelectorAll(".big");
-
-    if (!clickedPlus) {
-      for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.remove("selectedSong");
-      }
-    }
-
-    // if the selected song already is in preview, start showing the first slide
-    // if there is verse attribute in the chapter, go to verse slide
-    clickedChapter.classList.add("selectedSong");
-    // console.log(`chapter ref: ${ref}`);
-    // console.log(`currentSongRef: ${currentSongRef}`);
-
-    if (ref && currentSongRef && ref == currentSongRef) {
-      console.log(`new ref: ${ref}`);
-      console.log(`current ref: ${currentSongRef}`);
-      let targetSlide;
-      // console.log(typeof verse);
-      targetSlide = document.querySelector(
-        `.slide[data-verse-number="${verse ? verse : "1"}"]`
-      );
-      // console.log(targetSlide);
-
+      // 3. Activate and Go Live
       if (targetSlide) {
-        // if there is an active element remove it
         if (document.querySelector(".active")) {
           document.querySelector(".active").classList.remove("active");
         }
@@ -421,15 +378,57 @@ export function selectSongEventFunction(e) {
       }
       return;
 
-      // if the selected song is not in preview, add it to preview
+    } else {
+      
+      // -- FIRST CLICK: LOAD PREVIEW ONLY --
+      
+      let targetedSong = null;
+      if (clickedSong.parentNode.parentNode.id == "search_output") {
+        targetedSong = window.res.find((song) => song.custom_ref == ref);
+      } else if (clickedSong.parentNode.id == "waiting_output") {
+        targetedSong = waiting.find((song) => song.custom_ref == ref);
+      }
+      
+      if (!clickedPlus) {
+        previewSelectedSong(targetedSong);
+        newSlide(""); 
+      }
+    }
+  } 
+  
+  // --- BIBLE LOGIC (Unchanged) ---
+  else if (clickedChapter) {
+     // ... (Your existing Bible logic here) ...
+    toggleFontSizeInput(true);
+    let ref = clickedChapter.getAttribute("data-ref");
+    let verse = clickedChapter.getAttribute("data-verse");
+    let currentSong = document.querySelector("#preview_output .song-title");
+    let currentSongRef = currentSong ? currentSong.getAttribute("data-ref") : 0;
+
+    const elements = document.querySelectorAll(".big");
+    if (!clickedPlus) {
+      elements.forEach(el => el.classList.remove("selectedSong"));
+    }
+    clickedChapter.classList.add("selectedSong");
+
+    if (ref && currentSongRef && ref == currentSongRef) {
+      let targetSlide = document.querySelector(
+        `.slide[data-verse-number="${verse ? verse : "1"}"]`
+      );
+      if (targetSlide) {
+        if (document.querySelector(".active")) {
+          document.querySelector(".active").classList.remove("active");
+        }
+        targetSlide.classList.add("active");
+        newSlide(targetSlide.innerHTML);
+      }
+      return;
     } else {
       let targetedSong;
       if (clickedChapter.parentNode.parentNode.id == "search_output") {
-        targetedSong = res.find((song) => song.custom_ref == ref);
-        // console.log(`in search & targetsong is: ${targetedSong}`);
+        targetedSong = window.res.find((song) => song.custom_ref == ref);
       } else if (clickedChapter.parentNode.id == "waiting_output") {
         targetedSong = waiting.find((song) => song.custom_ref == ref);
-        // console.log(`in waiting & targetsong is: ${targetedSong}`);
       }
       if (!clickedPlus) {
         previewSelectedChapter(targetedSong);
@@ -437,4 +436,21 @@ export function selectSongEventFunction(e) {
       }
     }
   }
+}
+
+// Add this helper if it's not already imported
+function normalize(text) {
+  if (!text) return "";
+  return (
+    text
+      .replace(/أ|آ|إ/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ث/g, "س")
+      .replace(/ق/g, "ك")
+      .replace(/ه/g, "ة")
+      .replace(/ذ|ظ/g, "ز")
+      .replace(/ؤ|ئ/g, "ء")
+      .replace(/[ًٌٍَُِّْ~ـٰ]/g, "")
+      .replace(/\n/g, " ")
+  );
 }
