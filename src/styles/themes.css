@@ -20,10 +20,7 @@ body[data-theme="light"] {
   background-color: #f9f9f9;
 }
 body[data-theme="light"] .chorusSymbol,
-body[data-theme="light"] .verseNumber,
-body[data-theme="dark"] .chorusSymbol,
-body[data-theme="dark"] .verseNumber,
-body[data-theme="dark"] .bible-head {
+body[data-theme="light"] .verseNumber{
   color: var(--primary);
 }
 
@@ -38,6 +35,32 @@ body[data-theme="dark"] {
 body[data-theme="dark"] * {
   text-shadow: none;
 }
+
+body[data-theme="dark"] .chorusSymbol,
+body[data-theme="dark"] .verseNumber,
+body[data-theme="dark"] .bible-head {
+  color: var(--primary);
+}
+
+
+/* black theme */
+body[data-theme="black"] {
+  background-image: none;
+  background-color: #000;
+  color: whitesmoke;
+  text-shadow: none;
+}
+
+body[data-theme="black"] * {
+  text-shadow: none;
+}
+
+body[data-theme="black"] .chorusSymbol,
+body[data-theme="black"] .verseNumber,
+body[data-theme="black"] .bible-head {
+  color: var(--primary);
+}
+
 
 /* wedding 1 */
 /* songs */

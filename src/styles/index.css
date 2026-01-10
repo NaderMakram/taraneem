@@ -76,6 +76,9 @@ h2 {
   text-align: center;
   border: 1px dotted var(--gray-hover);
   border-radius: var(--border-radius-1);
+}
+#slides-placeholder {
+  margin-top: 90px;
   background: repeating-linear-gradient(
     45deg,
     var(--main-window-bg),
@@ -83,9 +86,6 @@ h2 {
     var(--gray-hover) 10px,
     var(--gray-hover) 11px
   );
-}
-#slides-placeholder {
-  margin-top: 90px;
 }
 #waiting-placeholder {
   margin: 0;
@@ -103,6 +103,14 @@ h2 {
 
 #waiting_output {
   height: 100%;
+  border-radius: var(--border-radius-1);
+  background:repeating-linear-gradient(
+    45deg,
+    var(--main-window-bg),
+    var(--main-window-bg) 10px,
+    var(--gray-hover) 10px,
+    var(--gray-hover) 11px
+  );
 }
 
 #main-wrapper > div > input,
@@ -233,7 +241,7 @@ h2 {
 }
 
 .big {
-  background: rgba(149, 157, 165, 0.02);
+  background: #f6f6f6;
   /* border: 2px solid var(--gray-1); */
   direction: rtl;
   cursor: pointer;
@@ -255,10 +263,10 @@ h2 {
 .big:hover {
   box-shadow: rgba(149, 157, 165, 0.15) 0px 9px 15px,
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
-  background: var(--gray-2);
+  background: #ebebeb;
 }
 .big.selectedSong {
-  background: var(--gray-2);
+  background: #ebebeb;
 }
 
 .big.selectedSong:hover {

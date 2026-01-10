@@ -75,11 +75,11 @@ export function previewSelectedChapter(chapter) {
     div.classList.add("bible-verse", "slide");
     div.dataset.verseNumber = key;
     div.innerHTML = `
-      <span class="verseNumber">${new Intl.NumberFormat("ar-EG").format(
-        key
-      )}</span>
-      <div>${value}</div>
-    `;
+    <span class="verseNumber">${
+     key == 0 ? "" : new Intl.NumberFormat("ar-EG").format(key)
+     }</span>
+    <div>${value}</div>
+  `;
     slides.push(div);
   }
   // Add an empty slide at the end

@@ -388,7 +388,6 @@ ipcMain.on("update-font-weight", (event) => {
   songWindow.webContents.send("update-font-weight");
 });
 ipcMain.on("set-theme", (event, theme) => {
-  console.log("theme: ", theme);
   songWindow.webContents.send("set-theme", theme);
 });
 ipcMain.on("set-alignment", (event, alignment) => {

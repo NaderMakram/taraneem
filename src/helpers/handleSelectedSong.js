@@ -611,7 +611,7 @@ export function selectSongEventFunction(e) {
   // --- DELETE LOGIC (Unchanged) ---
   if (clickedDelete) {
     let clickedId = e.target.parentNode.getAttribute("data-id");
-    waiting = waiting.filter((item) => item.wairing_id != clickedId);
+    waiting = waiting.filter((item) => item.waiting_id != clickedId);
     let deletedDiv = document.querySelector(`#waiting_output div[data-id="${clickedId}"]`);
     if (deletedDiv) deletedDiv.parentNode.removeChild(deletedDiv);
     displayWaitingList(waiting);
@@ -631,9 +631,10 @@ export function selectSongEventFunction(e) {
     let foundItem = window.res.find((song) => song.custom_ref == ref);
     waiting.push({
       ...foundItem,
-      wairing_id: Math.floor(Math.random() * (99999999 - 99) + 99),
+      waiting_id: Math.floor(Math.random() * (99999999 - 99) + 99),
       ...(verse !== undefined && { verse }),
       ...(verse !== undefined && { custom_ref: ref }),
+      matched_phrase: document.querySelector('#title-input').value
     });
     createAddedFeedback(clickedSong ? clickedSong : clickedChapter, "yellowCheck");
     displayWaitingList(waiting);
@@ -663,13 +664,11 @@ export function selectSongEventFunction(e) {
       
       let targetedSong = null;
       if (clickedSong.parentNode.parentNode.id == "search_output") {
+        // song is from direct search
         targetedSong = window.res.find((song) => song.custom_ref == ref);
-      } else if (clickedSong.parentNode.id == "waiting_output") {
-        targetedSong = waiting.find((song) => song.custom_ref == ref);
-      }
 
-      // 1. Get the search term
-      let inputVal = document.querySelector("#title-input").value;
+        // 1. Get the search term
+        let inputVal = document.querySelector("#title-input").value;
       let term = normalize(inputVal).trim(); // Normalize the search term
 
       // 2. Determine which slide to activate
@@ -677,8 +676,7 @@ export function selectSongEventFunction(e) {
       let allSlides = document.querySelectorAll("#preview_output .slide");
       
       if (targetedSong && targetedSong.jumpLocation && term.length > 0) {
-        
-        let jumpLoc = targetedSong.jumpLocation;
+
 
         for (let i = 0; i < allSlides.length; i++) {
           let slide = allSlides[i];
@@ -700,6 +698,52 @@ export function selectSongEventFunction(e) {
         newSlide(targetSlide.innerHTML);
       }
       return;
+
+      } else if (clickedSong.parentNode.id == "waiting_output") {
+        // song is from waiting list
+        let clickedId = e.target.closest(".song").getAttribute("data-id");
+
+        targetedSong = waiting.find((song) => song.waiting_id == clickedId);
+        console.log("clicked id: ", clickedId);
+        console.log("waiting", waiting);
+        let matched_phrase = targetedSong.matched_phrase;
+        console.log("matched_phrase", matched_phrase);
+        if (matched_phrase) {
+
+          // jump to that slide
+
+          // 2. Determine which slide to activate
+          let targetSlide = document.querySelector(".slide"); // Default to first slide
+          let allSlides = document.querySelectorAll("#preview_output .slide");
+
+
+          let normalized_matched_phrase = normalize(matched_phrase)
+          for (let i = 0; i < allSlides.length; i++) {
+            let slide = allSlides[i];
+            let slideText = normalize(slide.innerText); // Normalize slide text
+
+            console.log("slideText", slideText);
+            if (slideText.includes(normalized_matched_phrase)) {
+              console.log(slide)
+              targetSlide = slide;
+              break; // Stop at the first valid match
+            }
+          }
+
+
+          // 3. Activate and Go Live
+          if (targetSlide) {
+            if (document.querySelector(".active")) {
+              document.querySelector(".active").classList.remove("active");
+            }
+            targetSlide.classList.add("active");
+            newSlide(targetSlide.innerHTML);
+          }
+          return;
+        }
+      }
+
+
 
     } else {
       

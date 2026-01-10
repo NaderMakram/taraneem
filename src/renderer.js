@@ -141,23 +141,40 @@ input.addEventListener("input", function (e) {
 input.addEventListener("keydown", function (event) {
   // Check if the pressed key is 'Enter' (key code 13)
   if (event.keyCode === 13) {
-    // Log "Enter" to the console
-    console.log("Enter");
-    let bigElement = document.querySelector(".big");
 
-    // Check if the bigElement exists
-    if (bigElement) {
-      // Dispatch a click event to the big element twice
-      bigElement.click();
+    // CASE 1: Ctrl + Enter -> Add to Waiting List (Click Plus)
+    if (event.ctrlKey) {
+      console.log("Ctrl + Enter");
+      // Find the plus button inside the first result (.big)
+      let firstPlusButton = document.querySelector(".big .plus");
+
+      if (firstPlusButton) {
+        firstPlusButton.click();
+      }
+
+      input.blur();
+      event.preventDefault(); // Prevent default browser behavior
+      event.stopPropagation();
     }
 
-    // Remove focus from the input field
-    input.blur(); // This removes focus from the input
-    // Stop the event from bubbling up to the document
-    event.stopPropagation();
+    // CASE 2: Enter Only -> Select/Preview (Your original logic)
+    else {
+      console.log("Enter");
+      let bigElement = document.querySelector(".big");
+
+      // Check if the bigElement exists
+      if (bigElement) {
+        // Dispatch a click event to the big element
+        bigElement.click();
+      }
+
+      // Remove focus from the input field
+      input.blur();
+      // Stop the event from bubbling up to the document
+      event.stopPropagation();
+    }
   }
 });
-
 search_output.addEventListener("click", selectSongEventFunction);
 waiting_output.addEventListener("click", selectSongEventFunction);
 
