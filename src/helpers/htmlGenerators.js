@@ -73,7 +73,8 @@ function truncate(str, max_length) {
 }
 
 export function generate_item_html(element, term, truncateLimit = 50) {
-  
+
+
   if (element.custom_ref.includes("song")) {
     let { title, chorus, verses, matchLocation } = element;
     

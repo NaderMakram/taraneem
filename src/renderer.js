@@ -8,7 +8,6 @@ const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 
 // buttons
-const fontWeightBtn = document.querySelector("#bold");
 // const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
 const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
@@ -16,7 +15,6 @@ const nextChapterBtn = document.querySelector("#nextChapter");
 const scrollToTop = document.querySelector("#scroll-top");
 
 const themeSelect = document.getElementById("theme_select");
-const deepModeToggle = document.querySelector("input#deep_mode_input");
 // const waitingModeToggle = document.querySelector("input#waiting_mode_input");
 const alignmentToggle = document.querySelector("button#alignBtn");
 
@@ -24,32 +22,33 @@ const alignmentToggle = document.querySelector("button#alignBtn");
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
 import { newSlide } from "./helpers/newSlide.js";
 import { pause } from "./helpers/pause.js";
-// import {
-//   previewSelectedChapter,
-//   previewSelectedSong,
-// } from "./helpers/previewSelectedThing.js";
+
+import {
+  searchAndDisplayResults,
+  initSearchEngine
+} from "./helpers/searchService.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  // This pulls the data from Preload ONE TIME and caches it
+  initSearchEngine();
+});
+
+
 import {
   selectSongEventFunction,
-  debounce,
-  debouncedSearch,
-  searchAndDisplayResults,
 } from "./helpers/handleSelectedSong.js";
+
 
 import { previewSelectedChapter } from "./helpers/previewSelectedSong.js";
 
 document.addEventListener("keydown", () => handleKeyDown(event));
 
-let delay = 50;
 whiteButton.addEventListener("click", () => {
   // newSlide("");
   pause();
   whiteButton.blur();
 });
 
-// darkModeToggle.addEventListener("change", (e) => {
-//   localStorage.setItem("dark_mode", e.target.checked);
-//   window.myCustomAPI.toggleDarkMode();
-// });
 themeSelect.addEventListener("change", (e) => {
   const theme = e.target.value; // "light", "dark", "solarized-dark", etc.
 
@@ -60,9 +59,7 @@ themeSelect.addEventListener("change", (e) => {
   window.myCustomAPI.setTheme(theme);
 });
 
-// extendSongWindowBtn.addEventListener("click", () => {
-//   window.myCustomAPI.extendSongWindow();
-// });
+
 
 quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
@@ -101,30 +98,8 @@ nextChapterBtn.addEventListener("click", (event) => {
   nextChapterBtn.blur();
 });
 
-deepModeToggle.addEventListener("change", (e) => {
-  // console.log(e.target.checked);
-  // if (e.target.checked) {
-  //   // delay = 350;
-  //   debouncedSearch = debounce(searchAndDisplayResults, 350);
-  // } else {
-  //   // delay = 100;
-  //   debouncedSearch = debounce(searchAndDisplayResults, 50);
-  // }
-  // console.log(delay);
-  window.myCustomAPI.flipSearchingMode();
-  debouncedSearch(input.value);
-});
 
-fontWeightBtn.addEventListener("click", () => {
-  window.myCustomAPI.updateFontWeight();
-  fontWeightBtn.classList.toggle("bold");
-  fontWeightBtn.blur();
-});
 
-// fontSizeInput.addEventListener("change", (e) => {
-//   window.myCustomAPI.updateFontSize(e.target.value);
-//   fontSizeInput.blur();
-// });
 
 fontSizePlus.addEventListener("click", () => {
   let currentValue = parseInt(fontSizeInput.textContent);
@@ -141,57 +116,6 @@ fontSizeMinus.addEventListener("click", () => {
   window.myCustomAPI.updateFontSize(currentValue - 1);
 });
 
-// waitingModeToggle.addEventListener("change", (e) => {
-//   // Toggle a class on the body based on checkbox state
-//   document.body.classList.toggle("waiting-mode", !e.target.checked);
-//   waitingModeToggle.blur();
-// });
-// waitingModeToggle.click();
-
-// let waiting = [];
-
-const button = document.getElementById("start-work");
-// const worker = new Worker("searchWorker.js");
-// worker.addEventListener("message", (event) => {
-//   // resultSpan.textContent = event.data;
-//   console.log(event.data);
-// });
-
-// button.addEventListener('click', () => {
-//   worker.postMessage('عند شق الفجر باكر'); // Send a message to the worker
-// });
-
-// for testing
-// setTimeout(() => {
-//   input.value = "يسوع";
-//   // let waitingToggle = document.querySelector("#waiting_mode_input");
-
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
-//   // waitingToggle.click();
-
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
-
-// let clickDev = new Event("click", {
-//   bubbles: true,
-//   cancelable: true,
-// });
-
-// end 1st part of testing
-
-// setTimeout(() => {
-//   let son = document.querySelector(".big");
-//   son.dispatchEvent(clickDev);
-// }, 2500);
-// setTimeout(() => {
-//   let ver = document.querySelector(".slide");
-//   ver.dispatchEvent(clickDev);
-// }, 2800);
-// end testing
 
 // Attach the debouncedSearch function to the input event
 let loader_HTML = `
@@ -204,14 +128,14 @@ let loader_HTML = `
 
 input.addEventListener("input", function (e) {
   let term = e.target.value;
-  console.log(term.length);
-  if (term.length < 3) return (search_output.innerHTML = "");
+  if (term.length < 1) return (search_output.innerHTML = "");
   let containsDigit = /\d/.test(term);
   if (!containsDigit && search_output.innerHTML != loader_HTML) {
-    search_output.innerHTML = loader_HTML;
+    // search_output.innerHTML = '';
+    // search_output.innerHTML = loader_HTML;
   }
 
-  debouncedSearch(term);
+  searchAndDisplayResults(term);
 });
 
 input.addEventListener("keydown", function (event) {

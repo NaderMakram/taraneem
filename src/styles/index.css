@@ -51,7 +51,7 @@ h2 {
 }
 
 #main-wrapper > div {
-  flex: 1;
+  width: 33.333%;
   text-align: right;
   padding: 0.6rem;
   display: flex;
@@ -331,6 +331,10 @@ h2 {
 }
 
 #search-wrapper input#title-input {
+  position: sticky;
+  top: 70px;
+  z-index: 10;
+  box-shadow:0 -20px 0px 1px  var(--main-window-bg);
   padding: 10px;
   /* width: 100%; */
   font-size: 16px;
@@ -911,19 +915,4 @@ input[type="checkbox"]::before {
   border-radius: 4px;
   margin-right: 10px; /* Adjust based on RTL/LTR */
   float: left; /* Or inline-block based on your layout */
-}
-
-/* General Layout */
-.song-result {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.song-preview {
-  font-size: 0.9em;
-  color: #666;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }

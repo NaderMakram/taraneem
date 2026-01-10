@@ -127,7 +127,11 @@ export function handleKeyDown(e) {
     input.focus();
     input.value = ""; // clear previous search
     input.value = e.key; // insert first typed letter
-
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     return;
   }
 

@@ -224,6 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       window.myCustomAPI.reloadSongs();
       loadLocalSongs();
+      if (window.refreshSearchCache) {
+        console.log("Refreshing Search Index...");
+        await window.refreshSearchCache();
+      }
       showSuccessMessage();
     } catch (err) {
       console.error(`❌ Error ${editingId ? "updating" : "saving"} song:`, err);

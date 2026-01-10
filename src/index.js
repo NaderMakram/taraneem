@@ -156,11 +156,11 @@ function searchSongs(event, term) {
   return results;
 }
 
-const handleSetTitle = (event, title) => {
-  const webContents = event.sender;
-  const win = BrowserWindow.fromWebContents(webContents);
-  win.setTitle(title);
-};
+// const handleSetTitle = (event, title) => {
+//   const webContents = event.sender;
+//   const win = BrowserWindow.fromWebContents(webContents);
+//   win.setTitle(title);
+// };
 
 function readJson() {
   return JSON.parse(
@@ -168,16 +168,15 @@ function readJson() {
   );
 }
 app.on("ready", () => {
-  ipcMain.on("set-title", handleSetTitle);
-  ipcMain.handle("search-songs", async (event, term) => {
-    // Post data to the worker
-    worker.postMessage({ term });
-  });
-  ipcMain.on("flip-searching-mode", () => {
-    fastSearch = !fastSearch;
-  });
+  // ipcMain.on("set-title", handleSetTitle);
+  // ipcMain.handle("search-songs", async (event, term) => {
+  //   // Post data to the worker
+  //   worker.postMessage({ term });
+  // });
+  // ipcMain.on("flip-searching-mode", () => {
+  //   fastSearch = !fastSearch;
+  // });
   ipcMain.handle("read-json", readJson);
-  console.log(fastSearch);
 });
 
 let mainWindow;
