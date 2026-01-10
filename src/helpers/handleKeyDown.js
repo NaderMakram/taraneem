@@ -92,23 +92,13 @@ export function handleKeyDown(e) {
     return;
   }
   if (key === "Home") {
-    let AllSlides = document.querySelectorAll(`.verse`);
-    if (AllSlides.length == 0) {
-      AllSlides = document.querySelectorAll(`.bible-verse`);
+    let activeSlide = document.querySelector("#preview_output .active");
+    if (activeSlide) {
+      activeSlide.classList.remove("active");
     }
-    // let AllEffectiveSlides = document.querySelectorAll(`[data-verse-number]`);
-    if (AllSlides) {
-      let firstSlide = AllSlides[0];
-      // let elements = document.querySelector(".song-preview").children;
-
-      for (let i = 0; i < AllSlides.length; i++) {
-        AllSlides[i].classList.remove("active");
-      }
-
-      firstSlide.classList.add("active");
-      newSlide(firstSlide.innerHTML);
-    }
-
+    let firstSlide = document.querySelector("#preview_output div[data-verse-number='1']");
+    firstSlide.classList.add("active");
+    newSlide(firstSlide.innerHTML);
     return;
   }
 
