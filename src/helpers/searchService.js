@@ -133,7 +133,7 @@ let generateHTML = (term, results) => {
   window.scrollTo({
     top: 0,
     left: 0,
-    behavior: "smooth",
+    behavior: "auto",
   });
 
   let filtered_results = results;
