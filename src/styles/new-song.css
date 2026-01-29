@@ -271,30 +271,55 @@ button.settings-option.soon span {
   font-size: 1.2rem;
 }
 
-.settings-body #save-song.loading {
-  background-color: var(--gray-2);
-  color: transparent;
-  cursor: not-allowed;
-  position: relative;
+
+.settings-body #save-song {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-.settings-body #save-song.loading::after {
-  content: "";
-  display: block;
-  width: 1.5rem;
-  height: 1.5rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: #25b09b;
-  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
-  -webkit-mask: var(--_m);
-  mask: var(--_m);
-  -webkit-mask-composite: source-out;
-  mask-composite: subtract;
-  animation: l3 1s infinite linear;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* Loading State */
+
+.settings-body #save-song.loading {
+  background-color: var(--gray-2);
+  color: #333; /* Darker text */
+  cursor: not-allowed;
+  pointer-events: none;
 }
+
+
+/* Hide the pseudo-element loader we had before */
+.settings-body #save-song.loading::after {
+  display: none;
+}
+
+/* Spinner Styles */
+.settings-body #save-song .btn-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: slideInDown 0.3s ease-out forwards, spin 1s linear infinite 0.3s;
+  opacity: 0; /* Starts hidden for the slide-in */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 

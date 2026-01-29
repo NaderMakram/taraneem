@@ -215,6 +215,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     saveBtn.classList.add("loading");
     saveBtn.disabled = true;
+    const originalText = saveBtn.textContent;
+    saveBtn.innerHTML = `
+      <span class="btn-text">جار الحفظ...</span>
+      <div class="btn-spinner"></div>
+    `;
 
     try {
       if (editingId) {
@@ -235,39 +240,50 @@ document.addEventListener("DOMContentLoaded", () => {
     } finally {
       saveBtn.classList.remove("loading");
       saveBtn.disabled = false;
+      // If we are not redirecting (e.g. error), restore text.
+      // If success, showSuccessMessage handles navigation/reset, 
+      // but we might need to restore text if staying on page or before transition finishes?
+      // Actually showSuccessMessage navigates away or resets form at the end. 
+      // Ideally we shouldn't flicker back to "Save" if we are showing success immediately.
+      // But `showSuccessMessage` is called in the `try` block. 
+      // If error, we definitely want to restore.
+      if (!document.querySelector(".success-animation.animate")) {
+        saveBtn.textContent = originalText;
+      }
     }
   });
 
   function showSuccessMessage() {
-    window.settingsModal.navigateTo("success-message");
-    const successAnimation = document.querySelector(".success-animation");
-    const circle = document.querySelector(".progress-ring__circle");
-    const radius = circle.r.baseVal.value;
-    const circumference = radius * 2 * Math.PI;
+    // Navigate back to list immediately
+    window.settingsModal.navigateTo("songs-management");
 
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = circumference;
+    // Reset form
+    document.getElementById("song-title").value = "";
+    chorusSlidesContainer.innerHTML = "";
+    chorusSlidesContainer.appendChild(
+      createSlideBox("ابدأ بكتابة القرار هنا...")
+    );
+    versesContainer.innerHTML = "";
+    addVerse();
+    saveBtn.textContent = "حفظ الترنيمة";
+    delete saveBtn.dataset.editingId;
 
-    successAnimation.classList.remove("animate");
-    void successAnimation.offsetWidth; // Trigger reflow
-    successAnimation.classList.add("animate");
+    // Show Notification
+    const toast = document.getElementById("toast-notification");
+    if (toast) {
+      toast.classList.remove("fade-out");
+      toast.classList.add("show");
 
-    const onAnimationEnd = () => {
-      window.settingsModal.navigateTo("songs-management");
-      // Reset form
-      document.getElementById("song-title").value = "";
-      chorusSlidesContainer.innerHTML = "";
-      chorusSlidesContainer.appendChild(
-        createSlideBox("ابدأ بكتابة القرار هنا...")
-      );
-      versesContainer.innerHTML = "";
-      addVerse();
-      saveBtn.textContent = "حفظ الترنيمة";
-      delete saveBtn.dataset.editingId;
-      successAnimation.removeEventListener("animationend", onAnimationEnd);
-    };
+      // Wait 3 seconds then fade out
+      setTimeout(() => {
+        toast.classList.add("fade-out");
 
-    successAnimation.addEventListener("animationend", onAnimationEnd);
+        // Clean up classes after fade out animation
+        toast.addEventListener("animationend", () => {
+          toast.classList.remove("show", "fade-out");
+        }, { once: true });
+      }, 3000);
+    }
   }
 
   // --- Initial State ---
