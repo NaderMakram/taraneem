@@ -29,8 +29,24 @@ import {
 } from "./helpers/searchService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // This pulls the data from Preload ONE TIME and caches it
-  initSearchEngine();
+  const loader = document.getElementById("startup-loader");
+
+  // 1. Initialize Search Engine
+  // 2. Wait at least 1.5 seconds for branding awareness
+  Promise.all([
+    initSearchEngine(),
+    new Promise((resolve) => setTimeout(resolve, 1500)),
+  ]).then(() => {
+    // Both done
+    if (loader) {
+      loader.classList.add("fade-out");
+      setTimeout(() => {
+        window.myCustomAPI.appReady();
+      }, 500); // Wait for fade transition
+    } else {
+      window.myCustomAPI.appReady();
+    }
+  });
 });
 
 

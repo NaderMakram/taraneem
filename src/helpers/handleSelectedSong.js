@@ -70,8 +70,8 @@ export async function initSearchEngine() {
 
   // 1. Fetch raw data once
   const rawSongs = await myCustomAPI.getSongs();
-  const rawBible = myCustomAPI.bibleVerses;
-  const rawChapters = myCustomAPI.bibleDBIndexed;
+  const rawBible = myCustomAPI.getBibleVerses();
+  const rawChapters = myCustomAPI.getBibleDBIndexed();
 
   // 2. Pre-calculate "Searchable Strings" for Songs
   // We flatten the arrays into one string so we can search it instantly.

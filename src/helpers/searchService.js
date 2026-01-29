@@ -20,8 +20,8 @@ export async function initSearchEngine() {
   try {
     // 1. Fetch raw data (Expensive IPC call - done ONCE)
     const rawSongs = await window.myCustomAPI.getSongs();
-    const rawBible = window.myCustomAPI.bibleVerses;
-    const rawChapters = window.myCustomAPI.bibleDBIndexed;
+    const rawBible = window.myCustomAPI.getBibleVerses();
+    const rawChapters = window.myCustomAPI.getBibleDBIndexed();
 
     // 2. Pre-calculate "Searchable Strings" for Songs
     // This creates the "Fast Index"
@@ -50,6 +50,7 @@ export async function initSearchEngine() {
   }
 
   console.timeEnd("Search Engine Init");
+  return true;
 }
 
 // ==========================================================

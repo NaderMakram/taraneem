@@ -13,43 +13,55 @@ const userDataPath = userDataArg
 // ✅ You can now use this path *inside preload.js*
 console.log("User Data Path:", userDataPath);
 
-const bibleDB = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
-);
 
-const prevNextIndices = bibleDB.map((_, index) => ({
-  prevIndex: index - 1 >= 0 ? index - 1 : null,
-  nextIndex: index + 1 < bibleDB.length ? index + 1 : null,
-}));
 
-const bibleDBIndexed = bibleDB.map((item, index) => {
-  const { prevIndex, nextIndex } = prevNextIndices[index];
-  return {
-    ...item,
-    siblings: [prevIndex, nextIndex],
-    prevShort: bibleDB[prevIndex]?.chapter_book_short,
-    prevNum: bibleDB[prevIndex]?.chapter_number,
-    nextShort: bibleDB[nextIndex]?.chapter_book_short,
-    nextNum: bibleDB[nextIndex]?.chapter_number,
-    custom_ref: `chapter-${index}`,
-  };
-});
+// --- LAZY LOAD BIBLE DATA ---
+let _bibleCache = null;
+function getBibleData() {
+  if (!_bibleCache) {
+    const bibleDB = JSON.parse(
+      fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
+    );
 
-const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
-  Object.entries(chapter.normalized_verses).map(
-    ([verseNum, verseText], index) => ({
-      ...chapter,
-      book: chapter.chapter_book_normalized,
-      chapter: chapter.chapter_number,
-      verse: verseNum,
-      text: verseText,
-      verses: chapter.verses,
-      custom_ref: `chapter-${chapter.chapter_en}-verse-${index}`,
-      type: "verse",
-    })
-  )
-);
+    const prevNextIndices = bibleDB.map((_, index) => ({
+      prevIndex: index - 1 >= 0 ? index - 1 : null,
+      nextIndex: index + 1 < bibleDB.length ? index + 1 : null,
+    }));
 
+    const bibleDBIndexed = bibleDB.map((item, index) => {
+      const { prevIndex, nextIndex } = prevNextIndices[index];
+      return {
+        ...item,
+        siblings: [prevIndex, nextIndex],
+        prevShort: bibleDB[prevIndex]?.chapter_book_short,
+        prevNum: bibleDB[prevIndex]?.chapter_number,
+        nextShort: bibleDB[nextIndex]?.chapter_book_short,
+        nextNum: bibleDB[nextIndex]?.chapter_number,
+        custom_ref: `chapter-${index}`,
+      };
+    });
+
+    const bibleVerses = bibleDBIndexed.flatMap((chapter) =>
+      Object.entries(chapter.normalized_verses).map(
+        ([verseNum, verseText], index) => ({
+          ...chapter,
+          book: chapter.chapter_book_normalized,
+          chapter: chapter.chapter_number,
+          verse: verseNum,
+          text: verseText,
+          verses: chapter.verses,
+          custom_ref: `chapter-${chapter.chapter_en}-verse-${index}`,
+          type: "verse",
+        })
+      )
+    );
+    _bibleCache = { bibleDBIndexed, bibleVerses };
+  }
+  return _bibleCache;
+}
+
+// --- LAZY LOAD SONGS DATA ---
+let _songsCache = null;
 function loadSongs() {
   // Use the userDataPath we got from additionalArguments
   const fs = require("fs");
@@ -87,16 +99,24 @@ function loadSongs() {
   return [...songsWithSearchableContent, ...localSongsWithSearchableContent];
 }
 
-// Initial load
-let songsWithSearchableContent = loadSongs();
+function getSongsData() {
+  if (!_songsCache) {
+    _songsCache = loadSongs();
+  }
+  return _songsCache;
+}
+
 
 contextBridge.exposeInMainWorld("myCustomAPI", {
-  bibleDBIndexed,
-  getSongs: () => songsWithSearchableContent,
+  // Converted to getters for lazy loading
+  getBibleDBIndexed: () => getBibleData().bibleDBIndexed,
+  getBibleVerses: () => getBibleData().bibleVerses,
+
+  getSongs: () => getSongsData(),
 
   reloadSongs: () => {
-    songsWithSearchableContent = loadSongs();
-    return songsWithSearchableContent;
+    _songsCache = loadSongs(); // Reload cache
+    return _songsCache;
   },
 
   getLocalSongs: () => ipcRenderer.invoke("get-local-songs"),
@@ -104,7 +124,7 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateSong: (songId, song) => ipcRenderer.invoke("update-song", songId, song),
   deleteSong: (songId) => ipcRenderer.invoke("delete-song", songId),
 
-  bibleVerses,
+  // bibleVerses, // Removed direct property exposure
   saveSong: (song) => ipcRenderer.invoke("save-song", song),
 
   changeTitleTo: (title) => ipcRenderer.send("set-title", title),
@@ -127,6 +147,7 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),
   createSortable: (el, options) => Sortable.create(el, options),
+  appReady: () => ipcRenderer.send("app-ready"),
 });
 
 ipcRenderer.on("log", (event, message) => {

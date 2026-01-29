@@ -223,6 +223,7 @@ const createMainWindow = () => {
       preload: path.join(__dirname, "preload.js"),
       additionalArguments: [`--userDataPath=${userDataPath}`],
     },
+    backgroundColor: "#f9f9f9", // Match loader background
   });
 
   // and load the index.html of the app.
@@ -232,8 +233,13 @@ const createMainWindow = () => {
     mainWindow.maximize();
   }
 
-  mainWindow.show();
-  mainWindow.focus();
+  // Optimized showing to prevent white flash
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+    mainWindow.focus();
+  });
+  // mainWindow.show();
+  // mainWindow.focus();
 
   // remove menu
   mainWindow.removeMenu();
@@ -260,6 +266,7 @@ const createSongWindow = () => {
     // Dual display setup - use second screen
     const secondScreen = displays[1];
     songWindow = new BrowserWindow({
+      show: false,
       width: secondScreen.size.width,
       height: secondScreen.size.height,
       icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
@@ -305,7 +312,7 @@ const createSongWindow = () => {
   songWindow.loadFile(path.join(__dirname, "song.html"));
 
   // Always show the song window
-  songWindow.show();
+  // songWindow.show();
 
   if (isDev) {
     // songWindow.hide();
@@ -426,7 +433,7 @@ let manageDisplays = () => {
       y: secondScreen.bounds.y,
     });
     songWindow.setFullScreen(true);
-    songWindow.show();
+    // songWindow.show();
 
     mainWindow.focus();
   } else {
@@ -455,7 +462,7 @@ let manageDisplays = () => {
       x: songWindowX,
       y: 0,
     });
-    songWindow.show();
+    // songWindow.show();
 
     // Prevent windows from being moved when snapped
     mainWindow.setMovable(false);
@@ -471,6 +478,12 @@ app.on("ready", () => {
   });
   screen.on("display-removed", () => {
     manageDisplays();
+  });
+
+  ipcMain.on("app-ready", () => {
+    if (songWindow) {
+      songWindow.show();
+    }
   });
 });
 
