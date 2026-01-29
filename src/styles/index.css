@@ -231,13 +231,12 @@ h2 {
   border-radius: 5px;
   padding: 1px 5px;
   line-height: 1em;
-  font-size: 0.8rem;
+  font-size: 1rem;
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: row-reverse;
 }
 .verse-info.active-info {
-  color: #a0a0a0;
-  border: 1px solid #a0a0a0;
+  color: #666;
 }
 
 .big {

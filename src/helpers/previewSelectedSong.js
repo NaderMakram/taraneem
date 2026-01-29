@@ -45,12 +45,12 @@ export function previewSelectedChapter(chapter) {
   titleDiv.dataset.ref = custom_ref;
   titleDiv.innerHTML = `
     <h4>${chapter_book} ${chapter_number_ar}</h4>
-    <div class="verse-info">
+    <div class="verse-info active-info">
+      <span class="current-verse"></span>
+      <span class="separator" style="display: none;">/</span>
       <span class="total-verse">${
         Object.keys(verses).filter((key) => key !== "0").length
       }</span>
-      <span>/</span>
-      <span class="current-verse"></span>
     </div>
   `;
   preview_output.appendChild(titleDiv);
@@ -122,9 +122,10 @@ export function previewSelectedSong(song) {
   titleDiv.dataset.ref = custom_ref;
   titleDiv.innerHTML = `
   <h4>${title}</h4>
-  <div class="verse-info">
-  <span class="total-verse">${verses.length}/</span>
+  <div class="verse-info active-info">
   <span class="current-verse"></span>
+  <span class="separator" style="display: none;">/</span>
+  <span class="total-verse">${verses.length}</span>
   </div>
   `;
   preview_output.appendChild(titleDiv);
@@ -187,7 +188,7 @@ export function previewSelectedSong(song) {
 
       chunks.forEach((chunkText) => {
         let div = document.createElement("div");
-        div.classList.add("chorus", "slide");
+        div.classList.add("chorus", "slide", "initial-chorus");
         div.innerHTML = replaceLineBreaks(chunkText);
         slides.push(div);
       });
