@@ -310,9 +310,15 @@ h2 {
   margin-left: 5px;
 }
 
+[data-ref^="local-song"] img.title-logo{
+filter: brightness(0) saturate(100%) invert(24%) sepia(62%) saturate(2150%) hue-rotate(180deg) brightness(98%) contrast(94%);
+}
+
 /* .big > div {
   margin-bottom: 0.8em;
 } */
+
+
 
 .plus,
 .delete,
