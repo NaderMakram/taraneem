@@ -1,17 +1,20 @@
 /* settings-modal.css (copy to your CSS folder) */
 
 #open-settings-btn {
-  margin-left: auto;
+  /* margin-left: auto; */
   transition: transform ease 0.3s;
 }
 
-#open-settings-btn:hover {
+#open-settings-btn:hover,
+html:has(#settings-modal.open) #open-settings-btn{
   transform: rotate(30deg);
 }
+
 
 html:has(.settings-modal.open) {
   overflow: hidden;
 }
+
 .settings-modal {
   position: fixed;
   inset: 0;
@@ -51,8 +54,8 @@ html:has(.settings-modal.open) {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   direction: rtl;
   max-width: 700px;
-  --primary-color: #007bff;
-  --primary-color-hover: #0056b3;
+  --primary-color: #07689f;
+  --primary-color-hover: #046096;
   --border-color: #ced4da;
   --background-color: #f8f9fa;
   --text-color: #212529;

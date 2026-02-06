@@ -108,11 +108,13 @@ export function searchAndDisplayResults(term) {
     // B. SEARCH BIBLE (Using Cache)
     let bibleResults = [];
     // Only search bible if term is 2+ words to avoid noise
-    if (originalTerm.trim().split(/\s+/).length >= 2) {
+    if (originalTerm.trim().split(/\s+/).length >= 1) {
        bibleResults = searchBibleOptimized(normalizedTerm, SEARCH_CACHE.bible);
     }
 
-    results = [...songResults, ...bibleResults];
+
+    // results = [...songResults, ...bibleResults];
+    results = [...bibleResults];
   }
 
   console.timeEnd("Search Logic");
@@ -154,7 +156,7 @@ let generateHTML = (term, results) => {
     });
   }
 
-  const maxResults = Math.min(20, filtered_results.length);
+  const maxResults = Math.min(50, filtered_results.length);
 
   for (let i = 0; i < maxResults; i++) {
     let slide_content = generate_item_html(filtered_results[i], term);
@@ -184,7 +186,13 @@ let generateHTML = (term, results) => {
     search_output.innerHTML = `
       <div class="note big bold">
         <img src="./img/warning.png" class="warning"/>
-        لو بتدور على شاهد كتابي<br>جرب تكتب بالاختصارات
+        لو بتدور على شاهد كتابي
+        <br>
+        جرب تكتب بالاختصارات زي:
+        <br/>
+        يو 4 16
+        </br>
+        1 كو 13
       </div>
     `;
   }

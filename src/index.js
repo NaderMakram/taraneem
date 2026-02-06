@@ -606,6 +606,10 @@ ipcMain.handle("delete-song", async (event, songId) => {
   return true;
 });
 
+ipcMain.handle("get-version", () => {
+  return app.getVersion();
+});
+
 // auto update
 
 app.on("ready", function () {

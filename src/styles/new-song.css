@@ -258,9 +258,7 @@ button.settings-option.soon span {
   display: block;
   font-size: 10px;
 }
-.settings-option:hover {
-  background-color: var;
-}
+
 
 .songs-actions {
   margin-bottom: 16px;

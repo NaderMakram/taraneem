@@ -148,6 +148,7 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   readJson: () => ipcRenderer.invoke("read-json"),
   createSortable: (el, options) => Sortable.create(el, options),
   appReady: () => ipcRenderer.send("app-ready"),
+  getVersion: () => ipcRenderer.invoke("get-version"),
 });
 
 ipcRenderer.on("log", (event, message) => {

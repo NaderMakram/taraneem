@@ -112,7 +112,10 @@
 
 
 
-      <button id="open-settings-btn" class="icon-btn" aria-label="إعدادات">
+      <button id="open-info-btn" class="icon-btn" aria-label="معلومات">
+        <img src="./img/info.png"/>
+      </button>
+      <button id="open-settings-btn" class="icon-btn" aria-label="الإعدادات">
         ⚙️
       </button>
 
@@ -318,8 +321,109 @@
     <script src="renderer.js" type="module"></script>
     <!-- dragula -->
     <script src="./helpers/dragula.js"></script>
+    <!-- Link Info Modal CSS -->
+    <link rel="stylesheet" href="styles/info-modal.css" />
+
+    <div
+      id="info-modal"
+      class="settings-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="settings-overlay" data-action="close"></div>
+      <div class="settings-panel" role="document">
+        <header class="settings-header">
+          <button class="settings-close-btn" aria-label="إغلاق">✕</button>
+          <h2 class="settings-title">معلومات عن الإصدار</h2>
+          <!-- No back button needed for this simple modal -->
+           <div style="width: 24px;"></div> 
+        </header>
+        <main class="settings-body">
+            <div class="info-content">
+                <img src="./assets/taraneem logo transparent.png" alt="Logo" class="logo-img">
+                <h3>انت الآن على أحدث إصدار 🎉</h3>
+                <p id="info-version-number"></p>
+                
+                <div class="info-details">
+                    <h4>الجديد في هذا الإصدار:</h4>
+                    <ul class="info-list">
+                        <li>إمكانية إضافة ترانيم جديدة.</li>
+                        <li>بحث أسرع مع تظليل نتيجة البحث.</li>
+                        <li>إختصارات اسهل للبحث والتحكم</br>
+                          (تقدر تعرف اكتر من طريقة الاستخدام 👇).</li>
+                    </ul>
+                    
+                    <h4>قريبًا...</h4>
+                    <ul class="info-list">
+                        <li>خاصية البث المباشر</li>
+                        <li>شاشة عرض خاصة بالمرنمين</li>
+                        <li>إمكانية إضافة خلفيات جديدة - Themes</li>
+                    </ul>
+                    
+                    <h2 class="info-section-title">طريقة استخدام البرنامج</h2>
+
+                    <div class="info-accordion" id="infoAccordion">
+                        <!-- Item 1 -->
+                        <div class="accordion-item open">
+                            <button class="accordion-header ripple" aria-expanded="true">
+                                <span class="accordion-title">البحث المتقدم</span>
+                                <span class="accordion-icon">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>استخدم شريط البحث للعثور على الترانيم بسرعة. يمكنك البحث بجزء من العنوان أو الكلمات.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="accordion-item">
+                            <button class="accordion-header ripple" aria-expanded="false">
+                                <span class="accordion-title">التحكم في العرض</span>
+                                <span class="accordion-icon">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>استخدم الأسهم (يمين/يسار) للتنقل بين الشرائح، و (أعلى/أسفل) للتنقل بين الأصحاحات أو الترانيم.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="accordion-item">
+                            <button class="accordion-header ripple" aria-expanded="false">
+                                <span class="accordion-title">إدارة الترانيم</span>
+                                <span class="accordion-icon">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>يمكنك إضافة ترانيم جديدة وتعديلها من خلال قائمة الإعدادات (أيقونة الترس).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+        </main>
+      </div>
+    </div>
+
     <!-- modal -->
     <script src="./helpers/settings-modal.js"></script>
+    <script src="./helpers/info-modal.js"></script>
     <script src="./helpers/addNewSong.js"></script>
   </body>
 </html>
