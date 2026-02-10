@@ -101,9 +101,9 @@ export function searchAndDisplayResults(term) {
         }
     }
     
-    // Sort and Take Top 50
+    // Sort and Take Top 25
     candidates.sort((a, b) => b.score - a.score);
-    const songResults = candidates.slice(0, 50);
+    const songResults = candidates.slice(0, 25);
 
     // B. SEARCH BIBLE (Using Cache)
     let bibleResults = [];
@@ -113,8 +113,7 @@ export function searchAndDisplayResults(term) {
     }
 
 
-    // results = [...songResults, ...bibleResults];
-    results = [...bibleResults];
+    results = [...songResults, ...bibleResults];
   }
 
   console.timeEnd("Search Logic");

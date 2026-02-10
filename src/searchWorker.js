@@ -9,7 +9,7 @@ function performSearch(term, songsWithSearchableContent, bibleVerses) {
   // console.log(`term: ${term}, songs: ${songsWithSearchableContent}`);
   let songResults = searchSongs(term, songsWithSearchableContent);
   let bibleResults = [];
-  if (term.trim().split(/\s+/).length >= 2) {
+  if (term.trim().split(/\s+/).length >= 3) {
     bibleResults = searchBible(term, bibleVerses);
   }
 

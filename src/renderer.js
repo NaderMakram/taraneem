@@ -144,7 +144,7 @@ let loader_HTML = `
 
 input.addEventListener("input", function (e) {
   let term = e.target.value;
-  if (term.length < 2) return (search_output.innerHTML = "");
+  if (term.length < 3) return (search_output.innerHTML = "");
   let containsDigit = /\d/.test(term);
   if (!containsDigit && search_output.innerHTML != loader_HTML) {
     // search_output.innerHTML = '';
