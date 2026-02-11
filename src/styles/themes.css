@@ -3,6 +3,16 @@
   src: url(../fonts/IBMPlexSansArabic-SemiBold.ttf);
 }
 
+@font-face {
+  font-family: traditional-arabic;
+  src: url(../fonts/Traditional-Arabic.ttf);
+}
+
+@font-face {
+  font-family: din-next;
+  src: url(../fonts/DINNextLTArabic-Bold-3.ttf);
+}
+
 /* alignment */
 
 body[data-alignment="top-1"] .song-container,
@@ -237,4 +247,64 @@ body[data-theme="christmas-dark-simple"] .bible-head {
 
 body[data-theme="christmas-dark-simple"] * {
   text-shadow: none;
+}
+
+
+
+/* el soora */
+
+/* elsoora light */
+/* default */
+body[data-theme="elsoora-light"] {
+  background-image: url("../img/elsoora-light.jpeg");
+  background-size: cover;
+  color: #2E2E32;
+}
+
+/* song style */
+body[data-theme="elsoora-light"]:has(#content > .song-container) {
+  font-family: traditional-arabic;
+}
+
+/* bible style */
+body[data-theme="elsoora-light"]:has(#content > .bible-container) *{
+  font-family: din-next;
+}
+
+/* accent */
+body[data-theme="elsoora-light"] .chorusSymbol,
+body[data-theme="elsoora-light"] .verseNumber,
+body[data-theme="elsoora-light"] .bible-head {
+  /* color: #f5d486; */
+  color: #a02323;
+}
+
+/* elsoora dark */
+/* default */
+body[data-theme="elsoora-dark"] {
+  background-image: url("../img/elsoora-dark.jpeg");
+  background-size: cover;
+  color: #D9C39A;
+}
+
+/* song style */
+body[data-theme="elsoora-dark"]:has(#content > .song-container) {
+  font-family: din-next;
+}
+
+/* bible style */
+body[data-theme="elsoora-dark"]:has(#content > .bible-container) *{
+  font-family: traditional-arabic;
+}
+
+/* accent */
+body[data-theme="elsoora-dark"] .chorusSymbol,
+body[data-theme="elsoora-dark"] .song-body .verseNumber,
+body[data-theme="elsoora-dark"] .bible-head {
+  /* color: #f5d486; */
+  color: #D98E02;
+}
+
+.bible-head .chapter-title-en{
+  display: none !important
 }
