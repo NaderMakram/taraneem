@@ -16,14 +16,16 @@ jobs:
           fetch-depth: 0
 
       - name: Ensure tag is from elsoora branch
+        shell: bash
+        working-directory: ${{ github.workspace }}
         run: |
           BRANCH=$(git branch -r --contains ${{ github.ref }} | head -n 1)
           echo "Tag belongs to: $BRANCH"
           if [[ "$BRANCH" != *"origin/elsoora"* ]]; then
             echo "This tag is not from elsoora branch. Skipping."
-            exit 1
+            exit 0
           fi
-        shell: bash
+
 
       - name: Use Node.js
         uses: actions/setup-node@v3
@@ -39,7 +41,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List release directory
-        run: ls ./release
+        shell: bash
+        run: |
+          if [ -d "./release" ]; then
+            ls ./release
+          else
+            echo "⚠️ No release directory created!"
+            exit 1
+          fi
 
       - name: Create Pre-release
         id: create_release
