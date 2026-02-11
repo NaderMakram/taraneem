@@ -23,6 +23,7 @@ jobs:
             echo "This tag is not from elsoora branch. Skipping."
             exit 1
           fi
+        shell: bash
 
       - name: Use Node.js
         uses: actions/setup-node@v3

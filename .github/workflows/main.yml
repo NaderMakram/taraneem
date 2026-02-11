@@ -9,6 +9,21 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
+      - name: Validate tag format
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "Tag pushed: $TAG"
+
+          # Regex: digits separated by dots, e.g. 3.9.0 or 12.4 or just 7
+          if [[ ! "$TAG" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
+            echo "❌ Tag does not match numeric pattern (e.g. 3.9.0)"
+            echo "Stopping workflow."
+            exit 1
+          fi
+
+          echo "✔ Tag format is valid."
+
       - name: Checkout code
         uses: actions/checkout@v3
 
