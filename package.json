@@ -21,7 +21,10 @@
     "autoUpdater": {
       "allowPrerelease": true
     }
-  }
+  },
+  "directories": {
+    "output": "release"
+}
 },
   "scripts": {
     "start": "electron-forge start",
