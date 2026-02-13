@@ -12,3 +12,12 @@
   font: inherit;
   background: #fff;
 }
+
+.font-picker-label {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #555;
+    white-space: nowrap;
+    position: absolute;
+    top: 5px;
+}

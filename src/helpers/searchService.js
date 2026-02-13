@@ -86,7 +86,8 @@ export function searchAndDisplayResults(term) {
     // --- SONG & BIBLE SEARCH ---
     
     // A. SEARCH SONGS (Using Fast Index)
-    const candidates = [];
+    // A. SEARCH SONGS (Using Fast Index)
+    const songCandidates = [];
     const songList = SEARCH_CACHE.songs;
     const len = songList.length;
 
@@ -96,30 +97,32 @@ export function searchAndDisplayResults(term) {
             // DETAILED CHECK: Only run if fast check passed
             const detailedMatch = calculateSongScore(songList[i].original, normalizedTerm);
             if (detailedMatch.score > 0) {
-                candidates.push(detailedMatch);
+              songCandidates.push(detailedMatch);
             }
         }
     }
-    
-    // Sort and Take Top 25
-    candidates.sort((a, b) => b.score - a.score);
-    const songResults = candidates.slice(0, 25);
 
     // B. SEARCH BIBLE (Using Cache)
-    let bibleResults = [];
+    let bibleCandidates = [];
     // Only search bible if term is 2+ words to avoid noise
     if (originalTerm.trim().split(/\s+/).length >= 1) {
-       bibleResults = searchBibleOptimized(normalizedTerm, SEARCH_CACHE.bible);
+      bibleCandidates = searchBibleOptimized(normalizedTerm, SEARCH_CACHE.bible);
     }
 
+    // C. MERGE & SORT
+    // Combine and rank results for both together
+    let allCandidates = [...songCandidates, ...bibleCandidates];
+    allCandidates.sort((a, b) => b.score - a.score);
 
-    results = [...songResults, ...bibleResults];
+    // Take Top 50
+    results = allCandidates.slice(0, 50);
   }
 
   console.timeEnd("Search Logic");
 
   // Output to UI
   generateHTML(originalTerm, results);
+  console.log(results)
 }
 
 let generateHTML = (term, results) => {
@@ -205,34 +208,113 @@ function calculateSongScore(item, term) {
     let { title, chorus, verses } = item.searchableContent;
     let score = 0;
     
+  // Scoring Weight Constants
+  const SCORES = {
+    TITLE_MATCH: 100,
+    CHORUS_MATCH: 80,
+    FIRST_VERSE_MATCH: 80, // Used if no chorus
+    VERSE_MATCH: 50,
+    EARLY_MATCH_BONUS_MAX: 30, // Max bonus for being at start
+    WHOLE_WORD_BONUS: 20
+  };
+
     let matchInTitle = false;
     let matchInChorus = null; 
     let matchInVerse = null;
 
+  // Helper for bonuses
+  const calculateBonuses = (text, index, termLength) => {
+    let bonus = 0;
+
+    // 1. Early Match Bonus (Linear decay from max bonus down to 0 at char 30)
+    // e.g. Index 0 = +30, Index 15 = +15, Index 30+ = 0
+    bonus += Math.max(0, SCORES.EARLY_MATCH_BONUS_MAX - index);
+
+    // 2. Whole Word Bonus
+    // Check character before and after match
+    const charBefore = index > 0 ? text[index - 1] : " ";
+    const charAfter = index + termLength < text.length ? text[index + termLength] : " ";
+
+    // Simple check for spaces or boundary. 
+    // Note: text is normalized, so punctuation might be gone or replaced by spaces depending on normalize function.
+    // If normalize keeps spaces, this works.
+    if ((charBefore === " " || index === 0) && (charAfter === " " || index + termLength === text.length)) {
+      bonus += SCORES.WHOLE_WORD_BONUS;
+    }
+
+    return bonus;
+  };
+
     // 1. Check Title
-    if (title.includes(term)) {
-        score += 10;
+  let titleIndex = title.indexOf(term);
+  if (titleIndex !== -1) {
+    score += SCORES.TITLE_MATCH;
+    score += calculateBonuses(title, titleIndex, term.length);
         matchInTitle = true;
     }
 
     // 2. Check Chorus
-    if (chorus) {
+  if (chorus && chorus.length > 0) {
+    let bestChorusScore = 0;
+    let bestChorusMatch = null;
+
         for (let i = 0; i < chorus.length; i++) {
-            if (chorus[i].includes(term)) {
-                score += 5;
-                if (!matchInChorus) matchInChorus = { lineIndex: i, text: chorus[i] };
+          let idx = chorus[i].indexOf(term);
+          if (idx !== -1) {
+            let currentScore = SCORES.CHORUS_MATCH;
+            currentScore += calculateBonuses(chorus[i], idx, term.length);
+
+            // Use the BEST match in the chorus
+            if (currentScore > bestChorusScore) {
+              bestChorusScore = currentScore;
+              bestChorusMatch = { lineIndex: i, text: chorus[i] };
             }
+        }
+      }
+
+      // Only add score ONCE for the entire chorus
+      if (bestChorusScore > 0) {
+        score += bestChorusScore;
+        if (!matchInChorus) matchInChorus = bestChorusMatch;
         }
     }
 
     // 3. Check Verses
-    if (verses) {
+  if (verses && verses.length > 0) {
+    // Determine if we should treat the first verse specially (if no chorus)
+    const hasChorus = chorus && chorus.length > 0;
+    const VERSE_DECAY = 3; // Points to subtract per verse index
+
         for (let v = 0; v < verses.length; v++) {
+          let isFirstVerse = (v === 0);
+          // If no chorus exists, promote First Verse to higher score
+          let baseVerseScore = (!hasChorus && isFirstVerse) ? SCORES.FIRST_VERSE_MATCH : SCORES.VERSE_MATCH;
+
+          // DECAY: Subtract points for later verses
+          baseVerseScore = Math.max(0, baseVerseScore - (v * VERSE_DECAY));
+
+          let bestVerseScore = 0;
+          let bestVerseMatch = null;
+
             for (let l = 0; l < verses[v].length; l++) {
-                if (verses[v][l].includes(term)) {
-                    score += 2;
-                    if (!matchInVerse) matchInVerse = { verseIndex: v, lineIndex: l, text: verses[v][l] };
+              let idx = verses[v][l].indexOf(term);
+              if (idx !== -1) {
+                let currentScore = baseVerseScore;
+                currentScore += calculateBonuses(verses[v][l], idx, term.length);
+
+                // Use the BEST match in this specific verse
+                if (currentScore > bestVerseScore) {
+                  bestVerseScore = currentScore;
+                  bestVerseMatch = { verseIndex: v, lineIndex: l, text: verses[v][l] };
                 }
+            }
+          }
+
+          // Only add score ONCE for this verse
+          if (bestVerseScore > 0) {
+            score += bestVerseScore;
+            // If we haven't found a verse match yet (for UI jump), store this one
+            if (!matchInVerse) matchInVerse = bestVerseMatch;
             }
         }
     }
@@ -266,13 +348,37 @@ function calculateSongScore(item, term) {
 function searchBibleOptimized(term, bibleVerses) {
     const candidates = [];
     const len = bibleVerses.length;
+
+  // Scoring Constants for Bible
+  // We want Bible results to compete with Song Titles if the match is good.
+  const SCORES = {
+    VERSE_MATCH: 80, // High base score to rival song titles/choruses
+    EARLY_MATCH_BONUS_MAX: 30,
+    WHOLE_WORD_BONUS: 20
+  };
+
+  const calculateBonuses = (text, index, termLength) => {
+    let bonus = 0;
+    bonus += Math.max(0, SCORES.EARLY_MATCH_BONUS_MAX - index);
+    const charBefore = index > 0 ? text[index - 1] : " ";
+    const charAfter = index + termLength < text.length ? text[index + termLength] : " ";
+    if ((charBefore === " " || index === 0) && (charAfter === " " || index + termLength === text.length)) {
+      bonus += SCORES.WHOLE_WORD_BONUS;
+    }
+    return bonus;
+  };
+
+
     for(let i=0; i<len; i++) {
         const verse = bibleVerses[i];
         let index = verse.text.indexOf(term);
         if(index !== -1) {
+          let score = SCORES.VERSE_MATCH;
+          score += calculateBonuses(verse.text, index, term.length);
+
             candidates.push({
-                ...verse, // Clone here is okay for small results, or use pointer method if slow
-                score: 2,
+              ...verse,
+              score: score,
                 matchedKey: "verses",
                 matchedText: verse.text.substring(index, index + term.length)
             });

@@ -12,6 +12,14 @@
   font-family: din-next;
   src: url(../fonts/DINNextLTArabic-Bold-3.ttf);
 }
+@font-face {
+  font-family: adobe-arabic;
+  src: url(../fonts/adobe-arabic-bold.otf);
+}
+@font-face {
+  font-family: mySegoe-ui;
+  src: url(../fonts/segoe-ui.ttf);
+}
 
 /* alignment */
 
@@ -261,6 +269,12 @@ body[data-theme="elsoora-light"] {
   color: #2E2E32;
 }
 
+
+body[data-theme="elsoora-dark"] .verse-number-center,
+body[data-theme="elsoora-dark"] .verseNumber{
+  color: #2E2E32;
+}
+
 /* song style */
 body[data-theme="elsoora-light"]:has(#content > .song-container) {
   font-family: traditional-arabic;
@@ -286,16 +300,18 @@ body[data-theme="elsoora-dark"] {
   background-size: cover;
   color: #D9C39A;
 }
+body[data-theme="elsoora-dark"] .verse-number-center,
+body[data-theme="elsoora-dark"] .verseNumber{
+  color: #D9C39A;
+}
+body[data-theme="elsoora-dark"] .container *{
+  text-shadow: 2px 3px 4px rgb(34 34 34 / 90%);
+}
 
 /* song style */
-body[data-theme="elsoora-dark"]:has(#content > .song-container) {
-  font-family: din-next;
-}
+
 
 /* bible style */
-body[data-theme="elsoora-dark"]:has(#content > .bible-container) *{
-  font-family: traditional-arabic;
-}
 
 /* accent */
 body[data-theme="elsoora-dark"] .chorusSymbol,

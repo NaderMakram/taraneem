@@ -15,8 +15,11 @@ const nextChapterBtn = document.querySelector("#nextChapter");
 const scrollToTop = document.querySelector("#scroll-top");
 
 const themeSelect = document.getElementById("theme_select");
+const bibleFontSelect = document.getElementById("bible_font_select");
+const songFontSelect = document.getElementById("song_font_select");
 // const waitingModeToggle = document.querySelector("input#waiting_mode_input");
-const alignmentToggle = document.querySelector("button#alignBtn");
+const alignHorizBtn = document.querySelector("button#alignHorizBtn");
+const alignVertBtn = document.querySelector("button#alignVertBtn");
 
 // import functions
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
@@ -74,6 +77,19 @@ themeSelect.addEventListener("change", (e) => {
   // send to main / apply immediately
   window.myCustomAPI.setTheme(theme);
 });
+
+bibleFontSelect.addEventListener("change", (e) => {
+  const font = e.target.value;
+  localStorage.setItem("bibleFont", font);
+  window.myCustomAPI.setBibleFont(font);
+});
+
+songFontSelect.addEventListener("change", (e) => {
+  const font = e.target.value;
+  localStorage.setItem("songFont", font);
+  window.myCustomAPI.setSongFont(font);
+});
+
 
 
 
@@ -211,18 +227,48 @@ preview_output.addEventListener("click", (e) => {
 
 // alignment toggle
 
-// Define the order of states
-const states = ["default", "top-2", "top-1", "bottom-2", "bottom-1"];
-let currentIndex = 0;
+// alignment toggle
 
-alignmentToggle.addEventListener("click", () => {
-  // 1. Calculate next index (loop back to 0 if at end)
-  currentIndex = (currentIndex + 1) % states.length;
+// Horizontal Alignment
+const horizStates = ["right", "center"];
+let currentHorizIndex = 0;
 
-  // 2. Update the value attribute
-  // The CSS will instantly react to this change and animate the SVG
-  alignmentToggle.setAttribute("value", states[currentIndex]);
+alignHorizBtn.addEventListener("click", () => {
+  // 1. Calculate next index (cycling)
+  currentHorizIndex = (currentHorizIndex + 1) % horizStates.length;
+  const newState = horizStates[currentHorizIndex];
 
-  console.log("Current State:", states[currentIndex]); // For debugging
-  window.myCustomAPI.setAlignment(states[currentIndex]);
+  // 2. Update the value attribute (affects icon)
+  alignHorizBtn.setAttribute("value", newState);
+
+  // 3. Update the body dataset for CSS styling (local preview)
+  document.body.dataset.alignment = newState;
+
+  // 4. Persistence
+  localStorage.setItem("alignment", newState);
+
+  console.log("Horizontal State:", newState);
+  window.myCustomAPI.setAlignment(newState);
+});
+
+// Vertical Alignment
+const vertStates = ["center", "top"]; // center is middle, top is top
+let currentVertIndex = 0;
+
+alignVertBtn.addEventListener("click", () => {
+  // 1. Calculate next index (cycling)
+  currentVertIndex = (currentVertIndex + 1) % vertStates.length;
+  const newState = vertStates[currentVertIndex];
+
+  // 2. Update the value attribute (affects icon)
+  alignVertBtn.setAttribute("value", newState);
+
+  // 3. Update the body dataset for CSS styling (local preview if applicable)
+  document.body.dataset.vertAlignment = newState;
+
+  // 4. Persistence
+  localStorage.setItem("vertAlignment", newState);
+
+  console.log("Vertical State:", newState);
+  window.myCustomAPI.setVertAlignment(newState);
 });

@@ -116,6 +116,9 @@ body::-webkit-scrollbar {
   font-size: 7.3vw;
   line-height: 1.45em;
   height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Default to center/middle */
 }
 
 /* the actual bible verse */
@@ -195,4 +198,63 @@ body:has(.song-body) {
 span.author{
     font-style: italic;
     font-size: 5rem;
-    margin-top: 56px;}
+    margin-top: 56px;
+}
+
+/* Center Alignment Styles */
+[data-alignment="center"] .bible-body {
+    text-align: center;
+    padding-right: 0px;
+    padding-top: 2vh;
+    height: 78vh;
+}
+
+/* Target the inner div containing text */
+[data-alignment="center"] .bible-body > div > div {
+    text-align: center;
+}
+
+.first-word-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Default state: Hidden */
+.verse-number-center {
+    display: none;
+    position: absolute;
+    top: 15%;
+    right: -110%;
+    width: 100%;
+    text-align: left;
+    color: var(--primary);
+    font-size: 0.35em;
+    line-height: 1;
+}
+
+/* Center Alignment state: Visible */
+[data-alignment="center"] .verse-number-center {
+    display: block;
+}
+[data-alignment="center"] .verseNumber {
+    display: none !important;
+}
+
+/* Default state: Visible (standard verse number) */
+.bible-body .verseNumber {
+    display: block;
+}
+
+/* Center Alignment state: Hidden */
+/* Vertical Alignment Overrides */
+[data-vert-alignment="top"] .song-body,
+[data-vert-alignment="top"] .bible-body {
+    justify-content: flex-start;
+    /* padding-top: 10vh; */
+}
+
+[data-vert-alignment="center"] .song-body,
+[data-vert-alignment="center"] .bible-body {
+    justify-content: center;
+    padding-top: 0;
+}

@@ -27,11 +27,18 @@ jobs:
           fi
 
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20.x
-          cache: npm
+      - name: Extract version from tag
+        shell: bash
+        run: |
+          # Remove 'elsoora-' prefix to get the version number
+          VERSION=${GITHUB_REF_NAME#elsoora-}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Extracted version: $VERSION"
+
+      - name: Update package.json version
+        shell: bash
+        run: |
+          npm version $VERSION --no-git-tag-version
 
       - name: Install dependencies and build
         run: |
@@ -40,55 +47,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List release directory
+      - name: List Release Directory
         shell: bash
         run: |
-          if [ -d "./release" ]; then
-            ls ./release
-          else
-            echo "⚠️ No release directory created!"
-            exit 1
-          fi
+          ls -R release/
 
-      - name: Create Pre-release
-        id: create_release
-        uses: comnoco/create-release-action@v2.0.5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: "Elsoora Build ${{ github.ref_name }}"
+          files: |
+            release/*.exe
+            release/*.blockmap
+            release/*.yml
           draft: false
           prerelease: true
-
-      - name: Upload exe
-        uses: actions/upload-release-asset@v1
+          name: "Elsoora Build ${{ env.VERSION }}"
+          tag_name: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ github.ref_name }}/Taraneem-Windows-${{github.ref_name}}-Setup.exe
-          asset_name: Taraneem-Windows-${{github.ref_name}}-Setup.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload blockmap
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ github.ref_name }}/Taraneem-Windows-${{github.ref_name}}-Setup.exe.blockmap
-          asset_name: Taraneem-Windows-${{github.ref_name}}-Setup.exe.blockmap
-          asset_content_type: text/plain
-
-      # ❗ Optional: Disable auto-update
-      # You can delete this step if you want no latest.yml published
-      - name: Upload latest.yml
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ github.ref_name }}/latest.yml
-          asset_name: latest.yml
-          asset_content_type: text/yaml

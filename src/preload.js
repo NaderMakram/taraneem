@@ -139,7 +139,10 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
   extendSongWindow: () => ipcRenderer.send("extend-song-window"),
   setTheme: (theme) => ipcRenderer.send("set-theme", theme),
+  setBibleFont: (font) => ipcRenderer.send("set-bible-font", font),
+  setSongFont: (font) => ipcRenderer.send("set-song-font", font),
   setAlignment: (alignment) => ipcRenderer.send("set-alignment", alignment),
+  setVertAlignment: (alignment) => ipcRenderer.send("set-vert-alignment", alignment),
 
   getSiblingChapter: (content) =>
     ipcRenderer.invoke("get-sibling-chapter", content),

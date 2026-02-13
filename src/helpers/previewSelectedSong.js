@@ -70,15 +70,28 @@ export function previewSelectedChapter(chapter) {
   let slides = [];
 
   // Prepare verse slides without appending them yet
+  // Prepare verse slides without appending them yet
   for (const [key, value] of Object.entries(verses)) {
     let div = document.createElement("div");
     div.classList.add("bible-verse", "slide");
     div.dataset.verseNumber = key;
+
+    let verseNumAr = key == 0 ? "" : new Intl.NumberFormat("ar-EG").format(key);
+
+    // Split first word for center alignment grouping
+    // We want the verse number to be attached to the first word in center mode
+    let parts = value.split(" ");
+    let firstWord = parts[0];
+    let restOfVerse = parts.length > 1 ? " " + parts.slice(1).join(" ") : "";
+
     div.innerHTML = `
-    <span class="verseNumber">${
-     key == 0 ? "" : new Intl.NumberFormat("ar-EG").format(key)
-     }</span>
-    <div>${value}</div>
+    <span class="verseNumber">${verseNumAr}</span>
+    <div>
+        <span class="first-word-wrapper">
+            <span class="verse-number-center">${verseNumAr}</span>
+            ${firstWord}
+        </span>${restOfVerse}
+    </div>
   `;
     slides.push(div);
   }
@@ -107,7 +120,8 @@ export function previewSelectedChapter(chapter) {
 }
 // preview selected song
 export function previewSelectedSong(song) {
-  const alignMode = document.querySelector("#alignBtn").value;
+  // const alignMode = document.querySelector("#alignBtn").value;
+  const alignMode = 'default';
   // Expected values: "default", "top-1", "top-2", "bottom-1", "bottom-2"
   console.log("Alignment Mode:", alignMode);
 

@@ -1,0 +1,53 @@
+
+/* Bible Fonts */
+body[data-bible-font="ibm-plex"] .bible-container * {
+  font-family: ibm-plex !important;
+  font-size: 7vw;
+}
+body[data-bible-font="traditional-arabic"] .bible-container * {
+  font-family: traditional-arabic !important;
+  font-size: 8vw;
+}
+body[data-bible-font="din-next"] .bible-container * {
+  font-family: din-next !important;
+  font-size: 6vw;
+}
+body[data-bible-font="adobe-arabic"] .bible-container * {
+  font-family: adobe-arabic !important;
+}
+body[data-bible-font="adobe-arabic"] .bible-body {
+  font-size: 9.5vw;
+}
+body[data-bible-font="MyCalibri"] .bible-container * {
+  font-family: MyCalibri !important;
+  font-size: 7.3vw;
+  line-height: 1.5em !important;
+}
+body[data-bible-font="MyTimesNewRoman"] .bible-container * {
+  font-family: MyTimesNewRoman !important;
+  font-size: 7.3vw;
+}
+
+/* Song Fonts */
+body[data-song-font="ibm-plex"] .song-container {
+  font-family: ibm-plex !important;
+}
+body[data-song-font="traditional-arabic"] .song-container {
+  font-family: traditional-arabic !important;
+}
+body[data-song-font="din-next"] .song-container {
+  font-family: din-next !important;
+}
+body[data-song-font="adobe-arabic"] .song-container * {
+  font-family: adobe-arabic !important;
+  line-height: 1em
+}
+body[data-song-font="MyCalibri"] .song-container * {
+  font-family: MyCalibri !important;
+}
+body[data-song-font="mySegoe-ui"] .song-container * {
+  font-family: mySegoe-ui !important;
+}
+body[data-song-font="MyTimesNewRoman"] .song-container * {
+  font-family: MyTimesNewRoman !important;
+}

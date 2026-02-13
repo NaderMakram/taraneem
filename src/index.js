@@ -361,6 +361,59 @@ app.on("ready", () => {
         // Execute the script inside the window
         mainWindow.webContents.executeJavaScript(setSelectScript);
       }
+
+      if (localStorage.bibleFont) {
+        songWindow.webContents.send("set-bible-font", localStorage.bibleFont);
+        const setBibleFontScript = `
+          const bibleFontSelect = document.querySelector("#bible_font_select");
+          if (bibleFontSelect) {
+            bibleFontSelect.value = "${localStorage.bibleFont}";
+            const event = new Event("change");
+            bibleFontSelect.dispatchEvent(event);
+          }
+        `;
+        mainWindow.webContents.executeJavaScript(setBibleFontScript);
+      }
+
+      if (localStorage.songFont) {
+        songWindow.webContents.send("set-song-font", localStorage.songFont);
+        const setSongFontScript = `
+          const songFontSelect = document.querySelector("#song_font_select");
+          if (songFontSelect) {
+            songFontSelect.value = "${localStorage.songFont}";
+            const event = new Event("change");
+            songFontSelect.dispatchEvent(event);
+          }
+        `;
+        mainWindow.webContents.executeJavaScript(setSongFontScript);
+      }
+
+      if (localStorage.alignment) {
+        songWindow.webContents.send("set-alignment", localStorage.alignment);
+        // Update the button state in renderer
+        const setAlignmentScript = `
+            document.body.dataset.alignment = "${localStorage.alignment}";
+            const alignHorizBtn = document.querySelector("#alignHorizBtn");
+            if (alignHorizBtn) {
+              alignHorizBtn.setAttribute("value", "${localStorage.alignment}");
+            }
+          `;
+        mainWindow.webContents.executeJavaScript(setAlignmentScript);
+      }
+
+      if (localStorage.vertAlignment) {
+        songWindow.webContents.send("set-vert-alignment", localStorage.vertAlignment);
+        // Update the button state in renderer
+        const setVertAlignmentScript = `
+            document.body.dataset.vertAlignment = "${localStorage.vertAlignment}";
+            const alignVertBtn = document.querySelector("#alignVertBtn");
+            if (alignVertBtn) {
+              alignVertBtn.setAttribute("value", "${localStorage.vertAlignment}");
+            }
+          `;
+        mainWindow.webContents.executeJavaScript(setVertAlignmentScript);
+      }
+
     });
 });
 
@@ -401,6 +454,20 @@ ipcMain.on("set-alignment", (event, alignment) => {
   console.log("alignment: ", alignment);
   songWindow.webContents.send("set-alignment", alignment);
 });
+
+ipcMain.on("set-vert-alignment", (event, alignment) => {
+  console.log("vert alignment: ", alignment);
+  songWindow.webContents.send("set-vert-alignment", alignment);
+});
+
+ipcMain.on("set-bible-font", (event, font) => {
+  songWindow.webContents.send("set-bible-font", font);
+});
+
+ipcMain.on("set-song-font", (event, font) => {
+  songWindow.webContents.send("set-song-font", font);
+});
+
 
 let manageDisplays = () => {
   let displays = screen.getAllDisplays();
