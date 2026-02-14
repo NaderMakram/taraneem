@@ -38,7 +38,12 @@ jobs:
       - name: Update package.json version
         shell: bash
         run: |
-          npm version $VERSION --no-git-tag-version
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+            npm version $VERSION --no-git-tag-version
+          else
+            echo "Version already set to $VERSION"
+          fi
 
       - name: Install dependencies and build
         run: |

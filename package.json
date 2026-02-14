@@ -1,7 +1,7 @@
 {
   "name": "taraneem-elsoora",
   "productName": "Taraneem Elsoora",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "src/index.js",
   "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
   "repository": {
