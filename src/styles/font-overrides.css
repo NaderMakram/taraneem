@@ -2,32 +2,42 @@
 /* Bible Fonts */
 body[data-bible-font="ibm-plex"] .bible-container * {
   font-family: ibm-plex !important;
+}
+body[data-bible-font="ibm-plex"] .bible-body div {
   font-size: 7vw;
 }
 body[data-bible-font="traditional-arabic"] .bible-container * {
   font-family: traditional-arabic !important;
+}
+body[data-bible-font="traditional-arabic"] .bible-body div {
   font-size: 8vw;
 }
 body[data-bible-font="din-next"] .bible-container * {
   font-family: din-next !important;
+}
+body[data-bible-font="din-next"] .bible-body div {
   font-size: 6vw;
 }
 body[data-bible-font="adobe-arabic"] .bible-container * {
   font-family: adobe-arabic !important;
 }
-body[data-bible-font="adobe-arabic"] .bible-body {
+body[data-bible-font="adobe-arabic"] .bible-body div {
   font-size: 9.5vw;
 }
 body[data-bible-font="MyCalibri"] .bible-container * {
   font-family: MyCalibri !important;
-  font-size: 7.3vw;
   line-height: 1.5em !important;
 }
-body[data-bible-font="MyTimesNewRoman"] .bible-container * {
-  font-family: MyTimesNewRoman !important;
+body[data-bible-font="MyCalibri"] .bible-body div{
   font-size: 7.3vw;
 }
 
+body[data-bible-font="MyTimesNewRoman"] .bible-container * {
+  font-family: MyTimesNewRoman !important;
+}
+body[data-bible-font="MyTimesNewRoman"] .bible-body div {
+  font-size: 7.3vw;
+}
 /* Song Fonts */
 body[data-song-font="ibm-plex"] .song-container {
   font-family: ibm-plex !important;

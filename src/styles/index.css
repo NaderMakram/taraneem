@@ -58,14 +58,14 @@ h2 {
   margin: 0px;
 }
 
-#tools_bar {
+#tools-bar {
   display: flex;
   align-items: center;
   position: sticky;
   background: var(--main-window-bg);
   top: -1px;
   padding: 10px 14px;
-  padding-top: 20px;
+  padding-top: 25px;
   border-bottom: 1px solid #e0e0e0;
   z-index: 100;
   gap: 15px;
@@ -131,13 +131,9 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  position: relative;
 }
 
-.alignment-label {
-  font-size: 0.7rem;
-  color: #666;
-  font-weight: 600;
-}
 
 .alignment-buttons {
     display: flex;
@@ -162,65 +158,57 @@ h2 {
     color: #202124;
 }
 
-/* Icon Styles */
+
+
+
+
+
+
+
+/* 1. Base SVG & Icon Styles */
 .icon-svg {
-    width: 24px;
-    height: 24px;
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
 
-.align-icon {
-    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-    transform-origin: center;
+.bar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
 
-/* Horizontal Alignment State (value="right") */
-button#alignHorizBtn[value="right"] .align-icon.center {
-    opacity: 0;
-    transform: scale(0.8);
-    display: none; /* Hide non-active to prevent overlap issues if opacity fails */
-}
-button#alignHorizBtn[value="right"] .align-icon.right {
-    opacity: 1;
-    transform: scale(1);
-    display: block;
+/* 2. Vertical Button Logic (Rotated 90deg) */
+#alignVertBtn .icon-svg {
+  transform: rotate(90deg);
 }
 
-/* Horizontal Alignment State (value="center") */
-button#alignHorizBtn[value="center"] .align-icon.right {
-    opacity: 0;
-    transform: scale(0.8);
-    display: none;
-}
-button#alignHorizBtn[value="center"] .align-icon.center {
-    opacity: 1;
-    transform: scale(1);
-    display: block;
-}
+/* Vertical: TOP (Normal Top, Small Mid, Smallest Bot) - Center Aligned */
+#alignVertBtn[value="top"] .bar.mid { x: 7; width: 10px; }
+#alignVertBtn[value="top"] .bar.bot { x: 9.5; width: 5px; }
+
+/* Vertical: MIDDLE (Normal Mid, Small Top & Bot) - Center Aligned */
+#alignVertBtn[value="center"] .bar.top { x: 7; width: 10px; }
+#alignVertBtn[value="center"] .bar.mid { x: 3; width: 18px; }
+#alignVertBtn[value="center"] .bar.bot { x: 7; width: 10px; }
 
 
-/* Vertical Alignment State (value="center" - default/middle) */
-button#alignVertBtn[value="center"] .align-icon.top {
-    opacity: 0;
-    transform: scale(0.8);
-    display: none;
-}
-button#alignVertBtn[value="center"] .align-icon.middle {
-    opacity: 1;
-    transform: scale(1);
-    display: block;
+/* 3. Horizontal Button Logic (0deg) */
+#alignHorizBtn .icon-svg {
+  transform: rotate(90deg);
 }
 
-/* Vertical Alignment State (value="top") */
-button#alignVertBtn[value="top"] .align-icon.middle {
-    opacity: 0;
-    transform: scale(0.8);
-    display: none;
-}
-button#alignVertBtn[value="top"] .align-icon.top {
-    opacity: 1;
-    transform: scale(1);
-    display: block;
-}
+/* Horizontal: RIGHT (All right aligned, Top full, Mid smaller, Bot smallest) */
+#alignHorizBtn[value="right"] .bar.top { x: 3; width: 18px; }
+#alignHorizBtn[value="right"] .bar.mid { x: 11; width: 10px; } /* Right side is x=21, so 21-10 = 11 */
+#alignHorizBtn[value="right"] .bar.bot { x: 16; width: 5px; }  /* 21-5 = 16 */
+
+/* Horizontal: CENTER (Mirroring the Vertical "Middle" style for consistency) */
+#alignHorizBtn[value="center"] .bar.top { x: 7; width: 10px; }
+#alignHorizBtn[value="center"] .bar.mid { x: 3; width: 18px; }
+#alignHorizBtn[value="center"] .bar.bot { x: 7; width: 10px; }
+
+
+
 #waiting-placeholder {
   margin: 0;
   direction: rtl;

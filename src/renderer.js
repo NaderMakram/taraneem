@@ -21,6 +21,7 @@ const songFontSelect = document.getElementById("song_font_select");
 const alignHorizBtn = document.querySelector("button#alignHorizBtn");
 const alignVertBtn = document.querySelector("button#alignVertBtn");
 
+
 // import functions
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
 import { newSlide } from "./helpers/newSlide.js";
@@ -66,6 +67,17 @@ whiteButton.addEventListener("click", () => {
   // newSlide("");
   pause();
   whiteButton.blur();
+});
+
+const selects = [themeSelect, bibleFontSelect, songFontSelect];
+
+selects.forEach(select => {
+  // Check if the element exists to avoid errors
+  if (select) {
+    select.addEventListener('change', function () {
+      this.blur();
+    });
+  }
 });
 
 themeSelect.addEventListener("change", (e) => {

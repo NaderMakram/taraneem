@@ -270,8 +270,8 @@ body[data-theme="elsoora-light"] {
 }
 
 
-body[data-theme="elsoora-dark"] .verse-number-center,
-body[data-theme="elsoora-dark"] .verseNumber{
+body[data-theme="elsoora-light"] .verse-number-center,
+body[data-theme="elsoora-light"] .verseNumber{
   color: #2E2E32;
 }
 
