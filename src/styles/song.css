@@ -236,7 +236,7 @@ span.author{
 [data-alignment="center"] .verse-number-center {
     display: block;
 }
-[data-alignment="center"] .verseNumber {
+[data-alignment="center"] .bible-body .verseNumber {
     display: none !important;
 }
 
