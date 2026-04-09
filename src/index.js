@@ -1,4 +1,4 @@
-﻿const { app, BrowserWindow, screen, ipcMain } = require("electron");
+﻿const { app, BrowserWindow, screen, ipcMain, shell } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
 const path = require("path");
@@ -243,6 +243,17 @@ const createMainWindow = () => {
 
   // remove menu
   mainWindow.removeMenu();
+
+  // handle links with target="_blank"
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // Check if the URL is an external link
+    if (url.startsWith('https:') || url.startsWith('http:')) {
+      shell.openExternal(url); // Opens in user's default browser
+    }
+    return { action: 'deny' }; // Stops Electron from opening a new app window
+  });
+
 
   if (isDev) {
     mainWindow.webContents.openDevTools();
