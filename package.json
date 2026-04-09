@@ -1,7 +1,7 @@
 {
   "name": "taraneem-elsoora",
-  "productName": "Taraneem Elsoora",
-  "version": "1.0.8",
+  "productName": "Taraneem-Elsoora",
+  "version": "1.0.9",
   "main": "src/index.js",
   "description": "Arabic songs and bible presentation program with the AVDDV version for Arabic churches",
   "repository": {
@@ -18,6 +18,7 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win --x64 -p never",
     "dist32": "electron-builder --win --ia32 -p never",
+    "dist-local": "electron-builder --win --x64 -p never && rd /s /q \"release\\${npm_package_version}\\win-unpacked\"",
     "publish": "electron-builder -p always"
   },
 
