@@ -1,3 +1,5 @@
+import { trackPresentationFromSlide } from "./presentationMeta.js";
+
 export function newSlide(html) {
   // console.log(html);
   let paused = document.querySelector(".pause");
@@ -40,6 +42,8 @@ export function newSlide(html) {
     }
   }
   ///////////////////////  //
+
+  trackPresentationFromSlide(html);
 
   if (
     (document.querySelector(".slide").classList.contains("bible-verse") &&

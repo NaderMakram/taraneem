@@ -1,3 +1,5 @@
+import { buildPresentationMeta } from "./presentationMeta.js";
+
 export function pause() {
   let active = document.querySelector(".active");
   // console.log(active.innerHTML);
@@ -6,6 +8,9 @@ export function pause() {
     active.click();
   } else {
     active.classList.add("pause");
+    if (window.myCustomAPI?.trackPresentation) {
+      window.myCustomAPI.trackPresentation(buildPresentationMeta(""));
+    }
     window.myCustomAPI.updateSongWindow("");
   }
 }

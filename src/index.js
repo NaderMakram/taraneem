@@ -3,6 +3,8 @@ const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
+const analytics = require("./analytics/analyticsService");
+const analyticsDebug = require("./analytics/analyticsDebug");
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -235,6 +237,7 @@ const createMainWindow = () => {
 
   // Optimized showing to prevent white flash
   mainWindow.once("ready-to-show", () => {
+    analyticsDebug.setMainWindow(mainWindow);
     mainWindow.show();
     mainWindow.focus();
   });
@@ -338,6 +341,14 @@ function updateVersionMessage(message) {
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
 app.on("ready", addIPCs);
+app.on("ready", () => {
+  analytics.setup({
+    userDataPath,
+    getAppVersion: () => app.getVersion(),
+    getLocale: () => app.getLocale(),
+    getDisplayCount: () => screen.getAllDisplays().length,
+  });
+});
 app.on("ready", () => {
   // 1. Get localStorage data from the renderer
   mainWindow.webContents
@@ -548,10 +559,32 @@ app.on("ready", () => {
   });
 
   ipcMain.on("app-ready", () => {
+    analytics.startSession();
     if (songWindow) {
       songWindow.show();
     }
+    // First sync shortly after startup (debug logs in DevTools console)
+    setTimeout(() => {
+      analytics.forceSync().then((result) => {
+        analyticsDebug.log("info", "Startup sync result", result);
+      });
+    }, 3000);
   });
+});
+
+ipcMain.on("analytics:track-presentation", (_event, meta) => {
+  analytics.trackPresentation(meta);
+});
+
+ipcMain.handle("analytics:force-sync", async () => {
+  const result = await analytics.forceSync();
+  return { result, status: analytics.getDebugStatus() };
+});
+
+ipcMain.handle("analytics:debug-status", () => analytics.getDebugStatus());
+
+app.on("before-quit", () => {
+  analytics.endSession();
 });
 
 ipcMain.on("extend-song-window", (event) => {
@@ -621,6 +654,8 @@ ipcMain.handle("save-song", async (event, song) => {
 
   fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
 
+  analytics.trackLocalSong("create", newSong);
+
   return newSong;
 });
 
@@ -662,12 +697,17 @@ ipcMain.handle("update-song", async (event, songId, updatedSong) => {
     dateEdited: new Date().toISOString(),
   };
   fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+  analytics.trackLocalSong("update", songs[songId]);
   return songs[songId];
 });
 
 ipcMain.handle("delete-song", async (event, songId) => {
   ensureLocalDB();
   let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  const removed = songs[songId];
+  if (removed) {
+    analytics.trackLocalSong("delete", removed);
+  }
   songs.splice(songId, 1);
   fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
   return true;

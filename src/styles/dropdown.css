@@ -16,11 +16,22 @@
 
 .font-picker-label,
 .alignment-label {
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: #555;
-    white-space: nowrap;
-    position: absolute;
-    top: -20px;
-    left: 0px;
+  display: none;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #555;
+  white-space: nowrap;
+  position: absolute;
+  top: -20px;
+  left: 0px;
+}
+
+/* temp till next version */
+.font-picker-label,
+.alignment-label,
+#alignHorizBtn,
+#alignVertBtn,
+select#bible_font_select,
+select#song_font_select {
+  visibility: hidden;
 }

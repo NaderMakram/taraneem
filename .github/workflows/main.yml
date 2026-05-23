@@ -33,6 +33,22 @@ jobs:
           node-version: 20.x
           cache: "npm"
 
+      - name: Write analytics config for build
+        shell: bash
+        run: |
+          if [ -n "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('src/config/analytics.bundled.json', JSON.stringify({
+                supabaseUrl: process.env.SUPABASE_URL,
+                supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+              }, null, 2) + '\n');
+            "
+          fi
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
       - name: Install dependencies and build
         run: |
           npm ci

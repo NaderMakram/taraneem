@@ -152,6 +152,24 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   createSortable: (el, options) => Sortable.create(el, options),
   appReady: () => ipcRenderer.send("app-ready"),
   getVersion: () => ipcRenderer.invoke("get-version"),
+  trackPresentation: (meta) =>
+    ipcRenderer.send("analytics:track-presentation", meta),
+  analyticsForceSync: () => ipcRenderer.invoke("analytics:force-sync"),
+  analyticsDebugStatus: () => ipcRenderer.invoke("analytics:debug-status"),
+});
+
+ipcRenderer.on("analytics:debug", (_event, payload) => {
+  const { level, message, data, at } = payload || {};
+  const tag = `%c[analytics]%c ${message}`;
+  const styles = ["color:#2563eb;font-weight:600", "color:inherit"];
+  const extra = data !== undefined && data !== "" ? data : "";
+  if (level === "error") {
+    console.error(tag, ...styles, extra, at || "");
+  } else if (level === "warn") {
+    console.warn(tag, ...styles, extra, at || "");
+  } else {
+    console.log(tag, ...styles, extra, at || "");
+  }
 });
 
 ipcRenderer.on("log", (event, message) => {
