@@ -111,17 +111,21 @@ function getClient() {
 
 function httpsGetJson(url, timeoutMs = 5000) {
   return new Promise((resolve, reject) => {
-    const req = https.get(url, { headers: { "User-Agent": "Taraneem-Elsoora" } }, (res) => {
-      let body = "";
-      res.on("data", (chunk) => (body += chunk));
-      res.on("end", () => {
-        try {
-          resolve(JSON.parse(body));
-        } catch (e) {
-          reject(e);
-        }
-      });
-    });
+    const req = https.get(
+      url,
+      { headers: { "User-Agent": "Taraneem" } },
+      (res) => {
+        let body = "";
+        res.on("data", (chunk) => (body += chunk));
+        res.on("end", () => {
+          try {
+            resolve(JSON.parse(body));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }
+    );
     req.on("error", reject);
     req.setTimeout(timeoutMs, () => {
       req.destroy();
@@ -165,7 +169,11 @@ function latestByKey(items, keyFn) {
  * Resolve session rows to upsert before content_events (FK).
  * Uses full outbox (including already-synced session entries), not only pending.
  */
-function buildSessionPayloadsForSync(userDataPath, pendingSessionItems, contentItems) {
+function buildSessionPayloadsForSync(
+  userDataPath,
+  pendingSessionItems,
+  contentItems
+) {
   const neededIds = new Set();
   for (const item of pendingSessionItems) {
     if (item.payload?.session_id) neededIds.add(item.payload.session_id);
@@ -250,7 +258,9 @@ async function trySync(userDataPath, deviceId, deps = {}) {
     const deviceItems = pending.filter((i) => i.table === "devices");
     const sessionItems = pending.filter((i) => i.table === "sessions");
     const contentItems = pending.filter((i) => i.table === "content_events");
-    const localSongItems = pending.filter((i) => i.table === "local_song_events");
+    const localSongItems = pending.filter(
+      (i) => i.table === "local_song_events"
+    );
 
     debug.log("info", "Outbox breakdown", {
       devices: deviceItems.length,
@@ -262,9 +272,11 @@ async function trySync(userDataPath, deviceId, deps = {}) {
     const latestDevice = latestByKey(deviceItems, (p) => p.device_id)[0];
     if (latestDevice) {
       debug.log("info", "Upserting device", latestDevice.payload.device_id);
-      const { error } = await client.from("devices").upsert(latestDevice.payload, {
-        onConflict: "device_id",
-      });
+      const { error } = await client
+        .from("devices")
+        .upsert(latestDevice.payload, {
+          onConflict: "device_id",
+        });
       if (error) throw error;
       debug.log("info", "Device upsert OK");
       syncedIds.push(latestDevice.queue_id);
