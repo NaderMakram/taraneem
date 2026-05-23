@@ -61,7 +61,7 @@ typings/
 .env
 .env.test
 
-# Optional local override; releases use src/config/analytics.bundled.json
+# Supabase analytics credentials (copy from analytics.config.example.json)
 src/config/analytics.json
 
 # parcel-bundler cache (https://parceljs.org/)
