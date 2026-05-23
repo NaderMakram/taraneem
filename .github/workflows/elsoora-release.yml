@@ -1,0 +1,73 @@
+name: Create Pre-Release (elsoora branch)
+
+on:
+  push:
+    tags:
+      - "elsoora-*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout with full history  
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Ensure tag is from elsoora branch
+        shell: bash
+        working-directory: ${{ github.workspace }}
+        run: |
+          BRANCH=$(git branch -r --contains ${{ github.ref }} | head -n 1)
+          echo "Tag belongs to: $BRANCH"
+          if [[ "$BRANCH" != *"origin/elsoora"* ]]; then
+            echo "This tag is not from elsoora branch. Skipping."
+            exit 0
+          fi
+
+
+      - name: Extract version from tag
+        shell: bash
+        run: |
+          # Remove 'elsoora-' prefix to get the version number
+          VERSION=${GITHUB_REF_NAME#elsoora-}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Extracted version: $VERSION"
+
+      - name: Update package.json version
+        shell: bash
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+            npm version $VERSION --no-git-tag-version
+          else
+            echo "Version already set to $VERSION"
+          fi
+
+      - name: Install dependencies and build
+        run: |
+          npm ci
+          npm run dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List Release Directory
+        shell: bash
+        run: |
+          ls -R release/
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            release/*.exe
+            release/*.blockmap
+            release/*.yml
+          draft: false
+          prerelease: true
+          name: "Elsoora Build ${{ env.VERSION }}"
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

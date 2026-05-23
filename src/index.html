@@ -5,15 +5,23 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
     <title>Taraneem - ترانيم</title>
     <link rel="stylesheet" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/switch.css" />
+    <!-- <link rel="stylesheet" href="styles/switch.css" /> -->
+    <link rel="stylesheet" href="styles/dropdown.css" />
+
     <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/new-song.css" />
     <link rel="stylesheet" href="styles/loader.css" />
     <link rel="stylesheet" href="styles/dragula.css" />
+    <link rel="stylesheet" href="styles/settings-modal.css" />
   </head>
   <body class="waiting-mode">
+    <div id="startup-loader">
+        <img src="./assets/taraneem logo transparent.png" class="loader-logo" />
+        <div class="loader-spinner"></div>
+    </div>
     <div id="version"></div>
     <button id="installBtn" class="gray-hover btn ripple">Restart</button>
-    <div id="tools_bar">
+    <div id="tools-bar">
       <!-- pause button -->
       <button class="gray-hover btn ripple" id="white" title="Pause (Ctrl + W)">
         <img src="./img/pause-play-filled.png" />
@@ -41,8 +49,8 @@
         title="Fast/Slow Mode"
       ></label>
 
-      <!-- dark mode switch #2 -->
-      <label
+      <!-- dark mode switch #2  (deprecated)-->
+      <!-- <label
         class="switch"
         for="dark_mode_input"
         title="Dark/Light Mode"
@@ -51,7 +59,54 @@
         <input class="switch-input" type="checkbox" id="dark_mode_input" />
         <span class="switch-label" data-on="Dark" data-off="Light"></span>
         <span class="switch-handle"></span>
-      </label>
+      </label> -->
+
+      <!-- themes dropdown - new -->
+      <div class="theme-picker">
+        <!-- <label for="theme_select" id="dark_mode_label" title="Theme"
+          >Theme</label
+        > -->
+        <label for="theme_select" class="font-picker-label">Theme</label>
+        <select id="theme_select" class="theme-select" aria-label="Theme">
+          <option value="dark">Dark</option>
+          <option value="black">Black</option>
+          <option value="light">Light</option>
+          <!-- <option value="wedding1">Wedding 1</option>
+          <option value="wedding2">Wedding 2</option> -->
+          <!-- <option value="christmas">Christmas</option>
+          <option value="christmas-simple">Christmas Simple</option>
+          <option value="christmas-dark">Christmas Dark</option>
+          <option value="christmas-dark-simple">Christmas Dark Simple</option> -->
+          <option value="elsoora-light">El-Soora Light</option>
+          <option value="elsoora-dark">El-Soora Dark</option>
+        </select>
+      </div>
+
+       <!-- Bible Font -->
+       <div class="theme-picker">
+        <label for="bible_font_select" class="font-picker-label">Bible Font</label>
+        <select id="bible_font_select" class="theme-select" aria-label="Bible Font">
+          <option value="ibm-plex">IBM Plex Sans</option>
+          <option value="traditional-arabic">Traditional Arabic</option>
+           <option value="din-next">DIN Next</option>
+           <option value="adobe-arabic">Adobe Arabic</option>
+           <option value="MyCalibri">Calibri</option>
+           <option value="MyTimesNewRoman">Times New Roman</option>
+          </select>
+        </div>
+        
+        <!-- Song Font -->
+        <div class="theme-picker">
+          <label for="song_font_select" class="font-picker-label">Songs Font</label>
+          <select id="song_font_select" class="theme-select" aria-label="Song Font">
+           <option value="ibm-plex">IBM Plex Sans</option>
+           <option value="traditional-arabic">Traditional Arabic</option>
+           <option value="din-next">DIN Next</option>
+           <option value="adobe-arabic">Adobe Arabic</option>
+           <option value="MyCalibri">Calibri</option>
+           <option value="MyTimesNewRoman">Times New Roman</option>
+        </select>
+      </div>
 
       <!-- waiting toggle (deprecated) -->
       <!-- <div id="list-toggle-group">
@@ -65,12 +120,48 @@
       </div> -->
 
       <!-- extend song window -->
-      <button
+      <!-- <button
         class="gray-hover"
         id="extendSongWindowButton"
         title="extend song window"
       >
         <img src="./img/extend.png" />
+      </button> -->
+
+
+      <!-- text align button -->
+      
+    <div class="alignment-wrapper">
+      <label class="alignment-label">Bible Alignment</label>
+      <div class="alignment-buttons">
+        <!-- Horizontal Align -->
+        <button id="alignHorizBtn" class="material-btn" value="center" aria-label="Change Horizontal Alignment" title="Horizontal Alignment">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+            <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
+            <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
+            <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
+        </svg>
+        
+      </button>
+      
+      <!-- Vertical Align -->
+      <button id="alignVertBtn" class="material-btn" value="top" aria-label="Change Vertical Alignment" title="Vertical Alignment">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+              <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
+              <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
+              <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
+          </svg>
+       </button>
+      </div>
+    </div>
+
+
+
+      <button id="open-info-btn" class="icon-btn" aria-label="معلومات">
+        <img src="./img/info.png"/>
+      </button>
+      <button id="open-settings-btn" class="icon-btn" aria-label="الإعدادات">
+        ⚙️
       </button>
 
       <!-- verse switch screen -->
@@ -117,11 +208,267 @@
       </div>
     </div>
 
+    <!-- positioned absolute -->
+
     <div id="scroll-top" class="ripple">
       <img src="./img/up.png" />
     </div>
 
-    <script src="./helpers/dragula.js"></script>
+    <div
+      id="settings-modal"
+      class="settings-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="settings-overlay" data-action="close"></div>
+
+      <div
+        class="settings-panel"
+        role="document"
+        aria-labelledby="settings-title"
+      >
+        <header class="settings-header">
+          <button class="settings-close-btn" aria-label="إغلاق" title="إغلاق">
+            ✕
+          </button>
+          <h2 id="settings-title" class="settings-title">الإعدادات</h2>
+          <button class="settings-back-btn" aria-label="رجوع" title="رجوع">
+            〉
+          </button>
+        </header>
+
+        <!-- Toast Notification -->
+        <div id="toast-notification" class="toast-notification">
+          <div class="toast-content">
+             <img src="./img/edit-success.png" alt="Success" class="toast-icon" />
+             <span class="toast-message">تم الحفظ بنجاح</span>
+          </div>
+        </div>
+
+        <main class="settings-body">
+          <!-- Page: Menu -->
+          <section class="settings-page" data-page="menu">
+            <div class="settings-options">
+            
+                <button class="settings-option ripple" data-nav-to="songs-management">
+                  الترانيم
+                </button>
+                <button class="settings-option soon" data-nav-to="">
+                  الخلفيات
+                  <span>قريبًا</span>
+                </button>
+                <button class="settings-option soon" data-nav-to="">
+                  البث المباشر
+                  <span>قريبًا</span>
+                </button>
+            
+              <!-- future options go here -->
+            </ul>
+          </section>
+
+          <!-- Page: Songs Management (list stub) -->
+          <section class="settings-page" data-page="songs-management" hidden>
+            <div class="songs-actions">
+              <button data-nav-to="add-new-song" class="settings-option">إضافة ترنيمة جديدة</button>
+              <div id="my-local-songs-wrapper">
+
+                <h3>قائمة ترانيمي</h3>
+                <ul id="my-local-songs"></ul>
+              </div>
+            </div>
+
+            <!-- later: table/list/search UI will go here -->
+          </section>
+
+          <!-- Page: Add New Song (placeholder) -->
+          <section
+            id="new-song-section"
+            class="settings-page"
+            data-page="add-new-song"
+            hidden
+          >
+            <!-- Form Container -->
+            <div class="form-container">
+              <div class="new-song-notes">
+                <img src="./img/warning.png" class="warning" />
+                <ul>
+                  <li>الحد الأقصى لكل شريحة هو 5 أسطر فقط.</li>
+                  <li>
+                    هذه الترنيمة ستكون محفوظة على جهازك، ولن يتم ازالتها عند
+                    تثبيت التحديثات القادمة.
+                  </li>
+                  <li>
+                    سوف تتمكن من تعديل هذه الترنيمة لاحقًا في قائمة ادارة
+                    الترانيم.
+                  </li>
+                </ul>
+              </div>
+              <!-- Title -->
+              <input
+                type="text"
+                id="song-title"
+                placeholder="ادخل عنوان الترنيمة"
+                required
+              />
+
+              <!-- No Chorus -->
+              <div class="field">
+                <label>
+                  <input type="checkbox" id="no-chorus" />
+                  هذه الترنيمة عبارة عن أعداد فقط ولا تحتوي على قرار.
+                </label>
+              </div>
+
+              <!-- Chorus First -->
+              <div class="field chorus-first-wrapper">
+                <label>
+                  <input type="checkbox" id="chorus-first" />
+                  هذه الترنيمة تبدأ بالقرار أولًا ثم الأعداد.
+                </label>
+              </div>
+
+              <!-- Chorus Section -->
+              <h5 id="chorus-title">القرار</h5>
+              <div id="chorus-section" class="section">
+                <div class="slides-container" id="chorus-slides"></div>
+                <button
+                  type="button"
+                  id="add-chorus-slide"
+                  class="add-new-slide-btn"
+                >
+                  أضف شريحة جديدة للقرار
+                  <img src="./img/plus.svg" />
+                </button>
+              </div>
+
+              <!-- Verses Section -->
+              <h5>الأعداد</h5>
+              <div id="verses-section" class="section">
+                <div id="verses-container"></div>
+                <button type="button" id="add-verse" class="add-new-verse-btn">
+                  أضف عدد جديد
+                  <img src="./img/plus.svg" />
+                </button>
+              </div>
+
+              <!-- Save -->
+              <button id="save-song" class="btn primary">حفظ الترنيمة</button>
+          </section>
+
+          <!-- Page: Success Message -->
+          <!-- Success Message section removed -->
+        </main>
+      </div>
+    </div>
+
+    <!-- renderer -->
     <script src="renderer.js" type="module"></script>
+    <!-- dragula -->
+    <script src="./helpers/dragula.js"></script>
+    <!-- Link Info Modal CSS -->
+    <link rel="stylesheet" href="styles/info-modal.css" />
+
+    <div
+      id="info-modal"
+      class="settings-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="settings-overlay" data-action="close"></div>
+      <div class="settings-panel" role="document">
+        <header class="settings-header">
+          <button class="settings-close-btn" aria-label="إغلاق">✕</button>
+          <h2 class="settings-title">معلومات عن الإصدار</h2>
+          <!-- No back button needed for this simple modal -->
+           <div style="width: 24px;"></div> 
+        </header>
+        <main class="settings-body">
+            <div class="info-content">
+                <img src="./assets/taraneem logo transparent.png" alt="Logo" class="logo-img">
+                <h3>انت الآن على أحدث إصدار 🎉</h3>
+                <p id="info-version-number"></p>
+                
+                <div class="info-details">
+                    <h4>الجديد في هذا الإصدار:</h4>
+                    <ul class="info-list">
+                        <li>إمكانية إضافة ترانيم جديدة.</li>
+                        <li>بحث أسرع مع تظليل نتيجة البحث.</li>
+                        <li>إختصارات اسهل للبحث والتحكم</br>
+                          (تقدر تعرف اكتر من طريقة الاستخدام 👇).</li>
+                    </ul>
+                    
+                    <h4>قريبًا...</h4>
+                    <ul class="info-list">
+                        <li>خاصية البث المباشر</li>
+                        <li>شاشة عرض خاصة بالمرنمين</li>
+                        <li>إمكانية إضافة خلفيات جديدة - Themes</li>
+                    </ul>
+                    
+                    <h2 class="info-section-title">طريقة استخدام البرنامج</h2>
+
+                    <div class="info-accordion" id="infoAccordion">
+                        <!-- Item 1 -->
+                        <div class="accordion-item open">
+                            <button class="accordion-header ripple" aria-expanded="true">
+                                <span class="accordion-title">البحث المتقدم</span>
+                                <span class="accordion-icon">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>استخدم شريط البحث للعثور على الترانيم بسرعة. يمكنك البحث بجزء من العنوان أو الكلمات.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="accordion-item">
+                            <button class="accordion-header ripple" aria-expanded="false">
+                                <span class="accordion-title">التحكم في العرض</span>
+                                <span class="accordion-icon">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>استخدم الأسهم (يمين/يسار) للتنقل بين الشرائح، و (أعلى/أسفل) للتنقل بين الأصحاحات أو الترانيم.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="accordion-item">
+                            <button class="accordion-header ripple" aria-expanded="false">
+                                <span class="accordion-title">إدارة الترانيم</span>
+                                <span class="accordion-icon">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>يمكنك إضافة ترانيم جديدة وتعديلها من خلال قائمة الإعدادات (أيقونة الترس).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- modal -->
+    <script src="./helpers/settings-modal.js"></script>
+    <script src="./helpers/info-modal.js"></script>
+    <script src="./helpers/addNewSong.js"></script>
   </body>
 </html>

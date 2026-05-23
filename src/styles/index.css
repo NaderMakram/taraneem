@@ -2,10 +2,7 @@
   font-family: NotoNaskhArabic;
   src: url(../fonts/NotoNaskhArabic-Regular.ttf);
 } */
-@font-face {
-  font-family: mySegoe-ui;
-  src: url(../fonts/segoe-ui.ttf);
-}
+
 body {
   font-family: mySegoe-ui, -apple-system, NotoNaskhArabic, BlinkMacSystemFont,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -27,20 +24,60 @@ html {
   overflow-y: auto;
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
 h2 {
   margin: 0px;
 }
 
-#tools_bar {
+#tools-bar {
   display: flex;
   align-items: center;
   position: sticky;
   background: var(--main-window-bg);
   top: -1px;
   padding: 10px 14px;
+  padding-top: 25px;
   border-bottom: 1px solid #e0e0e0;
   z-index: 100;
   gap: 15px;
+}
+
+#open-info-btn {
+  margin-left: auto;
+}
+#open-info-btn img{
+    width: 20px;
+    margin-right: -20px;
+    margin-top: 5px;
 }
 
 #main-wrapper {
@@ -51,7 +88,7 @@ h2 {
 }
 
 #main-wrapper > div {
-  flex: 1;
+  width: 33.333%;
   text-align: right;
   padding: 0.6rem;
   display: flex;
@@ -76,6 +113,9 @@ h2 {
   text-align: center;
   border: 1px dotted var(--gray-hover);
   border-radius: var(--border-radius-1);
+}
+#slides-placeholder {
+  margin-top: 90px;
   background: repeating-linear-gradient(
     45deg,
     var(--main-window-bg),
@@ -84,9 +124,91 @@ h2 {
     var(--gray-hover) 11px
   );
 }
-#slides-placeholder {
-  margin-top: 90px;
+
+/* Alignment Controls */
+.alignment-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
 }
+
+
+.alignment-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.material-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 5px;
+    color: #5f6368;
+    transition: background-color 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.material-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #202124;
+}
+
+
+
+
+
+
+
+
+/* 1. Base SVG & Icon Styles */
+.icon-svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.bar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* 2. Vertical Button Logic (Rotated 90deg) */
+#alignVertBtn .icon-svg {
+  transform: rotate(90deg);
+}
+
+/* Vertical: TOP (Normal Top, Small Mid, Smallest Bot) - Center Aligned */
+#alignVertBtn[value="top"] .bar.mid { x: 7; width: 10px; }
+#alignVertBtn[value="top"] .bar.bot { x: 9.5; width: 5px; }
+
+/* Vertical: MIDDLE (Normal Mid, Small Top & Bot) - Center Aligned */
+#alignVertBtn[value="center"] .bar.top { x: 7; width: 10px; }
+#alignVertBtn[value="center"] .bar.mid { x: 3; width: 18px; }
+#alignVertBtn[value="center"] .bar.bot { x: 7; width: 10px; }
+
+
+/* 3. Horizontal Button Logic (0deg) */
+#alignHorizBtn .icon-svg {
+  transform: rotate(90deg);
+}
+
+/* Horizontal: RIGHT (All right aligned, Top full, Mid smaller, Bot smallest) */
+#alignHorizBtn[value="right"] .bar.top { x: 3; width: 18px; }
+#alignHorizBtn[value="right"] .bar.mid { x: 11; width: 10px; } /* Right side is x=21, so 21-10 = 11 */
+#alignHorizBtn[value="right"] .bar.bot { x: 16; width: 5px; }  /* 21-5 = 16 */
+
+/* Horizontal: CENTER (Mirroring the Vertical "Middle" style for consistency) */
+#alignHorizBtn[value="center"] .bar.top { x: 7; width: 10px; }
+#alignHorizBtn[value="center"] .bar.mid { x: 3; width: 18px; }
+#alignHorizBtn[value="center"] .bar.bot { x: 7; width: 10px; }
+
+
+
 #waiting-placeholder {
   margin: 0;
   direction: rtl;
@@ -103,6 +225,14 @@ h2 {
 
 #waiting_output {
   height: 100%;
+  border-radius: var(--border-radius-1);
+  background:repeating-linear-gradient(
+    45deg,
+    var(--main-window-bg),
+    var(--main-window-bg) 10px,
+    var(--gray-hover) 10px,
+    var(--gray-hover) 11px
+  );
 }
 
 #main-wrapper > div > input,
@@ -184,11 +314,11 @@ h2 {
   text-align: right;
 }
 .song-title {
-  height: 62px;
+  height: 48px;
   direction: rtl;
   text-align: center;
   position: sticky;
-  top: -5px;
+  top: 86px;
   background: rgb(243, 243, 243);
   border-radius: var(--border-radius-1);
   /* background: transparent; */
@@ -197,7 +327,7 @@ h2 {
   font-size: 1.2rem;
   line-height: 2em;
   margin-top: 0px;
-  z-index: 100;
+  z-index: 10;
   overflow: hidden;
   margin-bottom: 27px;
 
@@ -205,6 +335,7 @@ h2 {
   align-items: center;
   justify-content: flex-end;
   padding: 10px 10px;
+  box-shadow: 0 -20px 0px 1px  var(--main-window-bg)
 }
 
 .song-title h4 {
@@ -223,17 +354,16 @@ h2 {
   border-radius: 5px;
   padding: 1px 5px;
   line-height: 1em;
-  font-size: 0.8rem;
+  font-size: 1rem;
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: row-reverse;
 }
 .verse-info.active-info {
-  color: #a0a0a0;
-  border: 1px solid #a0a0a0;
+  color: #666;
 }
 
 .big {
-  background: rgba(149, 157, 165, 0.02);
+  background: #f6f6f6;
   /* border: 2px solid var(--gray-1); */
   direction: rtl;
   cursor: pointer;
@@ -255,10 +385,10 @@ h2 {
 .big:hover {
   box-shadow: rgba(149, 157, 165, 0.15) 0px 9px 15px,
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
-  background: var(--gray-2);
+  background: #ebebeb;
 }
 .big.selectedSong {
-  background: var(--gray-2);
+  background: #ebebeb;
 }
 
 .big.selectedSong:hover {
@@ -303,9 +433,15 @@ h2 {
   margin-left: 5px;
 }
 
+[data-ref^="local-song"] img.title-logo{
+filter: brightness(0) saturate(100%) invert(24%) sepia(62%) saturate(2150%) hue-rotate(180deg) brightness(98%) contrast(94%);
+}
+
 /* .big > div {
   margin-bottom: 0.8em;
 } */
+
+
 
 .plus,
 .delete,
@@ -331,6 +467,10 @@ h2 {
 }
 
 #search-wrapper input#title-input {
+  position: sticky;
+  top: 86px;
+  z-index: 10;
+  box-shadow:0 -20px 0px 1px  var(--main-window-bg);
   padding: 10px;
   /* width: 100%; */
   font-size: 16px;
@@ -349,7 +489,7 @@ h2 {
   background-repeat: no-repeat;
   color: rgb(24, 24, 24);
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 /* input#fontSize, */
@@ -739,6 +879,47 @@ input[type="checkbox"]::before {
   opacity: 1 !important;
 }
 
+/* Center Alignment for Preview */
+.song-preview[data-alignment="center"] .bible-verse {
+    text-align: center;
+    padding-right: 0;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.song-preview[data-alignment="center"] .first-word-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Default state: Hidden */
+.song-preview .verse-number-center {
+    display: none;
+    position: absolute;
+    top: -1.7rem;
+    right: 0;
+    font-size: 1.2rem;
+    color: var(--primary);
+    width: 100%;
+    text-align: center;
+}
+
+/* Center Alignment state: Visible */
+.song-preview[data-alignment="center"] .verse-number-center {
+    display: block;
+}
+
+/* Default: Visible */
+.song-preview .verseNumber {
+    display: block;
+}
+
+/* Center Alignment state: Hidden */
+.song-preview[data-alignment="center"] .verseNumber {
+   display: none;
+}
+
 #scroll-top {
   position: sticky;
   right: 39px;
@@ -747,25 +928,26 @@ input[type="checkbox"]::before {
   width: 40px;
   margin-left: auto;
   z-index: 10;
-  transform: translateX(2.5rem);
+  text-align: center;
+  border-radius: var(--border-radius-1);
   cursor: pointer;
-  border-radius: 5px;
-  padding: 0px;
-  transform-origin: center;
-  height: 40px;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-}
-
-#scroll-top:hover {
-  background: var(--gray-2);
+  padding: 5px;
+  /* box-shadow: 0 -20px 0px 1px var(--main-window-bg); */
+  border: 1px solid transparent;
+  transition: all 0.2s;
 }
 
 #scroll-top img {
-  width: 18px;
+  width: 15px;
+  opacity: 0.5;
+}
+
+#scroll-top:hover {
+  background: #e2e2e2;
+  border: 1px solid #c1c1c1;
 }
 
 /* plus click feedback */
@@ -822,3 +1004,140 @@ input[type="checkbox"]::before {
 .note {
   font-weight: bold;
 }
+.material-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  -webkit-tap-highlight-color: transparent;
+  transform: rotate(-90deg);
+  border: 1px dashed rgb(194, 194, 194);
+}
+
+.material-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.material-btn:active {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+/* 3. SVG Icon Styles (Rotated 90deg) */
+.icon-svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  transform: rotate(90deg);
+}
+
+/* The Bars inside the SVG */
+.bar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* --- STATE LOGIC --- */
+
+/* TOP-2: 2 Lines (Top + Small Mid) */
+.material-btn[value="top-2"] .bar.mid {
+  x: 7; /* Center align small width */
+  width: 10px; /* Small width */
+}
+.material-btn[value="top-2"] .bar.bot {
+  opacity: 0; /* Hide Bottom */
+}
+
+/* TOP-1: 1 Line (Top Only) */
+.material-btn[value="top-1"] .bar.mid,
+.material-btn[value="top-1"] .bar.bot {
+  opacity: 0; /* Hide Middle and Bottom */
+}
+
+/* BOTTOM-2: 2 Lines (Bottom + Small Mid) */
+.material-btn[value="bottom-2"] .bar.top {
+  opacity: 0; /* Hide Top */
+}
+.material-btn[value="bottom-2"] .bar.mid {
+  x: 7; /* Center align small width */
+  width: 10px; /* Small width */
+}
+
+/* BOTTOM-1: 1 Line (Bottom Only) */
+.material-btn[value="bottom-1"] .bar.top,
+.material-btn[value="bottom-1"] .bar.mid {
+  opacity: 0; /* Hide Top and Middle */
+}
+
+
+/* Highlights the specific word found */
+.text-highlight {
+  
+    background-color: rgb(241, 196, 15, 0.7);
+    color: #000;
+    border-radius: 5px;
+    padding-bottom: 6px;
+}
+
+/* Badge for Verse/Chorus/Title */
+.match-badge {
+  font-size: 0.8em;
+  background-color: #eee;
+  color: #555;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 10px; /* Adjust based on RTL/LTR */
+  float: left; /* Or inline-block based on your layout */
+}
+
+/* Alignment Toggle Icons */
+#alignBtn .align-icon {
+    display: none;
+}
+
+#alignBtn[value="right"] .align-icon.right,
+#alignBtn[value=""] .align-icon.right,
+#alignBtn:not([value]) .align-icon.right {
+    display: block;
+}
+
+#alignBtn[value="center"] .align-icon.center {
+    display: block;
+}
+
+/* Center Alignment Preview */
+body[data-alignment="center"] .song-preview .bible-verse > div {
+    text-align: center;
+}
+
+body[data-alignment="center"] .song-preview .bible-verse .verseNumber {
+    display: none;
+}
+
+.song-preview .verse-number-center {
+    display: none;
+    position: absolute;
+    top: -0.8rem;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    color: var(--primary);
+    font-size: 0.7em;
+    line-height: 1;
+}
+
+.song-preview .first-word-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+body[data-alignment="center"] .song-preview .verse-number-center {
+    display: block;
+}
+
+

@@ -14,12 +14,24 @@ export function newSlide(html) {
       ? activeElement
       : activeElement.previousElementSibling?.closest("[data-verse-number]");
 
-    if (targetElement) {
+    // Special Case: Initial Chorus acts as Verse 1
+    if (
+      !targetElement &&
+      activeElement.classList.contains("initial-chorus")
+    ) {
+      document.querySelector(".current-verse").textContent = "1";
+      let separator = document.querySelector(".separator");
+      if (separator) separator.style.display = "inline";
+    }
+
+    else if (targetElement) {
       const verseNumber = targetElement.getAttribute("data-verse-number");
 
       if (verseNumber) {
         document.querySelector(".current-verse").textContent = verseNumber;
-        document.querySelector(".verse-info").classList.add("active-info");
+        // Show separator
+        let separator = document.querySelector(".separator");
+        if (separator) separator.style.display = "inline";
       } else {
         console.log("Found an element, but data-verse-number is empty.");
       }

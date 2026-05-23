@@ -1,145 +1,260 @@
+// 1. Your Custom Normalization Function (Keep this available)
+function normalize(text) {
+  return (
+    text
+      .replace(/أ|آ|إ/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ث/g, "س")
+      .replace(/ق/g, "ك")
+      .replace(/ه/g, "ة")
+      .replace(/ذ|ظ/g, "ز")
+      .replace(/ؤ|ئ/g, "ء")
+      // remove tashkeel
+      .replace(/[ًٌٍَُِّْ~ـٰ]/g, "")
+      // remove \n
+      .replace(/\n/g, " ")
+  );
+}
+
+// 2. The Smart Highlighter
+export function highlightMatch(text, term) {
+  if (!text || !term) return text;
+
+  // Step A: Normalize
+  // Ensure your normalize function doesn't strip spaces between words
+  const normalizedTerm = normalize(term.trim()); 
+  if (!normalizedTerm) return text;
+
+  // Step B: Build Pattern
+  const fuzzyPattern = normalizedTerm
+    .split("")
+    .map((char) => {
+      switch (char) {
+        // --- NEW FIX: Handle Spaces ---
+        case " ":
+          // Match any whitespace, including \n (newlines)
+          return "[\\s]+";
+
+        // --- Existing Arabic Normalization ---
+        case "ا":
+          return "[اأآإ]"; 
+        case "ي":
+          return "[يى]"; 
+        case "س":
+          return "[سث]"; 
+        case "ك":
+          return "[كق]"; 
+        case "ة":
+          return "[ةه]"; 
+        case "ز":
+          return "[زذظ]"; 
+        case "ء":
+          return "[ءؤئ]";
+
+        default:
+          // Escape special regex chars
+          return char.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+    })
+    // Join allows Tashkeel/Tatweel between characters (and between the space and next letter)
+    .join("[\\u064B-\\u065F~ـٰ]*");
+
+  try {
+    // Step C: Apply Regex
+    const regex = new RegExp(`(${fuzzyPattern})`, "gi");
+    return text.replace(
+      regex,
+      '<span class="text-highlight">$1</span>'
+    );
+  } catch (e) {
+    console.error("Regex error:", e);
+    return text;
+  }
+}
+
 function truncate(str, max_length) {
+  if (!str) return "";
   return str.length > max_length ? str.slice(0, max_length - 1) + "…" : str;
 }
-export function generate_item_html(element, term, truncateLimit = 50) {
-  // console.log(element);
-  let {
-    title,
-    chorus,
-    custom_ref,
-    type,
-    chapter_number,
-    verses,
-    chapter_book_short,
-    chapter_book,
-    chapter,
-    verse,
-  } = element;
+export function generate_item_html(element, term, truncateLimit = 100, isWaitingList = false) {
 
-  if (custom_ref.includes("song")) {
-    let titleHTML = title ? `<h2>${title}</h2>` : "";
+  // Helper to generate the Handle (only for Waiting List)
+  const handleHTML = isWaitingList ? '<span class="handle"></span>' : '';
 
-    // Generate HTML for chorus if it exists
-    let chorusHTML = chorus
-      ? `<div class="chorus">(ق) ${truncate(
-          chorus.map((line) => `${line}`).join(""),
-          50
-        )}</div>`
-      : "";
+  // Helper to generate the Action Button (Plus for search, Minus/Delete for Waiting List)
+  const actionButtonHTML = isWaitingList
+    ? '<img src="./img/minus-64.png" class="delete hide" alt="delete"/>'
+    : '<img src="./img/plus.svg" class="plus hide" alt="plus"/>';
 
-    // Generate HTML for verses if they exist
-    let versesHTML = verses
-      ? `<div class="verses">1- ${
-          verses[0] && typeof verses[0][0] == "string"
-            ? truncate(verses[0][0], truncateLimit)
-            : ""
-        }</div>`
-      : "";
+  // Helper for Data Attributes
+  const waitingIdAttr = isWaitingList && element.waiting_id ? `data-id="${element.waiting_id}"` : '';
 
-    // Combine everything into a single HTML block
-    return `
-        <div class="big song" data-ref="${custom_ref}">
-        <div class="box-head">
-                    <img src="./img/song-icon.png" class="title-logo"/>
-                    ${titleHTML}
-        </div>
-          ${chorusHTML}
-          ${versesHTML}
-          <img src="./img/plus.svg" class="plus hide" alt="plus"/>
-        </div>
-      `;
-  } else {
-    term = term.trim();
+  // --- SONG LOGIC ---
+  if (element.custom_ref.includes("song")) {
+    let { title, chorus, verses, matchLocation, chorusFirst } = element;
 
-    // Capture leading number (book number) if it exists
-    let bookNumberMatch = term.match(/^(\d+)(?=\D)/); // Capture leading number only if followed by non-digit
-    let searched_book_series = bookNumberMatch ? bookNumberMatch[1] : null;
+    let displayTitle = title;
+    let displayBody = ""; 
+    let badge = ""; 
 
-    console.log(`book number: ${bookNumberMatch}`);
-    // Remove the book number (if found) from the term
-    if (searched_book_series) {
-      term = term.replace(/^\d+/, ""); // Remove the number without requiring a space
-    }
+    if (matchLocation && term) {
 
-    // Match chapter and verse
-    let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
+    // 1. MATCH IN TITLE
+      if (matchLocation.section === 'title') {
+        badge = "";
 
-    let searched_chapter;
-    let searched_verse;
-    if (match) {
-      searched_chapter = match[1];
-      searched_verse = match[2] || null;
-    } else {
-      console.log("No chapter/verse match found");
-    }
+        // Logic: If waiting list, do NOT highlight title. Else, highlight.
+        displayTitle = isWaitingList ? title : highlightMatch(title, term);
 
-    // Debug Output
-    // console.log("searched book series:", searched_book_series);
-    // console.log("Chapter:", searched_chapter);
-    // console.log("Verse:", searched_verse);
+        // Body context logic based on chorusFirst
+        // If chorusFirst is true (or undefined/default), try Chorus -> Verse
+        // If chorusFirst is explicitly false, try Verse -> Chorus
 
-    let book_series = (chapter_book_short.match(/\d+/) || [null])[0];
-    let { chapter_name, chapter_number, verse, verses, custom_ref, score } =
-      element;
-    // console.log(`book series: ${book_series}`);
-    // console.log(searched_numbers)
-    if (searched_book_series && searched_book_series != book_series) {
-      return "";
-    }
-    if (searched_chapter) {
-      if (
-        !searched_chapter ||
-        chapter_number != searched_chapter ||
-        (searched_verse && !verses[searched_verse])
-      ) {
-        return "";
-      } else {
-        let titleHTML = chapter_name
-          ? `<h2>${chapter_name} ${
-              searched_verse ? `: ${searched_verse}` : ""
-            }</h2>`
-          : "<h2>default title</h2>";
-
-        let versesHTML = searched_verse
-          ? `<div class="verses">${verses[searched_verse]}</div>`
-          : `<div class="verses">1- ${
-              verses["1"] + "2- " + verses["2"] + " ..."
-            }</div>`;
-
-        return `
-          <div class="big chapter" data-ref="${custom_ref}" data-verse="${
-          searched_verse ? searched_verse : ""
-        }" dir="rtl">
-                    <div class="box-head">
-                    <img src="./img/bible-icon.png" class="title-logo"/>
-                    ${titleHTML}
-                    </div>
-            ${versesHTML}
-            <img src="./img/plus.svg" class="plus hide" alt="plus"/>
-          </div>
-          `;
+        if (!chorusFirst || chorusFirst === false) {
+          // Verse First
+          if (verses && verses.length > 0 && verses[0].length > 0) {
+            displayBody = truncate(verses[0][0], truncateLimit);
+          } else if (chorus && chorus.length > 0) {
+            displayBody = truncate(chorus[0], truncateLimit);
+          }
+        }
+        else {
+          // Default: Chorus First
+          if (chorus && chorus.length > 0) {
+            displayBody = truncate(chorus[0], truncateLimit);
+          } else if (verses && verses.length > 0 && verses[0].length > 0) {
+            displayBody = truncate(verses[0][0], truncateLimit);
+          }
+        } 
       }
+
+        // 2. MATCH IN CHORUS
+      else if (matchLocation.section === 'chorus') {
+        badge = "(ق)"; 
+        let originalLine = chorus[matchLocation.slideIndex];
+        let isFirstSlide = (matchLocation.slideIndex === 0);
+
+        if (isWaitingList && isFirstSlide) {
+          displayBody = truncate(originalLine, truncateLimit);
+        } else {
+          displayBody = highlightMatch(originalLine, term);
+        }
+      }
+
+        // 3. MATCH IN VERSE
+      else if (matchLocation.section === 'verse') {
+        badge = `${matchLocation.verseIndex + 1}-`; 
+        let originalLine = verses[matchLocation.verseIndex][matchLocation.slideIndex];
+        let isFirstSlide = (matchLocation.verseIndex === 0 && matchLocation.slideIndex === 0);
+
+        if (isWaitingList && isFirstSlide) {
+          displayBody = truncate(originalLine, truncateLimit);
+        } else {
+          displayBody = highlightMatch(originalLine, term);
+        }
+      }
+
     } else {
-      // if there is no searched chapter, it's a single verse
-      return `
-          <div class="big chapter" data-ref="${custom_ref}" data-verse="${
-        verse ? verse : ""
-      }" dir="rtl">
-            <div class="box-head">
-            <img src="./img/bible-icon.png" class="title-logo"/>
-            <h2>
-            ${chapter_book}
-            ${chapter}
-            :
-            ${verse}
-            </h2>
-            </div>
-            <div class="verses">
-            ${verses[element.verse]}
-            </div>
-            <img src="./img/plus.svg" class="plus hide" alt="plus"/>
-          </div>
-          `;
+      // Fallback (No match location or no term)
+      // We apply the same chorusFirst logic here for consistency
+      if (chorusFirst !== false) {
+        if (chorus && chorus.length) {
+          badge = "(ق)";
+          displayBody = truncate(chorus[0], truncateLimit);
+        } else if (verses && verses.length) {
+          badge = "1-";
+          displayBody = truncate(verses[0][0], truncateLimit);
+        }
+      } else {
+        if (verses && verses.length) {
+          badge = "1-";
+          displayBody = truncate(verses[0][0], truncateLimit);
+        } else if (chorus && chorus.length) {
+          badge = "(ق)";
+          displayBody = truncate(chorus[0], truncateLimit);
+        }
+      }
     }
+
+    return `
+      <div class="big song" data-ref="${element.custom_ref}" ${waitingIdAttr}>
+        ${handleHTML}
+        <div class="box-head">
+            <img src="./img/song-icon.png" class="title-logo"/>
+            <h2>${displayTitle}</h2>
+        </div>
+        <div class="verses" style="direction: rtl;">
+            <span style="font-weight:bold; margin-left:5px; color:#555;">${badge}</span>
+            ${displayBody}
+        </div>
+        ${actionButtonHTML}
+      </div>
+    `;
+  } 
+  
+    // --- BIBLE LOGIC ---
+  else {
+    let { chapter_book_short, chapter_book, chapter, verse, verses, custom_ref, chapter_name, chapter_number } = element;
+
+    // Search Mode Filtering Logic
+    if (!isWaitingList) {
+      term = term ? term.trim() : "";
+
+      let bookNumberMatch = term.match(/^(\d+)(?=\D)/);
+      let searched_book_series = bookNumberMatch ? bookNumberMatch[1] : null;
+      if (searched_book_series) term = term.replace(/^\d+/, ""); 
+
+      let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
+      let searched_chapter = match ? match[1] : null;
+      let searched_verse = (match && match[2]) ? match[2] : null;
+
+      let book_series = (chapter_book_short.match(/\d+/) || [null])[0];
+
+      if (searched_book_series && searched_book_series != book_series) return "";
+
+      if (searched_chapter) {
+        if (!searched_chapter || chapter_number != searched_chapter || (searched_verse && !verses[searched_verse])) {
+          return "";
+        }
+        chapter = searched_chapter;
+        verse = searched_verse;
+      }
+    }
+
+    // HTML Generation
+    let titleHTML;
+    let versesHTML;
+    let bodyText = "";
+
+    if (verse) {
+      // Specific Verse Case
+      titleHTML = `<h2>${chapter_name} : ${verse}</h2>`;
+      bodyText = verses[verse];
+    } else {
+      // Whole Chapter / Default Case
+      titleHTML = `<h2>${chapter_name}</h2>`;
+      // Create preview (Verse 1 + Verse 2)
+      let rawText = (verses["1"] || "");
+      bodyText = truncate(rawText, 100);
+    }
+
+    // --- HIGHLIGHT LOGIC ---
+    // If we are in Search Mode (!isWaitingList), apply the highlight.
+    // If we are in Waiting List, show plain text.
+    let displayBody = isWaitingList ? bodyText : highlightMatch(bodyText, term);
+
+    versesHTML = `<div class="verses">${displayBody}</div>`;
+
+    return `
+      <div class="big chapter" data-ref="${custom_ref}" data-verse="${verse || ""}" ${waitingIdAttr} dir="rtl">
+        ${handleHTML}
+        <div class="box-head">
+          <img src="./img/bible-icon.png" class="title-logo"/>
+          ${titleHTML}
+        </div>
+        ${versesHTML}
+        ${actionButtonHTML}
+      </div>
+    `;
   }
 }

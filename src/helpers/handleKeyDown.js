@@ -13,6 +13,9 @@ export function handleKeyDown(e) {
   if (e.target.id == "fontSize") {
     return;
   }
+  if (document.getElementById("settings-modal").classList.contains("open")) {
+    return;
+  }
   if (e.key === "ArrowUp" || e.key === "ArrowDown") {
     const previewOutput = document.getElementById("preview_output");
     const activeElement = previewOutput.querySelector(".active");
@@ -89,23 +92,36 @@ export function handleKeyDown(e) {
     return;
   }
   if (key === "Home") {
-    let AllSlides = document.querySelectorAll(`.verse`);
-    if (AllSlides.length == 0) {
-      AllSlides = document.querySelectorAll(`.bible-verse`);
+    let activeSlide = document.querySelector("#preview_output .active");
+    if (activeSlide) {
+      activeSlide.classList.remove("active");
     }
-    // let AllEffectiveSlides = document.querySelectorAll(`[data-verse-number]`);
-    if (AllSlides) {
-      let firstSlide = AllSlides[0];
-      // let elements = document.querySelector(".song-preview").children;
+    let firstSlide = document.querySelector("#preview_output div[data-verse-number='1']");
+    firstSlide.classList.add("active");
+    newSlide(firstSlide.innerHTML);
+    return;
+  }
 
-      for (let i = 0; i < AllSlides.length; i++) {
-        AllSlides[i].classList.remove("active");
-      }
+  // Arabic letter quick focus & start typing
+  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
 
-      firstSlide.classList.add("active");
-      newSlide(firstSlide.innerHTML);
-    }
+  if (
+    !e.ctrlKey && // make sure Ctrl is NOT pressed
+    e.key.length === 1 && // single character
+    arabicRegex.test(e.key) && // Arabic letter
+    focusedElementType !== "input" // avoid overriding real typing
+  ) {
+    e.preventDefault();
 
+    // Focus input and insert Arabic letter
+    input.focus();
+    input.value = ""; // clear previous search
+    input.value = e.key; // insert first typed letter
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     return;
   }
 
@@ -182,7 +198,7 @@ export function handleKeyDown(e) {
     };
 
     requestAnimationFrame(checkIfScrolledToTop);
-  } else if (e.ctrlKey && e.code == "KeyW") {
+  } else if ((e.ctrlKey && e.code === "KeyW") || e.code === "Escape") {
     pause();
   }
 }

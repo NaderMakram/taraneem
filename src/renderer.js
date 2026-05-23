@@ -8,51 +8,102 @@ const fontSizePlus = document.querySelector("#fontSizePlus");
 const fontSizeMinus = document.querySelector("#fontSizeMinus");
 
 // buttons
-const fontWeightBtn = document.querySelector("#bold");
-const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
+// const extendSongWindowBtn = document.querySelector("#extendSongWindowButton");
 const quitAndInstallBtn = document.querySelector("#installBtn");
 const prevChapterBtn = document.querySelector("#prevChapter");
 const nextChapterBtn = document.querySelector("#nextChapter");
 const scrollToTop = document.querySelector("#scroll-top");
 
-const darkModeToggle = document.querySelector("input#dark_mode_input");
-const deepModeToggle = document.querySelector("input#deep_mode_input");
+const themeSelect = document.getElementById("theme_select");
+const bibleFontSelect = document.getElementById("bible_font_select");
+const songFontSelect = document.getElementById("song_font_select");
 // const waitingModeToggle = document.querySelector("input#waiting_mode_input");
+const alignHorizBtn = document.querySelector("button#alignHorizBtn");
+const alignVertBtn = document.querySelector("button#alignVertBtn");
+
 
 // import functions
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
 import { newSlide } from "./helpers/newSlide.js";
 import { pause } from "./helpers/pause.js";
-// import {
-//   previewSelectedChapter,
-//   previewSelectedSong,
-// } from "./helpers/previewSelectedThing.js";
+
+import {
+  searchAndDisplayResults,
+  initSearchEngine
+} from "./helpers/searchService.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loader = document.getElementById("startup-loader");
+
+  // 1. Initialize Search Engine
+  // 2. Wait at least 1.5 seconds for branding awareness
+  Promise.all([
+    initSearchEngine(),
+    new Promise((resolve) => setTimeout(resolve, 1500)),
+  ]).then(() => {
+    // Both done
+    if (loader) {
+      loader.classList.add("fade-out");
+      setTimeout(() => {
+        window.myCustomAPI.appReady();
+      }, 500); // Wait for fade transition
+    } else {
+      window.myCustomAPI.appReady();
+    }
+  });
+});
+
+
 import {
   selectSongEventFunction,
-  debounce,
-  debouncedSearch,
-  searchAndDisplayResults,
 } from "./helpers/handleSelectedSong.js";
+
 
 import { previewSelectedChapter } from "./helpers/previewSelectedSong.js";
 
 document.addEventListener("keydown", () => handleKeyDown(event));
 
-let delay = 50;
 whiteButton.addEventListener("click", () => {
   // newSlide("");
   pause();
   whiteButton.blur();
 });
 
-darkModeToggle.addEventListener("change", (e) => {
-  localStorage.setItem("dark_mode", e.target.checked);
-  window.myCustomAPI.toggleDarkMode();
+const selects = [themeSelect, bibleFontSelect, songFontSelect];
+
+selects.forEach(select => {
+  // Check if the element exists to avoid errors
+  if (select) {
+    select.addEventListener('change', function () {
+      this.blur();
+    });
+  }
 });
 
-extendSongWindowBtn.addEventListener("click", () => {
-  window.myCustomAPI.extendSongWindow();
+themeSelect.addEventListener("change", (e) => {
+  const theme = e.target.value; // "light", "dark", "solarized-dark", etc.
+
+  // save choice
+  localStorage.setItem("theme", theme);
+
+  // send to main / apply immediately
+  window.myCustomAPI.setTheme(theme);
 });
+
+bibleFontSelect.addEventListener("change", (e) => {
+  const font = e.target.value;
+  localStorage.setItem("bibleFont", font);
+  window.myCustomAPI.setBibleFont(font);
+});
+
+songFontSelect.addEventListener("change", (e) => {
+  const font = e.target.value;
+  localStorage.setItem("songFont", font);
+  window.myCustomAPI.setSongFont(font);
+});
+
+
+
 
 quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
@@ -91,30 +142,8 @@ nextChapterBtn.addEventListener("click", (event) => {
   nextChapterBtn.blur();
 });
 
-deepModeToggle.addEventListener("change", (e) => {
-  // console.log(e.target.checked);
-  // if (e.target.checked) {
-  //   // delay = 350;
-  //   debouncedSearch = debounce(searchAndDisplayResults, 350);
-  // } else {
-  //   // delay = 100;
-  //   debouncedSearch = debounce(searchAndDisplayResults, 50);
-  // }
-  // console.log(delay);
-  window.myCustomAPI.flipSearchingMode();
-  debouncedSearch(input.value);
-});
 
-fontWeightBtn.addEventListener("click", () => {
-  window.myCustomAPI.updateFontWeight();
-  fontWeightBtn.classList.toggle("bold");
-  fontWeightBtn.blur();
-});
 
-// fontSizeInput.addEventListener("change", (e) => {
-//   window.myCustomAPI.updateFontSize(e.target.value);
-//   fontSizeInput.blur();
-// });
 
 fontSizePlus.addEventListener("click", () => {
   let currentValue = parseInt(fontSizeInput.textContent);
@@ -131,57 +160,6 @@ fontSizeMinus.addEventListener("click", () => {
   window.myCustomAPI.updateFontSize(currentValue - 1);
 });
 
-// waitingModeToggle.addEventListener("change", (e) => {
-//   // Toggle a class on the body based on checkbox state
-//   document.body.classList.toggle("waiting-mode", !e.target.checked);
-//   waitingModeToggle.blur();
-// });
-// waitingModeToggle.click();
-
-// let waiting = [];
-
-const button = document.getElementById("start-work");
-// const worker = new Worker("searchWorker.js");
-// worker.addEventListener("message", (event) => {
-//   // resultSpan.textContent = event.data;
-//   console.log(event.data);
-// });
-
-// button.addEventListener('click', () => {
-//   worker.postMessage('عند شق الفجر باكر'); // Send a message to the worker
-// });
-
-// for testing
-// setTimeout(() => {
-//   input.value = "يسوع";
-//   // let waitingToggle = document.querySelector("#waiting_mode_input");
-
-//   // Create a new event
-//   const inputEvent = new Event("input", {
-//     bubbles: true,
-//     cancelable: true,
-//   });
-//   // waitingToggle.click();
-
-//   input.dispatchEvent(inputEvent);
-// }, 1000);
-
-// let clickDev = new Event("click", {
-//   bubbles: true,
-//   cancelable: true,
-// });
-
-// end 1st part of testing
-
-// setTimeout(() => {
-//   let son = document.querySelector(".big");
-//   son.dispatchEvent(clickDev);
-// }, 2500);
-// setTimeout(() => {
-//   let ver = document.querySelector(".slide");
-//   ver.dispatchEvent(clickDev);
-// }, 2800);
-// end testing
 
 // Attach the debouncedSearch function to the input event
 let loader_HTML = `
@@ -194,36 +172,53 @@ let loader_HTML = `
 
 input.addEventListener("input", function (e) {
   let term = e.target.value;
-  console.log(term.length);
   if (term.length < 3) return (search_output.innerHTML = "");
   let containsDigit = /\d/.test(term);
   if (!containsDigit && search_output.innerHTML != loader_HTML) {
-    search_output.innerHTML = loader_HTML;
+    // search_output.innerHTML = '';
+    // search_output.innerHTML = loader_HTML;
   }
 
-  debouncedSearch(term);
+  searchAndDisplayResults(term);
 });
 
 input.addEventListener("keydown", function (event) {
   // Check if the pressed key is 'Enter' (key code 13)
   if (event.keyCode === 13) {
-    // Log "Enter" to the console
-    console.log("Enter");
-    let bigElement = document.querySelector(".big");
 
-    // Check if the bigElement exists
-    if (bigElement) {
-      // Dispatch a click event to the big element twice
-      bigElement.click();
+    // CASE 1: Ctrl + Enter -> Add to Waiting List (Click Plus)
+    if (event.ctrlKey) {
+      console.log("Ctrl + Enter");
+      // Find the plus button inside the first result (.big)
+      let firstPlusButton = document.querySelector(".big .plus");
+
+      if (firstPlusButton) {
+        firstPlusButton.click();
+      }
+
+      input.blur();
+      event.preventDefault(); // Prevent default browser behavior
+      event.stopPropagation();
     }
 
-    // Remove focus from the input field
-    input.blur(); // This removes focus from the input
-    // Stop the event from bubbling up to the document
-    event.stopPropagation();
+    // CASE 2: Enter Only -> Select/Preview (Your original logic)
+    else {
+      console.log("Enter");
+      let bigElement = document.querySelector(".big");
+
+      // Check if the bigElement exists
+      if (bigElement) {
+        // Dispatch a click event to the big element
+        bigElement.click();
+      }
+
+      // Remove focus from the input field
+      input.blur();
+      // Stop the event from bubbling up to the document
+      event.stopPropagation();
+    }
   }
 });
-
 search_output.addEventListener("click", selectSongEventFunction);
 waiting_output.addEventListener("click", selectSongEventFunction);
 
@@ -240,4 +235,52 @@ preview_output.addEventListener("click", (e) => {
     element.classList.add("active");
     newSlide(element.innerHTML);
   }
+});
+
+// alignment toggle
+
+// alignment toggle
+
+// Horizontal Alignment
+const horizStates = ["right", "center"];
+let currentHorizIndex = 0;
+
+alignHorizBtn.addEventListener("click", () => {
+  // 1. Calculate next index (cycling)
+  currentHorizIndex = (currentHorizIndex + 1) % horizStates.length;
+  const newState = horizStates[currentHorizIndex];
+
+  // 2. Update the value attribute (affects icon)
+  alignHorizBtn.setAttribute("value", newState);
+
+  // 3. Update the body dataset for CSS styling (local preview)
+  document.body.dataset.alignment = newState;
+
+  // 4. Persistence
+  localStorage.setItem("alignment", newState);
+
+  console.log("Horizontal State:", newState);
+  window.myCustomAPI.setAlignment(newState);
+});
+
+// Vertical Alignment
+const vertStates = ["center", "top"]; // center is middle, top is top
+let currentVertIndex = 0;
+
+alignVertBtn.addEventListener("click", () => {
+  // 1. Calculate next index (cycling)
+  currentVertIndex = (currentVertIndex + 1) % vertStates.length;
+  const newState = vertStates[currentVertIndex];
+
+  // 2. Update the value attribute (affects icon)
+  alignVertBtn.setAttribute("value", newState);
+
+  // 3. Update the body dataset for CSS styling (local preview if applicable)
+  document.body.dataset.vertAlignment = newState;
+
+  // 4. Persistence
+  localStorage.setItem("vertAlignment", newState);
+
+  console.log("Vertical State:", newState);
+  window.myCustomAPI.setVertAlignment(newState);
 });

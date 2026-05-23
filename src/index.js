@@ -28,6 +28,8 @@ if (require("electron-squirrel-startup")) {
 const bibleDB = JSON.parse(
   fs.readFileSync(path.join(__dirname, "bible_normalized.json"), "utf-8")
 );
+const userDataPath = app.getPath("userData");
+const localDBPath = path.join(userDataPath, "localTaraneemDB.json");
 
 const prevNextIndices = bibleDB.map((_, index) => ({
   prevIndex: index - 1 >= 0 ? index - 1 : null,
@@ -154,11 +156,11 @@ function searchSongs(event, term) {
   return results;
 }
 
-const handleSetTitle = (event, title) => {
-  const webContents = event.sender;
-  const win = BrowserWindow.fromWebContents(webContents);
-  win.setTitle(title);
-};
+// const handleSetTitle = (event, title) => {
+//   const webContents = event.sender;
+//   const win = BrowserWindow.fromWebContents(webContents);
+//   win.setTitle(title);
+// };
 
 function readJson() {
   return JSON.parse(
@@ -166,16 +168,15 @@ function readJson() {
   );
 }
 app.on("ready", () => {
-  ipcMain.on("set-title", handleSetTitle);
-  ipcMain.handle("search-songs", async (event, term) => {
-    // Post data to the worker
-    worker.postMessage({ term });
-  });
-  ipcMain.on("flip-searching-mode", () => {
-    fastSearch = !fastSearch;
-  });
+  // ipcMain.on("set-title", handleSetTitle);
+  // ipcMain.handle("search-songs", async (event, term) => {
+  //   // Post data to the worker
+  //   worker.postMessage({ term });
+  // });
+  // ipcMain.on("flip-searching-mode", () => {
+  //   fastSearch = !fastSearch;
+  // });
   ipcMain.handle("read-json", readJson);
-  console.log(fastSearch);
 });
 
 let mainWindow;
@@ -203,6 +204,8 @@ const createMainWindow = () => {
     windowY = 0;
   }
 
+  const userDataPath = app.getPath("userData");
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: false,
@@ -218,7 +221,9 @@ const createMainWindow = () => {
       nodeIntegrationInWorker: true,
       // contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
+      additionalArguments: [`--userDataPath=${userDataPath}`],
     },
+    backgroundColor: "#f9f9f9", // Match loader background
   });
 
   // and load the index.html of the app.
@@ -228,8 +233,13 @@ const createMainWindow = () => {
     mainWindow.maximize();
   }
 
-  mainWindow.show();
-  mainWindow.focus();
+  // Optimized showing to prevent white flash
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+    mainWindow.focus();
+  });
+  // mainWindow.show();
+  // mainWindow.focus();
 
   // remove menu
   mainWindow.removeMenu();
@@ -256,6 +266,7 @@ const createSongWindow = () => {
     // Dual display setup - use second screen
     const secondScreen = displays[1];
     songWindow = new BrowserWindow({
+      show: false,
       width: secondScreen.size.width,
       height: secondScreen.size.height,
       icon: path.join(__dirname, "assets", "taraneem logo transparent.png"),
@@ -301,7 +312,7 @@ const createSongWindow = () => {
   songWindow.loadFile(path.join(__dirname, "song.html"));
 
   // Always show the song window
-  songWindow.show();
+  // songWindow.show();
 
   if (isDev) {
     // songWindow.hide();
@@ -327,22 +338,82 @@ function updateVersionMessage(message) {
 app.on("ready", createSongWindow);
 app.on("ready", createMainWindow);
 app.on("ready", addIPCs);
-
 app.on("ready", () => {
+  // 1. Get localStorage data from the renderer
   mainWindow.webContents
     .executeJavaScript("({...localStorage});", true)
     .then((localStorage) => {
-      if (localStorage.dark_mode == "true") {
-        // console.log(`dark mode: ${localStorage.dark_mode}`);
-        // ipcMain.emit("toggle-dark-mode");
-        mainWindow.webContents.executeJavaScript(
-          `
-          document.querySelector("input#dark_mode_input").click()
-          `
-        );
+      if (localStorage.theme) {
+        // This is fine (IPC communication)
+        songWindow.webContents.send("set-theme", localStorage.theme);
+
+        // 2. FIX: Inject the DOM manipulation back into mainWindow
+        // We pass the theme variable into the script string safely
+        const setSelectScript = `
+          const themeSelect = document.querySelector("#theme_select");
+          if (themeSelect) {
+            themeSelect.value = "${localStorage.theme}";
+            const event = new Event("change");
+            themeSelect.dispatchEvent(event);
+          }
+        `;
+
+        // Execute the script inside the window
+        mainWindow.webContents.executeJavaScript(setSelectScript);
       }
-      manageDisplays();
-      mainWindow.focus();
+
+      if (localStorage.bibleFont) {
+        songWindow.webContents.send("set-bible-font", localStorage.bibleFont);
+        const setBibleFontScript = `
+          const bibleFontSelect = document.querySelector("#bible_font_select");
+          if (bibleFontSelect) {
+            bibleFontSelect.value = "${localStorage.bibleFont}";
+            const event = new Event("change");
+            bibleFontSelect.dispatchEvent(event);
+          }
+        `;
+        mainWindow.webContents.executeJavaScript(setBibleFontScript);
+      }
+
+      if (localStorage.songFont) {
+        songWindow.webContents.send("set-song-font", localStorage.songFont);
+        const setSongFontScript = `
+          const songFontSelect = document.querySelector("#song_font_select");
+          if (songFontSelect) {
+            songFontSelect.value = "${localStorage.songFont}";
+            const event = new Event("change");
+            songFontSelect.dispatchEvent(event);
+          }
+        `;
+        mainWindow.webContents.executeJavaScript(setSongFontScript);
+      }
+
+      if (localStorage.alignment) {
+        songWindow.webContents.send("set-alignment", localStorage.alignment);
+        // Update the button state in renderer
+        const setAlignmentScript = `
+            document.body.dataset.alignment = "${localStorage.alignment}";
+            const alignHorizBtn = document.querySelector("#alignHorizBtn");
+            if (alignHorizBtn) {
+              alignHorizBtn.setAttribute("value", "${localStorage.alignment}");
+            }
+          `;
+        mainWindow.webContents.executeJavaScript(setAlignmentScript);
+      }
+
+      if (localStorage.vertAlignment) {
+        songWindow.webContents.send("set-vert-alignment", localStorage.vertAlignment);
+        // Update the button state in renderer
+        const setVertAlignmentScript = `
+            document.body.dataset.vertAlignment = "${localStorage.vertAlignment}";
+            const alignVertBtn = document.querySelector("#alignVertBtn");
+            if (alignVertBtn) {
+              alignVertBtn.setAttribute("value", "${localStorage.vertAlignment}");
+            }
+          `;
+        mainWindow.webContents.executeJavaScript(setVertAlignmentScript);
+      }
+
     });
 });
 
@@ -376,9 +447,27 @@ ipcMain.on("update-font-size", (event, message) => {
 ipcMain.on("update-font-weight", (event) => {
   songWindow.webContents.send("update-font-weight");
 });
-ipcMain.on("toggle-dark-mode", (event, message) => {
-  songWindow.webContents.send("toggle-dark-mode");
+ipcMain.on("set-theme", (event, theme) => {
+  songWindow.webContents.send("set-theme", theme);
 });
+ipcMain.on("set-alignment", (event, alignment) => {
+  console.log("alignment: ", alignment);
+  songWindow.webContents.send("set-alignment", alignment);
+});
+
+ipcMain.on("set-vert-alignment", (event, alignment) => {
+  console.log("vert alignment: ", alignment);
+  songWindow.webContents.send("set-vert-alignment", alignment);
+});
+
+ipcMain.on("set-bible-font", (event, font) => {
+  songWindow.webContents.send("set-bible-font", font);
+});
+
+ipcMain.on("set-song-font", (event, font) => {
+  songWindow.webContents.send("set-song-font", font);
+});
+
 
 let manageDisplays = () => {
   let displays = screen.getAllDisplays();
@@ -411,7 +500,7 @@ let manageDisplays = () => {
       y: secondScreen.bounds.y,
     });
     songWindow.setFullScreen(true);
-    songWindow.show();
+    // songWindow.show();
 
     mainWindow.focus();
   } else {
@@ -440,7 +529,7 @@ let manageDisplays = () => {
       x: songWindowX,
       y: 0,
     });
-    songWindow.show();
+    // songWindow.show();
 
     // Prevent windows from being moved when snapped
     mainWindow.setMovable(false);
@@ -456,6 +545,12 @@ app.on("ready", () => {
   });
   screen.on("display-removed", () => {
     manageDisplays();
+  });
+
+  ipcMain.on("app-ready", () => {
+    if (songWindow) {
+      songWindow.show();
+    }
   });
 });
 
@@ -499,13 +594,95 @@ app.on("activate", () => {
     createWindow();
   }
 });
+// saving songs to local json file
+
+ipcMain.handle("save-song", async (event, song) => {
+  ensureLocalDB();
+
+  let songs = [];
+  try {
+    const raw = fs.readFileSync(localDBPath, "utf-8");
+    songs = JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to parse localTaraneemDB.json", e);
+  }
+
+  // Add metadata
+  const now = new Date().toISOString();
+  const newSong = {
+    id: Date.now().toString(), // simple unique id
+    dateCreated: now,
+    dateEdited: now,
+    uploaded: false,
+    ...song,
+  };
+
+  songs.push(newSong);
+
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+
+  return newSong;
+});
+
+function ensureLocalDB() {
+  // Ensure directory exists
+  if (!fs.existsSync(userDataPath)) {
+    fs.mkdirSync(userDataPath, { recursive: true });
+  }
+
+  // Create file if missing
+  if (!fs.existsSync(localDBPath)) {
+    fs.writeFileSync(localDBPath, JSON.stringify([], null, 2), "utf-8");
+  }
+}
+
+ipcMain.handle("get-local-songs", async (event) => {
+  ensureLocalDB();
+  try {
+    const raw = fs.readFileSync(localDBPath, "utf-8");
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to parse localTaraneemDB.json", e);
+    return [];
+  }
+});
+
+ipcMain.handle("get-song", async (event, songId) => {
+  ensureLocalDB();
+  const songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  return songs[songId];
+});
+
+ipcMain.handle("update-song", async (event, songId, updatedSong) => {
+  ensureLocalDB();
+  let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  songs[songId] = {
+    ...songs[songId],
+    ...updatedSong,
+    dateEdited: new Date().toISOString(),
+  };
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+  return songs[songId];
+});
+
+ipcMain.handle("delete-song", async (event, songId) => {
+  ensureLocalDB();
+  let songs = JSON.parse(fs.readFileSync(localDBPath, "utf-8"));
+  songs.splice(songId, 1);
+  fs.writeFileSync(localDBPath, JSON.stringify(songs, null, 2), "utf-8");
+  return true;
+});
+
+ipcMain.handle("get-version", () => {
+  return app.getVersion();
+});
 
 // auto update
 
 app.on("ready", function () {
   let currentVersion = app.getVersion();
   updateVersionMessage(`Version: ${currentVersion}`);
-  autoUpdater.checkForUpdates();
+  // autoUpdater.checkForUpdates();
 });
 autoUpdater.on("checking-for-update", () => {
   updateVersionMessage("Checking for new version...");

@@ -1,0 +1,204 @@
+/* info-modal.css */
+
+#info-modal .settings-panel {
+    max-width: 650px;
+    background: linear-gradient(to bottom, #ffffff, #f9f9f9); /* Subtle gradient for richness */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Premium shadow */
+}
+
+/* Migrated Inline Styles & Enhanced Typography */
+.info-content {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.info-content .logo-img {
+    width: 70px; /* Increased slightly */
+    margin-bottom: 20px;
+}
+
+.info-content h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+#info-version-number {
+    direction: ltr;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #666;
+    background: #eee;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px; /* Badge style */
+}
+
+.info-details {
+    text-align: right;
+    line-height: 1.8; /* Better readability */
+}
+
+.info-details h4 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--primary-color-dim, #eee);
+    padding-bottom: 8px;
+    color: var(--text-color);
+    font-size: 1.2rem;
+}
+
+.info-list {
+    list-style-type: disc;
+    padding-right: 25px;
+    margin-bottom: 25px;
+    font-size: 1.2rem;
+    color: #444;
+}
+
+.info-section-title {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    color: var(--text-color);
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+/* Accordion Styles */
+.info-accordion {
+    margin-top: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden; /* For rounded corners */
+}
+
+.accordion-item {
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+.accordion-item:last-child {
+    border-bottom: none;
+}
+
+.accordion-item.open {
+    background-color: #fafdff; /* Very subtle blue tint for open item */
+}
+
+.accordion-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 15px; /* Larger click area */
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-align: right; 
+    font-size: 1.1rem; /* Larger font */
+    color: var(--text-color);
+    font-weight: 600;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.accordion-header:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+    color: var(--primary-color);
+}
+
+.accordion-title {
+    flex-grow: 1;
+}
+
+.accordion-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(90deg);
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    opacity: 0.5;
+}
+
+/* Rotation for Up/Down arrow interaction */
+/* Assuming the icon is a Down Arrow (expand_more) */
+.accordion-item.open .accordion-icon {
+    transform: rotate(270deg);
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    background-color: transparent;
+}
+
+.accordion-item.open .accordion-content {
+    max-height: 500px; /* Safer max-height */
+    transition: max-height 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.accordion-body {
+    padding: 15px 20px 25px 20px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] #info-modal .settings-panel {
+    background: linear-gradient(to bottom, #2b2b2b, #222);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] #info-version-number {
+    color: #ddd;
+    background: #444;
+}
+
+[data-theme="dark"] .info-details h4 {
+    color: #eee;
+    border-bottom-color: #444;
+}
+
+[data-theme="dark"] .info-list {
+    color: #ccc;
+}
+
+[data-theme="dark"] .info-section-title {
+    color: #eee;
+    border-bottom-color: #444;
+}
+
+[data-theme="dark"] .info-accordion {
+    border-color: #444;
+}
+
+[data-theme="dark"] .accordion-item {
+    border-bottom-color: #444;
+    background-color: #2b2b2b;
+}
+
+[data-theme="dark"] .accordion-item.open {
+    background-color: #333;
+}
+
+[data-theme="dark"] .accordion-header {
+    color: #ddd;
+}
+
+[data-theme="dark"] .accordion-header:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .accordion-body {
+    color: #bbb;
+}

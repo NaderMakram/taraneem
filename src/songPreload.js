@@ -5,13 +5,55 @@ ipcRenderer.on("update-font-size", (event, message) => {
   document.querySelector("body").style.fontSize = `${parseInt(message)}vw`;
 });
 
-ipcRenderer.on("toggle-dark-mode", (event, message) => {
-  document.body.classList.toggle("dark");
+ipcRenderer.on("set-theme", (event, theme) => {
+  // set body attribute
+  document.body.setAttribute("data-theme", theme);
+
+  // also keep it in localStorage if you want persistence
+  // localStorage.setItem("theme", theme);
+});
+ipcRenderer.on("set-alignment", (event, alignment) => {
+  // set body attribute
+  document.body.setAttribute("data-alignment", alignment);
+});
+
+ipcRenderer.on("set-vert-alignment", (event, alignment) => {
+  // set body attribute
+  document.body.setAttribute("data-vert-alignment", alignment);
+});
+
+ipcRenderer.on("set-bible-font", (event, font) => {
+  document.body.setAttribute("data-bible-font", font);
+});
+
+ipcRenderer.on("set-song-font", (event, font) => {
+  document.body.setAttribute("data-song-font", font);
 });
 
 ipcRenderer.on("update-font-weight", (event, message) => {
   document.querySelector("#content").classList.toggle("bold");
 });
+
+// default font sizes for each font
+// keys must match the values in index.html > #bible_font_select
+const BIBLE_FONT_SIZES = {
+  "ibm-plex": 7,
+  "traditional-arabic": 8,
+  "din-next": 6,
+  "adobe-arabic": 9.5,
+  "MyCalibri": 7.3,
+  "MyTimesNewRoman": 7.3,
+};
+
+const DEFAULT_BIBLE_FONT_SIZE = 7.3;
+
+function getBibleMaxFontSize() {
+  const currentFont = document.body.getAttribute("data-bible-font");
+  if (currentFont && BIBLE_FONT_SIZES[currentFont]) {
+    return BIBLE_FONT_SIZES[currentFont];
+  }
+  return DEFAULT_BIBLE_FONT_SIZE;
+}
 
 ipcRenderer.on("update-song-window", (event, content, isBible) => {
   // console.log(isBible);
@@ -19,7 +61,8 @@ ipcRenderer.on("update-song-window", (event, content, isBible) => {
     // reset html font size
     let text = document.querySelector(".bible-body div");
     if (text) {
-      text.style.fontSize = `6.9vw`;
+      const maxFontSize = getBibleMaxFontSize();
+      text.style.fontSize = `${maxFontSize}vw`;
     }
     // update slide
     const contentElement = document.getElementById("content");
@@ -46,6 +89,7 @@ function fadeContent(content) {
   }, 150); // Adjust the duration to match the transition duration
 }
 
+// bible font size
 function adjustFontSizeToFit() {
   let container = document.querySelector(".bible-body");
   let text = document.querySelector(".bible-body div");
@@ -57,14 +101,14 @@ function adjustFontSizeToFit() {
     console.time("OptimizedFontSizeCalculation"); // Start measuring time for the optimized font size calculation
 
     let minFontSize = 4; // Minimum font size
-    let maxFontSize = 6.9; // Maximum font size (adjust as needed)
+    let maxFontSize = getBibleMaxFontSize(); // Maximum font size (adjust as needed)
     let finalFontSize = -1; // Variable to store the final font size
 
     // Binary search for the optimal font size
     while (minFontSize <= maxFontSize) {
       const midFontSize = (minFontSize + maxFontSize) / 2; // Calculate the middle font size
       text.style.fontSize = `${midFontSize}vw`; // Set the font size
-      console.log(midFontSize);
+      // console.log(midFontSize);
 
       // Check if the text fits within the container
       if (

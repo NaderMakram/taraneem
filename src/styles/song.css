@@ -21,12 +21,9 @@
   src: url(../fonts/times-new-roman-bold.ttf);
   font-weight: bold;
 } */
-@font-face {
-  font-family: MyCalibri;
-  /* src: url(../fonts/calibri.ttf); */
-  /* to go back to having bold button remove next line, uncomment the past line, and uncomment the next @font-face */
-  src: url(../fonts/calibri-bold.ttf);
-}
+
+/* moved mycalibri to main.css */
+
 /* @font-face {
   font-family: MyCalibri;
   src: url(../fonts/calibri-bold.ttf);
@@ -40,19 +37,12 @@ html {
 }
 body {
   color: rgb(25, 25, 25);
-  /* color: rgb(21, 23, 29); */
-  /* background-color: #fcfcfc; */
   background-color: #f9f9f9;
   user-select: none;
 
   min-height: 90vh;
   padding: 5vh 6vw;
   margin: 0;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
-  /* background-image: url("../img/clean-gray-paper-40.png"); */
-  /* background-image: url("../img/cream-paper.png"); */
   background-repeat: repeat;
   transition: opacity 0.3s;
 }
@@ -88,7 +78,7 @@ body::-webkit-scrollbar {
 
 .container * {
   margin: 0;
-  text-shadow: 2px 3px 4px rgba(207, 207, 207, 0.9);
+  /* text-shadow: 2px 3px 4px rgba(207, 207, 207, 0.9); */
 }
 
 /* bible style */
@@ -107,7 +97,6 @@ body::-webkit-scrollbar {
   /* padding-top: 1vw; */
   line-height: 1em;
   font-size: 3.8vw;
-  color: var(--primary);
 
   display: flex;
   justify-content: center;
@@ -120,11 +109,16 @@ body::-webkit-scrollbar {
 .verse-info {
   display: none !important;
 }
+
+/* bible font size */
 .bible-body {
   padding-right: 4vw;
-  font-size: 6.9vw;
+  font-size: 7.3vw;
   line-height: 1.45em;
   height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Default to center/middle */
 }
 
 /* the actual bible verse */
@@ -160,15 +154,14 @@ body:has(.song-body) {
 }
 
 /* song style */
-.dark {
-  /* background-color: rgba(0, 0, 0, 0.95); */
+/* .dark {
   background-image: none;
   background-color: var(--dark);
   color: whitesmoke;
 }
 .dark * {
   text-shadow: none;
-}
+} */
 .fade-in-out {
   opacity: 0;
   transition: opacity 150ms ease-in-out;
@@ -181,7 +174,6 @@ body:has(.song-body) {
 .bold {
   font-weight: bold;
 }
-
 .chorusSymbol,
 .verseNumber {
   position: absolute;
@@ -190,7 +182,6 @@ body:has(.song-body) {
   transform: translate(0.7rem, -0.3rem);
   display: block;
   font-size: 0.5em;
-  color: var(--primary);
 }
 
 .verse-line {
@@ -202,4 +193,68 @@ body:has(.song-body) {
   margin-right: 15px;
   font-size: 0.7em;
   transform: translateY(10px);
+}
+
+span.author{
+    font-style: italic;
+    font-size: 5rem;
+    margin-top: 56px;
+}
+
+/* Center Alignment Styles */
+[data-alignment="center"] .bible-body {
+    text-align: center;
+    padding-right: 0px;
+    padding-top: 2vh;
+    height: 78vh;
+}
+
+/* Target the inner div containing text */
+[data-alignment="center"] .bible-body > div > div {
+    text-align: center;
+}
+
+.first-word-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Default state: Hidden */
+.verse-number-center {
+    display: none;
+    position: absolute;
+    top: 15%;
+    right: -110%;
+    width: 100%;
+    text-align: left;
+    color: var(--primary);
+    font-size: 0.35em;
+    line-height: 1;
+}
+
+/* Center Alignment state: Visible */
+[data-alignment="center"] .verse-number-center {
+    display: block;
+}
+[data-alignment="center"] .bible-body .verseNumber {
+    display: none !important;
+}
+
+/* Default state: Visible (standard verse number) */
+.bible-body .verseNumber {
+    display: block;
+}
+
+/* Center Alignment state: Hidden */
+/* Vertical Alignment Overrides */
+[data-vert-alignment="top"] .song-body,
+[data-vert-alignment="top"] .bible-body {
+    justify-content: flex-start;
+    /* padding-top: 10vh; */
+}
+
+[data-vert-alignment="center"] .song-body,
+[data-vert-alignment="center"] .bible-body {
+    justify-content: center;
+    padding-top: 0;
 }
