@@ -27,8 +27,7 @@ export function buildPresentationMeta(html) {
     null;
 
   const isBible =
-    active?.classList?.contains("bible-verse") ||
-    ref.startsWith("chapter-");
+    active?.classList?.contains("bible-verse") || ref.startsWith("chapter-");
 
   if (isBible) {
     const verseNum = active?.getAttribute("data-verse-number");
