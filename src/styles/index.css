@@ -47,11 +47,11 @@ html {
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 h2 {
@@ -74,10 +74,10 @@ h2 {
 #open-info-btn {
   margin-left: auto;
 }
-#open-info-btn img{
-    width: 20px;
-    margin-right: -20px;
-    margin-top: 5px;
+#open-info-btn img {
+  width: 20px;
+  margin-right: -20px;
+  margin-top: 5px;
 }
 
 #main-wrapper {
@@ -134,36 +134,28 @@ h2 {
   position: relative;
 }
 
-
 .alignment-buttons {
-    display: flex;
-    gap: 5px;
+  display: flex;
+  gap: 5px;
 }
 
 .material-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 5px;
-    color: #5f6368;
-    transition: background-color 0.2s, color 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 5px;
+  color: #5f6368;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .material-btn:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    color: #202124;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #202124;
 }
-
-
-
-
-
-
-
 
 /* 1. Base SVG & Icon Styles */
 .icon-svg {
@@ -183,14 +175,28 @@ h2 {
 }
 
 /* Vertical: TOP (Normal Top, Small Mid, Smallest Bot) - Center Aligned */
-#alignVertBtn[value="top"] .bar.mid { x: 7; width: 10px; }
-#alignVertBtn[value="top"] .bar.bot { x: 9.5; width: 5px; }
+#alignVertBtn[value="top"] .bar.mid {
+  x: 7;
+  width: 10px;
+}
+#alignVertBtn[value="top"] .bar.bot {
+  x: 9.5;
+  width: 5px;
+}
 
 /* Vertical: MIDDLE (Normal Mid, Small Top & Bot) - Center Aligned */
-#alignVertBtn[value="center"] .bar.top { x: 7; width: 10px; }
-#alignVertBtn[value="center"] .bar.mid { x: 3; width: 18px; }
-#alignVertBtn[value="center"] .bar.bot { x: 7; width: 10px; }
-
+#alignVertBtn[value="center"] .bar.top {
+  x: 7;
+  width: 10px;
+}
+#alignVertBtn[value="center"] .bar.mid {
+  x: 3;
+  width: 18px;
+}
+#alignVertBtn[value="center"] .bar.bot {
+  x: 7;
+  width: 10px;
+}
 
 /* 3. Horizontal Button Logic (0deg) */
 #alignHorizBtn .icon-svg {
@@ -198,16 +204,32 @@ h2 {
 }
 
 /* Horizontal: RIGHT (All right aligned, Top full, Mid smaller, Bot smallest) */
-#alignHorizBtn[value="right"] .bar.top { x: 3; width: 18px; }
-#alignHorizBtn[value="right"] .bar.mid { x: 11; width: 10px; } /* Right side is x=21, so 21-10 = 11 */
-#alignHorizBtn[value="right"] .bar.bot { x: 16; width: 5px; }  /* 21-5 = 16 */
+#alignHorizBtn[value="right"] .bar.top {
+  x: 3;
+  width: 18px;
+}
+#alignHorizBtn[value="right"] .bar.mid {
+  x: 11;
+  width: 10px;
+} /* Right side is x=21, so 21-10 = 11 */
+#alignHorizBtn[value="right"] .bar.bot {
+  x: 16;
+  width: 5px;
+} /* 21-5 = 16 */
 
 /* Horizontal: CENTER (Mirroring the Vertical "Middle" style for consistency) */
-#alignHorizBtn[value="center"] .bar.top { x: 7; width: 10px; }
-#alignHorizBtn[value="center"] .bar.mid { x: 3; width: 18px; }
-#alignHorizBtn[value="center"] .bar.bot { x: 7; width: 10px; }
-
-
+#alignHorizBtn[value="center"] .bar.top {
+  x: 7;
+  width: 10px;
+}
+#alignHorizBtn[value="center"] .bar.mid {
+  x: 3;
+  width: 18px;
+}
+#alignHorizBtn[value="center"] .bar.bot {
+  x: 7;
+  width: 10px;
+}
 
 #waiting-placeholder {
   margin: 0;
@@ -226,7 +248,7 @@ h2 {
 #waiting_output {
   height: 100%;
   border-radius: var(--border-radius-1);
-  background:repeating-linear-gradient(
+  background: repeating-linear-gradient(
     45deg,
     var(--main-window-bg),
     var(--main-window-bg) 10px,
@@ -335,7 +357,7 @@ h2 {
   align-items: center;
   justify-content: flex-end;
   padding: 10px 10px;
-  box-shadow: 0 -20px 0px 1px  var(--main-window-bg)
+  box-shadow: 0 -20px 0px 1px var(--main-window-bg);
 }
 
 .song-title h4 {
@@ -433,15 +455,14 @@ h2 {
   margin-left: 5px;
 }
 
-[data-ref^="local-song"] img.title-logo{
-filter: brightness(0) saturate(100%) invert(24%) sepia(62%) saturate(2150%) hue-rotate(180deg) brightness(98%) contrast(94%);
+[data-ref^="local-song"] img.title-logo {
+  filter: brightness(0) saturate(100%) invert(24%) sepia(62%) saturate(2150%)
+    hue-rotate(180deg) brightness(98%) contrast(94%);
 }
 
 /* .big > div {
   margin-bottom: 0.8em;
 } */
-
-
 
 .plus,
 .delete,
@@ -470,7 +491,7 @@ filter: brightness(0) saturate(100%) invert(24%) sepia(62%) saturate(2150%) hue-
   position: sticky;
   top: 86px;
   z-index: 10;
-  box-shadow:0 -20px 0px 1px  var(--main-window-bg);
+  box-shadow: 0 -20px 0px 1px var(--main-window-bg);
   padding: 10px;
   /* width: 100%; */
   font-size: 16px;
@@ -881,63 +902,64 @@ input[type="checkbox"]::before {
 
 /* Center Alignment for Preview */
 .song-preview[data-alignment="center"] .bible-verse {
-    text-align: center;
-    padding-right: 0;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
+  text-align: center;
+  padding-right: 0;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .song-preview[data-alignment="center"] .first-word-wrapper {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 /* Default state: Hidden */
 .song-preview .verse-number-center {
-    display: none;
-    position: absolute;
-    top: -1.7rem;
-    right: 0;
-    font-size: 1.2rem;
-    color: var(--primary);
-    width: 100%;
-    text-align: center;
+  display: none;
+  position: absolute;
+  top: -1.7rem;
+  right: 0;
+  font-size: 1.2rem;
+  color: var(--primary);
+  width: 100%;
+  text-align: center;
 }
 
 /* Center Alignment state: Visible */
 .song-preview[data-alignment="center"] .verse-number-center {
-    display: block;
+  display: block;
 }
 
 /* Default: Visible */
 .song-preview .verseNumber {
-    display: block;
+  display: block;
 }
 
 /* Center Alignment state: Hidden */
 .song-preview[data-alignment="center"] .verseNumber {
-   display: none;
+  display: none;
 }
 
 #scroll-top {
   position: sticky;
-  right: 39px;
+  right: 0;
   bottom: 30px;
-  background: var(--gray-1);
+  background: rgba(0, 0, 0, 0.1);
   width: 40px;
   margin-left: auto;
   z-index: 10;
   text-align: center;
-  border-radius: var(--border-radius-1);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px;
-  /* box-shadow: 0 -20px 0px 1px var(--main-window-bg); */
+  height: 40px;
   border: 1px solid transparent;
   transition: all 0.2s;
+  transform: translate(40px, 0px);
+  border-radius: 6px;
 }
 
 #scroll-top img {
@@ -1074,14 +1096,12 @@ input[type="checkbox"]::before {
   opacity: 0; /* Hide Top and Middle */
 }
 
-
 /* Highlights the specific word found */
 .text-highlight {
-  
-    background-color: rgb(241, 196, 15, 0.7);
-    color: #000;
-    border-radius: 5px;
-    padding-bottom: 6px;
+  background-color: rgb(241, 196, 15, 0.7);
+  color: #000;
+  border-radius: 5px;
+  padding-bottom: 6px;
 }
 
 /* Badge for Verse/Chorus/Title */
@@ -1097,47 +1117,45 @@ input[type="checkbox"]::before {
 
 /* Alignment Toggle Icons */
 #alignBtn .align-icon {
-    display: none;
+  display: none;
 }
 
 #alignBtn[value="right"] .align-icon.right,
 #alignBtn[value=""] .align-icon.right,
 #alignBtn:not([value]) .align-icon.right {
-    display: block;
+  display: block;
 }
 
 #alignBtn[value="center"] .align-icon.center {
-    display: block;
+  display: block;
 }
 
 /* Center Alignment Preview */
 body[data-alignment="center"] .song-preview .bible-verse > div {
-    text-align: center;
+  text-align: center;
 }
 
 body[data-alignment="center"] .song-preview .bible-verse .verseNumber {
-    display: none;
+  display: none;
 }
 
 .song-preview .verse-number-center {
-    display: none;
-    position: absolute;
-    top: -0.8rem;
-    right: 0;
-    width: 100%;
-    text-align: center;
-    color: var(--primary);
-    font-size: 0.7em;
-    line-height: 1;
+  display: none;
+  position: absolute;
+  top: -0.8rem;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  color: var(--primary);
+  font-size: 0.7em;
+  line-height: 1;
 }
 
 .song-preview .first-word-wrapper {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 body[data-alignment="center"] .song-preview .verse-number-center {
-    display: block;
+  display: block;
 }
-
-
