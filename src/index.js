@@ -1,4 +1,4 @@
-﻿const { app, BrowserWindow, screen, ipcMain } = require("electron");
+const { app, BrowserWindow, screen, ipcMain } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
 const path = require("path");
@@ -722,7 +722,7 @@ ipcMain.handle("get-version", () => {
 app.on("ready", function () {
   let currentVersion = app.getVersion();
   updateVersionMessage(`Version: ${currentVersion}`);
-  // autoUpdater.checkForUpdates();
+  autoUpdater.checkForUpdates();
 });
 autoUpdater.on("checking-for-update", () => {
   updateVersionMessage("Checking for new version...");
