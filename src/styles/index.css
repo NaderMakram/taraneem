@@ -169,68 +169,6 @@ h2 {
   transform-origin: center;
 }
 
-/* 2. Vertical Button Logic (Rotated 90deg) */
-#alignVertBtn .icon-svg {
-  transform: rotate(90deg);
-}
-
-/* Vertical: TOP (Normal Top, Small Mid, Smallest Bot) - Center Aligned */
-#alignVertBtn[value="top"] .bar.mid {
-  x: 7;
-  width: 10px;
-}
-#alignVertBtn[value="top"] .bar.bot {
-  x: 9.5;
-  width: 5px;
-}
-
-/* Vertical: MIDDLE (Normal Mid, Small Top & Bot) - Center Aligned */
-#alignVertBtn[value="center"] .bar.top {
-  x: 7;
-  width: 10px;
-}
-#alignVertBtn[value="center"] .bar.mid {
-  x: 3;
-  width: 18px;
-}
-#alignVertBtn[value="center"] .bar.bot {
-  x: 7;
-  width: 10px;
-}
-
-/* 3. Horizontal Button Logic (0deg) */
-#alignHorizBtn .icon-svg {
-  transform: rotate(90deg);
-}
-
-/* Horizontal: RIGHT (All right aligned, Top full, Mid smaller, Bot smallest) */
-#alignHorizBtn[value="right"] .bar.top {
-  x: 3;
-  width: 18px;
-}
-#alignHorizBtn[value="right"] .bar.mid {
-  x: 11;
-  width: 10px;
-} /* Right side is x=21, so 21-10 = 11 */
-#alignHorizBtn[value="right"] .bar.bot {
-  x: 16;
-  width: 5px;
-} /* 21-5 = 16 */
-
-/* Horizontal: CENTER (Mirroring the Vertical "Middle" style for consistency) */
-#alignHorizBtn[value="center"] .bar.top {
-  x: 7;
-  width: 10px;
-}
-#alignHorizBtn[value="center"] .bar.mid {
-  x: 3;
-  width: 18px;
-}
-#alignHorizBtn[value="center"] .bar.bot {
-  x: 7;
-  width: 10px;
-}
-
 #waiting-placeholder {
   margin: 0;
   direction: rtl;

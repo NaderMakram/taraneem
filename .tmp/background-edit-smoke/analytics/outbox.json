@@ -1,0 +1,100 @@
+{
+  "pending": [
+    {
+      "queue_id": "d2253505-70a4-453b-b1b0-eeb6d4a9ac38",
+      "table": "devices",
+      "op": "upsert",
+      "payload": {
+        "device_id": "28f4783d-3a2a-41f8-a9d7-411f0673be8b",
+        "first_seen_at": "2026-08-12T12:45:46.647Z",
+        "last_seen_at": "2026-08-12T12:45:58.575Z",
+        "app_version": "3.5.3",
+        "platform": "win32",
+        "arch": "x64",
+        "locale": "en-US",
+        "timezone": "Africa/Cairo",
+        "display_count": 2,
+        "country_code": null,
+        "region_name": null,
+        "city": null,
+        "geo_source": null,
+        "geo_updated_at": null
+      },
+      "synced": true,
+      "created_at": "2026-08-12T12:45:58.645Z"
+    },
+    {
+      "queue_id": "4bcb017c-ec06-446a-aaba-5c5f18312e45",
+      "table": "sessions",
+      "op": "upsert",
+      "payload": {
+        "session_id": "8bebcfbc-ebf6-48e8-84a6-c865a99624c6",
+        "device_id": "28f4783d-3a2a-41f8-a9d7-411f0673be8b",
+        "started_at": "2026-08-12T12:45:58.574Z",
+        "ended_at": null,
+        "duration_sec": null,
+        "app_version": "3.5.3"
+      },
+      "synced": true,
+      "created_at": "2026-08-12T12:45:58.677Z"
+    },
+    {
+      "queue_id": "7c022e7b-2f01-4edc-9888-a21a3e494fcb",
+      "table": "content_events",
+      "op": "insert",
+      "payload": {
+        "event_id": "a4a6bcc9-215a-44b8-ad13-cd936ead9074",
+        "device_id": "28f4783d-3a2a-41f8-a9d7-411f0673be8b",
+        "session_id": "8bebcfbc-ebf6-48e8-84a6-c865a99624c6",
+        "content_type": "bible_verse",
+        "content_ref": "chapter-1Pet 3-verse-5",
+        "title": "بطرس الأولى ٣",
+        "verse_number": "6",
+        "started_at": "2026-08-12T13:50:29.960Z",
+        "app_version": "3.5.3",
+        "ended_at": "2026-08-13T07:23:29.744Z",
+        "duration_ms": 63179784
+      },
+      "synced": false,
+      "created_at": "2026-08-13T07:23:29.747Z"
+    },
+    {
+      "queue_id": "ec71ff34-f7be-4403-9518-9d6d7dc27412",
+      "table": "devices",
+      "op": "upsert",
+      "payload": {
+        "device_id": "28f4783d-3a2a-41f8-a9d7-411f0673be8b",
+        "first_seen_at": "2026-08-12T12:45:46.647Z",
+        "last_seen_at": "2026-08-13T07:23:29.756Z",
+        "app_version": "3.5.3",
+        "platform": "win32",
+        "arch": "x64",
+        "locale": "en-US",
+        "timezone": "Africa/Cairo",
+        "display_count": 2,
+        "country_code": "EG",
+        "region_name": "Beheira",
+        "city": "Kafr ad Dawwar",
+        "geo_source": "ipapi.co",
+        "geo_updated_at": "2026-08-12T12:45:59.829Z"
+      },
+      "synced": false,
+      "created_at": "2026-08-13T07:23:29.795Z"
+    },
+    {
+      "queue_id": "b9cd88b4-ed6b-4eee-925d-b1cff61dfe13",
+      "table": "sessions",
+      "op": "upsert",
+      "payload": {
+        "session_id": "8bebcfbc-ebf6-48e8-84a6-c865a99624c6",
+        "device_id": "28f4783d-3a2a-41f8-a9d7-411f0673be8b",
+        "started_at": "2026-08-12T12:45:58.574Z",
+        "ended_at": "2026-08-13T07:23:29.755Z",
+        "duration_sec": 67051,
+        "app_version": "3.5.3"
+      },
+      "synced": false,
+      "created_at": "2026-08-13T07:23:29.835Z"
+    }
+  ]
+}

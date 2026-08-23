@@ -5,29 +5,249 @@ ipcRenderer.on("update-font-size", (event, message) => {
   document.querySelector("body").style.fontSize = `${parseInt(message)}vw`;
 });
 
-ipcRenderer.on("set-theme", (event, theme) => {
-  // set body attribute
-  document.body.setAttribute("data-theme", theme);
+const BUILT_IN_THEME_IDS = new Set([
+  "light",
+  "dark",
+  "black",
+  "wedding1",
+  "wedding2",
+  "christmas",
+  "christmas-simple",
+  "christmas-dark",
+  "christmas-dark-simple",
+  "elsoora-light",
+  "elsoora-dark",
+]);
+const CUSTOM_THEME_STYLE_ID = "custom-theme-runtime-styles";
+const CUSTOM_THEME_PROPERTIES = [
+  "color",
+  "background-color",
+  "background-image",
+  "background-size",
+  "background-position",
+  "background-repeat",
+];
+const CUSTOM_THEME_VARIABLES = [
+  "--custom-theme-background-color",
+  "--custom-theme-background-image",
+  "--custom-theme-text-color",
+  "--custom-theme-accent-color",
+  "--custom-theme-text-shadow",
+];
+const SHADOW_VALUES = {
+  none: "none",
+  dark: "0.035em 0.045em 0.08em rgba(0, 0, 0, 0.9)",
+  light: "0.035em 0.045em 0.08em rgba(255, 255, 255, 0.95)",
+};
+const FONT_IDS = new Set([
+  "ibm-plex",
+  "traditional-arabic",
+  "din-next",
+  "adobe-arabic",
+  "MyCalibri",
+  "MyTimesNewRoman",
+]);
+const HORIZONTAL_ALIGNMENTS = new Set(["right", "center"]);
+const VERTICAL_ALIGNMENTS = new Set(["top", "center"]);
+const DEFAULT_PRESENTATION = {
+  fonts: { bible: "MyTimesNewRoman", song: "MyCalibri" },
+  alignment: {
+    song: { vertical: "top" },
+    bible: { horizontal: "right", vertical: "top" },
+  },
+};
+let pendingThemePayload = null;
 
-  // also keep it in localStorage if you want persistence
-  // localStorage.setItem("theme", theme);
-});
-ipcRenderer.on("set-alignment", (event, alignment) => {
-  // set body attribute
-  document.body.setAttribute("data-alignment", alignment);
+function ensureCustomThemeStyles() {
+  if (document.getElementById(CUSTOM_THEME_STYLE_ID)) return;
+
+  const style = document.createElement("style");
+  style.id = CUSTOM_THEME_STYLE_ID;
+  style.textContent = `
+    body[data-custom-theme="true"] {
+      color: var(--custom-theme-text-color) !important;
+      background-color: var(--custom-theme-background-color) !important;
+      background-image: var(--custom-theme-background-image) !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+
+    body[data-custom-theme="true"] #content,
+    body[data-custom-theme="true"] #content * {
+      text-shadow: var(--custom-theme-text-shadow, none) !important;
+    }
+
+    body[data-custom-theme="true"] .chorusSymbol,
+    body[data-custom-theme="true"] .verseNumber,
+    body[data-custom-theme="true"] .verse-number-center,
+    body[data-custom-theme="true"] .bible-head {
+      color: var(--custom-theme-accent-color) !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function resetCustomThemeStyles() {
+  document.body.removeAttribute("data-custom-theme");
+  document.body.removeAttribute("data-custom-theme-id");
+  for (const property of CUSTOM_THEME_PROPERTIES) {
+    document.body.style.removeProperty(property);
+  }
+  for (const property of CUSTOM_THEME_VARIABLES) {
+    document.documentElement.style.removeProperty(property);
+  }
+}
+
+function safeFileUrl(value) {
+  if (typeof value !== "string" || !value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "file:" ? url.href : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function applyPresentationPreferences(payload) {
+  const bibleFont = FONT_IDS.has(payload?.fonts?.bible)
+    ? payload.fonts.bible
+    : DEFAULT_PRESENTATION.fonts.bible;
+  const songFont = FONT_IDS.has(payload?.fonts?.song)
+    ? payload.fonts.song
+    : DEFAULT_PRESENTATION.fonts.song;
+  const legacyHorizontalAlignment = HORIZONTAL_ALIGNMENTS.has(
+    payload?.alignment?.horizontal
+  )
+    ? payload.alignment.horizontal
+    : null;
+  const legacyVerticalAlignment = VERTICAL_ALIGNMENTS.has(
+    payload?.alignment?.vertical
+  )
+    ? payload.alignment.vertical
+    : null;
+  const songVerticalAlignment = VERTICAL_ALIGNMENTS.has(
+    payload?.alignment?.song?.vertical
+  )
+    ? payload.alignment.song.vertical
+    : legacyVerticalAlignment || DEFAULT_PRESENTATION.alignment.song.vertical;
+  const bibleHorizontalAlignment = HORIZONTAL_ALIGNMENTS.has(
+    payload?.alignment?.bible?.horizontal
+  )
+    ? payload.alignment.bible.horizontal
+    : legacyHorizontalAlignment ||
+      DEFAULT_PRESENTATION.alignment.bible.horizontal;
+  const bibleVerticalAlignment = VERTICAL_ALIGNMENTS.has(
+    payload?.alignment?.bible?.vertical
+  )
+    ? payload.alignment.bible.vertical
+    : legacyVerticalAlignment || DEFAULT_PRESENTATION.alignment.bible.vertical;
+
+  document.body.setAttribute("data-bible-font", bibleFont);
+  document.body.setAttribute("data-song-font", songFont);
+  document.body.removeAttribute("data-alignment");
+  document.body.removeAttribute("data-vert-alignment");
+  document.body.setAttribute(
+    "data-bible-alignment",
+    bibleHorizontalAlignment
+  );
+  document.body.setAttribute(
+    "data-song-vert-alignment",
+    songVerticalAlignment
+  );
+  document.body.setAttribute(
+    "data-bible-vert-alignment",
+    bibleVerticalAlignment
+  );
+
+  const bibleText = document.querySelector(".bible-body div");
+  if (bibleText) {
+    bibleText.style.fontSize = `${getBibleMaxFontSize()}vw`;
+    window.requestAnimationFrame(adjustFontSizeToFit);
+  }
+}
+
+function applyThemePayload(payload) {
+  resetCustomThemeStyles();
+  applyPresentationPreferences(payload);
+
+  if (typeof payload === "string") {
+    document.body.setAttribute(
+      "data-theme",
+      BUILT_IN_THEME_IDS.has(payload) ? payload : "dark"
+    );
+    return;
+  }
+
+  if (
+    !payload ||
+    payload.kind === "builtin" ||
+    typeof payload.id !== "string" ||
+    !payload.id.startsWith("custom-")
+  ) {
+    const builtInId = BUILT_IN_THEME_IDS.has(payload?.id) ? payload.id : "dark";
+    document.body.setAttribute("data-theme", builtInId);
+    return;
+  }
+
+  const colorPattern = /^#[0-9A-F]{6}$/i;
+  const backgroundColor = payload.background?.color;
+  if (
+    !colorPattern.test(backgroundColor) ||
+    !colorPattern.test(payload.textColor) ||
+    !colorPattern.test(payload.accentColor) ||
+    !Object.prototype.hasOwnProperty.call(SHADOW_VALUES, payload.shadow)
+  ) {
+    document.body.setAttribute("data-theme", "dark");
+    return;
+  }
+
+  ensureCustomThemeStyles();
+  const imageUrl =
+    payload.background?.type === "image"
+      ? safeFileUrl(payload.background.imageUrl)
+      : null;
+
+  document.body.setAttribute("data-theme", "custom");
+  document.body.setAttribute("data-custom-theme", "true");
+  document.body.setAttribute("data-custom-theme-id", payload.id);
+  document.documentElement.style.setProperty(
+    "--custom-theme-background-color",
+    backgroundColor
+  );
+  document.documentElement.style.setProperty(
+    "--custom-theme-background-image",
+    imageUrl ? `url("${imageUrl}")` : "none"
+  );
+  document.documentElement.style.setProperty(
+    "--custom-theme-text-color",
+    payload.textColor
+  );
+  document.documentElement.style.setProperty(
+    "--custom-theme-accent-color",
+    payload.accentColor
+  );
+  document.documentElement.style.setProperty(
+    "--custom-theme-text-shadow",
+    SHADOW_VALUES[payload.shadow]
+  );
+}
+
+function setPresentationTheme(payload) {
+  pendingThemePayload = payload;
+  if (!document.body) return;
+  applyThemePayload(pendingThemePayload);
+  pendingThemePayload = null;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (pendingThemePayload !== null) {
+    setPresentationTheme(pendingThemePayload);
+  }
 });
 
-ipcRenderer.on("set-vert-alignment", (event, alignment) => {
-  // set body attribute
-  document.body.setAttribute("data-vert-alignment", alignment);
-});
-
-ipcRenderer.on("set-bible-font", (event, font) => {
-  document.body.setAttribute("data-bible-font", font);
-});
-
-ipcRenderer.on("set-song-font", (event, font) => {
-  document.body.setAttribute("data-song-font", font);
+ipcRenderer.on("set-theme", (_event, theme) => {
+  setPresentationTheme(theme);
 });
 
 ipcRenderer.on("update-font-weight", (event, message) => {
@@ -35,7 +255,7 @@ ipcRenderer.on("update-font-weight", (event, message) => {
 });
 
 // default font sizes for each font
-// keys must match the values in index.html > #bible_font_select
+// Keys match the font IDs stored with each custom background.
 const BIBLE_FONT_SIZES = {
   "ibm-plex": 7,
   "traditional-arabic": 8,

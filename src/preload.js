@@ -124,6 +124,14 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateSong: (songId, song) => ipcRenderer.invoke("update-song", songId, song),
   deleteSong: (songId) => ipcRenderer.invoke("delete-song", songId),
 
+  getThemes: () => ipcRenderer.invoke("themes:list"),
+  getTheme: (themeId) => ipcRenderer.invoke("themes:get", themeId),
+  chooseThemeImage: () => ipcRenderer.invoke("themes:choose-image"),
+  saveTheme: (theme, imageToken = null) =>
+    ipcRenderer.invoke("themes:save", theme, imageToken),
+  deleteTheme: (themeId) => ipcRenderer.invoke("themes:delete", themeId),
+  applyTheme: (themeId) => ipcRenderer.invoke("themes:apply", themeId),
+
   // bibleVerses, // Removed direct property exposure
   saveSong: (song) => ipcRenderer.invoke("save-song", song),
 
@@ -139,10 +147,6 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateFontWeight: () => ipcRenderer.send("update-font-weight"),
   extendSongWindow: () => ipcRenderer.send("extend-song-window"),
   setTheme: (theme) => ipcRenderer.send("set-theme", theme),
-  setBibleFont: (font) => ipcRenderer.send("set-bible-font", font),
-  setSongFont: (font) => ipcRenderer.send("set-song-font", font),
-  setAlignment: (alignment) => ipcRenderer.send("set-alignment", alignment),
-  setVertAlignment: (alignment) => ipcRenderer.send("set-vert-alignment", alignment),
 
   getSiblingChapter: (content) =>
     ipcRenderer.invoke("get-sibling-chapter", content),

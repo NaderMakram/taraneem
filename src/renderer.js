@@ -15,22 +15,21 @@ const nextChapterBtn = document.querySelector("#nextChapter");
 const scrollToTop = document.querySelector("#scroll-top");
 
 const themeSelect = document.getElementById("theme_select");
-const bibleFontSelect = document.getElementById("bible_font_select");
-const songFontSelect = document.getElementById("song_font_select");
 // const waitingModeToggle = document.querySelector("input#waiting_mode_input");
-const alignHorizBtn = document.querySelector("button#alignHorizBtn");
-const alignVertBtn = document.querySelector("button#alignVertBtn");
 
 
 // import functions
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
 import { newSlide } from "./helpers/newSlide.js";
 import { pause } from "./helpers/pause.js";
+import { initializeThemeManager } from "./helpers/theme-manager.js";
 
 import {
   searchAndDisplayResults,
   initSearchEngine
 } from "./helpers/searchService.js";
+
+initializeThemeManager({ themeSelect });
 
 document.addEventListener("DOMContentLoaded", () => {
   const loader = document.getElementById("startup-loader");
@@ -69,7 +68,7 @@ whiteButton.addEventListener("click", () => {
   whiteButton.blur();
 });
 
-const selects = [themeSelect, bibleFontSelect, songFontSelect];
+const selects = [themeSelect];
 
 selects.forEach(select => {
   // Check if the element exists to avoid errors
@@ -79,31 +78,6 @@ selects.forEach(select => {
     });
   }
 });
-
-themeSelect.addEventListener("change", (e) => {
-  const theme = e.target.value; // "light", "dark", "solarized-dark", etc.
-
-  // save choice
-  localStorage.setItem("theme", theme);
-
-  // send to main / apply immediately
-  window.myCustomAPI.setTheme(theme);
-});
-
-bibleFontSelect.addEventListener("change", (e) => {
-  const font = e.target.value;
-  localStorage.setItem("bibleFont", font);
-  window.myCustomAPI.setBibleFont(font);
-});
-
-songFontSelect.addEventListener("change", (e) => {
-  const font = e.target.value;
-  localStorage.setItem("songFont", font);
-  window.myCustomAPI.setSongFont(font);
-});
-
-
-
 
 quitAndInstallBtn.addEventListener("click", () => {
   window.myCustomAPI.quitAndInstall();
@@ -235,52 +209,4 @@ preview_output.addEventListener("click", (e) => {
     element.classList.add("active");
     newSlide(element.innerHTML);
   }
-});
-
-// alignment toggle
-
-// alignment toggle
-
-// Horizontal Alignment
-const horizStates = ["right", "center"];
-let currentHorizIndex = 0;
-
-alignHorizBtn.addEventListener("click", () => {
-  // 1. Calculate next index (cycling)
-  currentHorizIndex = (currentHorizIndex + 1) % horizStates.length;
-  const newState = horizStates[currentHorizIndex];
-
-  // 2. Update the value attribute (affects icon)
-  alignHorizBtn.setAttribute("value", newState);
-
-  // 3. Update the body dataset for CSS styling (local preview)
-  document.body.dataset.alignment = newState;
-
-  // 4. Persistence
-  localStorage.setItem("alignment", newState);
-
-  console.log("Horizontal State:", newState);
-  window.myCustomAPI.setAlignment(newState);
-});
-
-// Vertical Alignment
-const vertStates = ["center", "top"]; // center is middle, top is top
-let currentVertIndex = 0;
-
-alignVertBtn.addEventListener("click", () => {
-  // 1. Calculate next index (cycling)
-  currentVertIndex = (currentVertIndex + 1) % vertStates.length;
-  const newState = vertStates[currentVertIndex];
-
-  // 2. Update the value attribute (affects icon)
-  alignVertBtn.setAttribute("value", newState);
-
-  // 3. Update the body dataset for CSS styling (local preview if applicable)
-  document.body.dataset.vertAlignment = newState;
-
-  // 4. Persistence
-  localStorage.setItem("vertAlignment", newState);
-
-  console.log("Vertical State:", newState);
-  window.myCustomAPI.setVertAlignment(newState);
 });

@@ -324,3 +324,26 @@ body[data-theme="elsoora-dark"] .bible-head {
 .bible-head .chapter-title-en{
   display: none !important
 }
+
+/* User-created themes. Values are resolved and injected by songPreload.js. */
+body[data-theme="custom"][data-custom-theme="true"] {
+  color: var(--custom-theme-text-color, #f5f5f5);
+  background-color: var(--custom-theme-background-color, #15171d);
+  background-image: var(--custom-theme-background-image, none);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-shadow: var(--custom-theme-text-shadow, none);
+}
+
+body[data-theme="custom"][data-custom-theme="true"] #content,
+body[data-theme="custom"][data-custom-theme="true"] #content * {
+  text-shadow: var(--custom-theme-text-shadow, none);
+}
+
+body[data-theme="custom"][data-custom-theme="true"] .chorusSymbol,
+body[data-theme="custom"][data-custom-theme="true"] .verseNumber,
+body[data-theme="custom"][data-custom-theme="true"] .verse-number-center,
+body[data-theme="custom"][data-custom-theme="true"] .bible-head {
+  color: var(--custom-theme-accent-color, #ca2328);
+}
