@@ -5,9 +5,16 @@ on:
     tags:
       - "*"
 
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  build:
-    runs-on: windows-latest
+  validate-tag:
+    runs-on: ubuntu-latest
     steps:
       - name: Validate tag format
         shell: bash
@@ -15,23 +22,32 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           echo "Tag pushed: $TAG"
 
-          # Regex: digits separated by dots, e.g. 3.9.0 or 12.4 or just 7
-          if [[ ! "$TAG" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
-            echo "❌ Tag does not match numeric pattern (e.g. 3.9.0)"
-            echo "Stopping workflow."
+          if [[ ! "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag must be a three-part numeric version (for example, 3.9.0)."
             exit 1
           fi
 
-          echo "✔ Tag format is valid."
-
+  build-windows:
+    needs: validate-tag
+    runs-on: windows-latest
+    steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: "npm"
+          cache: npm
+
+      - name: Set package version from tag
+        run: npm version "${{ github.ref_name }}" --no-git-tag-version --allow-same-version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test release configuration
+        run: npm test
 
       - name: Write analytics config for build
         shell: bash
@@ -49,53 +65,175 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
-      - name: Install dependencies and build
+      - name: Build Windows installer
+        run: npm run dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify Windows installer and update feed
+        run: >-
+          node scripts/verify-release-artifacts.js
+          --platform windows
+          --version "${{ github.ref_name }}"
+          --dir "release/${{ github.ref_name }}"
+
+      - name: Upload Windows release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release-assets
+          if-no-files-found: error
+          retention-days: 1
+          path: |
+            release/${{ github.ref_name }}/Taraneem-Windows-${{ github.ref_name }}-Setup.exe
+            release/${{ github.ref_name }}/Taraneem-Windows-${{ github.ref_name }}-Setup.exe.blockmap
+            release/${{ github.ref_name }}/latest.yml
+
+  build-macos:
+    needs: validate-tag
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Set package version from tag
+        run: npm version "${{ github.ref_name }}" --no-git-tag-version --allow-same-version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test release configuration
+        run: npm test
+
+      - name: Write analytics config for build
+        shell: bash
         run: |
-          npm ci
-          npm run dist
+          if [ -n "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('src/config/analytics.bundled.json', JSON.stringify({
+                supabaseUrl: process.env.SUPABASE_URL,
+                supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+              }, null, 2) + '\n');
+            "
+          fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
-      - name: List release directory contents
-        run: ls ./release
-
-      - name: Create Release
-        id: create_release
-        uses: comnoco/create-release-action@v2.0.5
+      - name: Prepare macOS signing and notarization credentials
+        shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_API_KEY_BASE64: ${{ secrets.APPLE_API_KEY_BASE64 }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          missing=0
+          for name in CSC_LINK CSC_KEY_PASSWORD APPLE_API_KEY_BASE64 APPLE_API_KEY_ID APPLE_API_ISSUER; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub Actions secret: $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+          printf '%s' "$APPLE_API_KEY_BASE64" | base64 -D > "$RUNNER_TEMP/AuthKey.p8"
+          chmod 600 "$RUNNER_TEMP/AuthKey.p8"
+
+      - name: Build, sign, and notarize universal macOS app
+        run: npm run dist:mac
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_API_KEY: ${{ runner.temp }}/AuthKey.p8
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify macOS signature, notarization, and architectures
+        shell: bash
+        run: |
+          APP_PATH="release/${GITHUB_REF_NAME}/mac-universal/Taraneem.app"
+          test -d "$APP_PATH"
+          codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+          xcrun stapler validate "$APP_PATH"
+          spctl --assess --type execute --verbose=4 "$APP_PATH"
+
+          ARCHS="$(lipo -archs "$APP_PATH/Contents/MacOS/Taraneem")"
+          echo "Architectures: $ARCHS"
+          [[ "$ARCHS" == *"x86_64"* ]]
+          [[ "$ARCHS" == *"arm64"* ]]
+
+      - name: Verify macOS installer and update feed
+        run: >-
+          node scripts/verify-release-artifacts.js
+          --platform macos
+          --version "${{ github.ref_name }}"
+          --dir "release/${{ github.ref_name }}"
+
+      - name: Upload macOS release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release-assets
+          if-no-files-found: error
+          retention-days: 1
+          path: |
+            release/${{ github.ref_name }}/Taraneem-macOS-${{ github.ref_name }}-universal.*
+            release/${{ github.ref_name }}/latest-mac.yml
+
+      - name: Remove temporary notarization key
+        if: always()
+        shell: bash
+        run: rm -f "${{ runner.temp }}/AuthKey.p8"
+
+  publish-release:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download verified release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Re-verify downloaded update feeds
+        shell: bash
+        run: |
+          node scripts/verify-release-artifacts.js --platform windows --version "$GITHUB_REF_NAME" --dir release-assets
+          node scripts/verify-release-artifacts.js --platform macos --version "$GITHUB_REF_NAME" --dir release-assets
+
+      - name: Create draft release and upload all assets
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
-          draft: false
+          name: ${{ github.ref_name }}
+          draft: true
           prerelease: false
+          fail_on_unmatched_files: true
+          files: release-assets/*
 
-      - name: Upload exe
-        uses: actions/upload-release-asset@v1
+      - name: Publish complete release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ github.ref_name }}/Taraneem-Windows-${{github.ref_name}}-Setup.exe
-          asset_name: Taraneem-Windows-${{github.ref_name}}-Setup.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload blockmap
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ github.ref_name }}/Taraneem-Windows-${{github.ref_name}}-Setup.exe.blockmap
-          asset_name: Taraneem-Windows-${{github.ref_name}}-Setup.exe.blockmap
-          asset_content_type: text/plain
-
-      - name: Upload latest
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ github.ref_name }}/latest.yml
-          asset_name: latest.yml
-          asset_content_type: text/yaml
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --draft=false --latest

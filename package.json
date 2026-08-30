@@ -14,9 +14,11 @@
     "make": "electron-forge make",
     "make32": "electron-forge make --arch=ia32",
     "lint": "echo \"No linting configured\"",
+    "test": "node scripts/test-release-config.js",
     "build": "electron-builder",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win --x64 -p never",
+    "dist:mac": "electron-builder --mac --universal -p never -c.forceCodeSigning=true",
     "dist32": "electron-builder --win --ia32 -p never",
     "dist-local": "electron-builder --win --x64 -p never && rd /s /q \"release\\${npm_package_version}\\win-unpacked\"",
     "publish": "electron-builder -p always"
@@ -42,8 +44,11 @@
   "devDependencies": {
     "@electron-forge/cli": "^6.4.2",
     "@types/sortablejs": "^1.15.8",
+    "ajv": "^8.20.0",
     "electron": "22.3.27",
     "electron-builder": "^24.13.3",
-    "electron-notarize": "^1.1.1"
+    "electron-notarize": "^1.1.1",
+    "js-yaml": "^4.3.2",
+    "json5": "^2.2.3"
   }
 }

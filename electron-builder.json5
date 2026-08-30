@@ -11,8 +11,12 @@
   },
   files: ["src"],
   mac: {
-    target: ["dmg"],
-    artifactName: "${productName}-Mac-${version}-Installer.${ext}",
+    target: ["dmg", "zip"],
+    icon: "./src/assets/taraneem-mac.png",
+    artifactName: "${productName}-macOS-${version}-${arch}.${ext}",
+    hardenedRuntime: true,
+    notarize: true,
+    publish: ["github"],
   },
   win: {
     target: [
@@ -21,10 +25,10 @@
         arch: ["x64"],
       },
     ],
+    icon: "./src/assets/taraneem.ico",
     artifactName: "${productName}-Windows-${version}-Setup.${ext}",
     publish: ["github"],
   },
-  icon: "./src/assets/taraneem.ico",
   nsis: {
     oneClick: true,
     perMachine: false,
