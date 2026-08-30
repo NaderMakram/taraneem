@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-25T15:43:04.3627812+03:00",
+  "title": "Design System: Taraneem",
+  "extensions": {
+    "colorMeta": {
+      "signal-red": {
+        "role": "primary",
+        "displayName": "Signal Red",
+        "canonical": "#B4232A",
+        "tonalRamp": [
+          "oklch(18% 0.05 25)",
+          "oklch(28% 0.09 25)",
+          "oklch(38% 0.14 25)",
+          "oklch(48% 0.18 25)",
+          "oklch(58% 0.20 25)",
+          "oklch(69% 0.15 25)",
+          "oklch(82% 0.08 25)",
+          "oklch(95% 0.025 25)"
+        ]
+      },
+      "signal-red-deep": {
+        "role": "primary",
+        "displayName": "Deep Signal Red",
+        "canonical": "#971C22",
+        "tonalRamp": [
+          "oklch(18% 0.05 25)",
+          "oklch(28% 0.09 25)",
+          "oklch(38% 0.14 25)",
+          "oklch(48% 0.18 25)",
+          "oklch(58% 0.20 25)",
+          "oklch(69% 0.15 25)",
+          "oklch(82% 0.08 25)",
+          "oklch(95% 0.025 25)"
+        ]
+      },
+      "signal-red-soft": {
+        "role": "primary",
+        "displayName": "Soft Signal Red",
+        "canonical": "#FFF1F2",
+        "tonalRamp": [
+          "oklch(18% 0.05 25)",
+          "oklch(28% 0.09 25)",
+          "oklch(38% 0.14 25)",
+          "oklch(48% 0.18 25)",
+          "oklch(58% 0.20 25)",
+          "oklch(69% 0.15 25)",
+          "oklch(82% 0.08 25)",
+          "oklch(95% 0.025 25)"
+        ]
+      },
+      "presentation-red": {
+        "role": "primary",
+        "displayName": "Presentation Red",
+        "canonical": "#CA2328",
+        "tonalRamp": [
+          "oklch(18% 0.05 25)",
+          "oklch(28% 0.09 25)",
+          "oklch(38% 0.14 25)",
+          "oklch(48% 0.18 25)",
+          "oklch(58% 0.20 25)",
+          "oklch(69% 0.15 25)",
+          "oklch(82% 0.08 25)",
+          "oklch(95% 0.025 25)"
+        ]
+      },
+      "guidance-blue": {
+        "role": "secondary",
+        "displayName": "Guidance Blue",
+        "canonical": "#07689F",
+        "tonalRamp": [
+          "oklch(18% 0.04 235)",
+          "oklch(28% 0.07 235)",
+          "oklch(38% 0.10 235)",
+          "oklch(48% 0.13 235)",
+          "oklch(58% 0.14 235)",
+          "oklch(69% 0.11 235)",
+          "oklch(82% 0.06 235)",
+          "oklch(95% 0.02 235)"
+        ]
+      },
+      "guidance-blue-deep": {
+        "role": "secondary",
+        "displayName": "Deep Guidance Blue",
+        "canonical": "#046096",
+        "tonalRamp": [
+          "oklch(18% 0.04 235)",
+          "oklch(28% 0.07 235)",
+          "oklch(38% 0.10 235)",
+          "oklch(48% 0.13 235)",
+          "oklch(58% 0.14 235)",
+          "oklch(69% 0.11 235)",
+          "oklch(82% 0.06 235)",
+          "oklch(95% 0.02 235)"
+        ]
+      },
+      "quiet-canvas": {
+        "role": "neutral",
+        "displayName": "Quiet Canvas",
+        "canonical": "#F7F8FA",
+        "tonalRamp": [
+          "oklch(15% 0.01 250)",
+          "oklch(28% 0.01 250)",
+          "oklch(41% 0.01 250)",
+          "oklch(54% 0.009 250)",
+          "oklch(67% 0.008 250)",
+          "oklch(79% 0.007 250)",
+          "oklch(90% 0.005 250)",
+          "oklch(98% 0.003 250)"
+        ]
+      },
+      "main-window": {
+        "role": "neutral",
+        "displayName": "Main Window",
+        "canonical": "#F8F8F8",
+        "tonalRamp": [
+          "oklch(15% 0.01 250)",
+          "oklch(28% 0.01 250)",
+          "oklch(41% 0.01 250)",
+          "oklch(54% 0.009 250)",
+          "oklch(67% 0.008 250)",
+          "oklch(79% 0.007 250)",
+          "oklch(90% 0.005 250)",
+          "oklch(98% 0.003 250)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Clean Surface",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(28% 0 0)",
+          "oklch(41% 0 0)",
+          "oklch(54% 0 0)",
+          "oklch(67% 0 0)",
+          "oklch(79% 0 0)",
+          "oklch(90% 0 0)",
+          "oklch(100% 0 0)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Working Ink",
+        "canonical": "#1F2937",
+        "tonalRamp": [
+          "oklch(15% 0.01 250)",
+          "oklch(28% 0.01 250)",
+          "oklch(41% 0.01 250)",
+          "oklch(54% 0.009 250)",
+          "oklch(67% 0.008 250)",
+          "oklch(79% 0.007 250)",
+          "oklch(90% 0.005 250)",
+          "oklch(98% 0.003 250)"
+        ]
+      },
+      "label": {
+        "role": "neutral",
+        "displayName": "Control Label",
+        "canonical": "#344054",
+        "tonalRamp": [
+          "oklch(15% 0.01 250)",
+          "oklch(28% 0.01 250)",
+          "oklch(41% 0.01 250)",
+          "oklch(54% 0.009 250)",
+          "oklch(67% 0.008 250)",
+          "oklch(79% 0.007 250)",
+          "oklch(90% 0.005 250)",
+          "oklch(98% 0.003 250)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Instruction",
+        "canonical": "#667085",
+        "tonalRamp": [
+          "oklch(15% 0.01 250)",
+          "oklch(28% 0.01 250)",
+          "oklch(41% 0.01 250)",
+          "oklch(54% 0.009 250)",
+          "oklch(67% 0.008 250)",
+          "oklch(79% 0.007 250)",
+          "oklch(90% 0.005 250)",
+          "oklch(98% 0.003 250)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Quiet Border",
+        "canonical": "#E4E7EC",
+        "tonalRamp": [
+          "oklch(15% 0.01 250)",
+          "oklch(28% 0.01 250)",
+          "oklch(41% 0.01 250)",
+          "oklch(54% 0.009 250)",
+          "oklch(67% 0.008 250)",
+          "oklch(79% 0.007 250)",
+          "oklch(90% 0.005 250)",
+          "oklch(98% 0.003 250)"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Protective Red",
+        "canonical": "#B42318",
+        "tonalRamp": [
+          "oklch(18% 0.05 25)",
+          "oklch(28% 0.09 25)",
+          "oklch(38% 0.14 25)",
+          "oklch(48% 0.18 25)",
+          "oklch(58% 0.20 25)",
+          "oklch(69% 0.15 25)",
+          "oklch(82% 0.08 25)",
+          "oklch(95% 0.025 25)"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Dependable Green",
+        "canonical": "#067647",
+        "tonalRamp": [
+          "oklch(18% 0.04 155)",
+          "oklch(28% 0.07 155)",
+          "oklch(38% 0.10 155)",
+          "oklch(48% 0.13 155)",
+          "oklch(58% 0.14 155)",
+          "oklch(69% 0.11 155)",
+          "oklch(82% 0.06 155)",
+          "oklch(95% 0.02 155)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "Title",
+        "purpose": "Modal titles, section introductions, and selected-content headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Arabic-first application controls, instructions, and content."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Compact field labels, buttons, metadata, and state names."
+      },
+      "presentation": {
+        "displayName": "Presentation",
+        "purpose": "Theme-controlled lyrics and Bible output with normalized font metrics."
+      }
+    },
+    "shadows": [
+      {
+        "name": "control-rest",
+        "value": "0 1px 2px rgba(16, 24, 40, 0.04)",
+        "purpose": "Extremely subtle separation where a plain border is insufficient."
+      },
+      {
+        "name": "primary-emphasis",
+        "value": "0 4px 12px rgba(180, 35, 42, 0.20)",
+        "purpose": "The one primary action in a focused editor."
+      },
+      {
+        "name": "modal-structure",
+        "value": "0 20px 40px rgba(0, 0, 0, 0.20)",
+        "purpose": "Separates a settings panel from its dimmed application context."
+      },
+      {
+        "name": "presentation-simulation",
+        "value": "0 12px 28px rgba(16, 24, 40, 0.20)",
+        "purpose": "Used only for a screen preview that simulates a separate display."
+      },
+      {
+        "name": "keyboard-focus",
+        "value": "0 0 0 3px rgba(7, 104, 159, 0.18)",
+        "purpose": "Visible keyboard focus for fields and interactive controls."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-fast",
+        "value": "150ms ease",
+        "purpose": "Color, border, and selection feedback."
+      },
+      {
+        "name": "state-standard",
+        "value": "160ms ease",
+        "purpose": "Buttons, cards, and editor-control state changes."
+      },
+      {
+        "name": "content-feedback",
+        "value": "200ms ease-out",
+        "purpose": "Search-result and content-selection feedback."
+      },
+      {
+        "name": "state-upper-limit",
+        "value": "250ms ease-out",
+        "purpose": "The maximum normal duration for meaningful UI state changes."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact",
+        "value": "680px"
+      },
+      {
+        "name": "editor-stack",
+        "value": "920px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single decisive action in a focused panel.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\"><svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><path d=\"M10 18H30V22H10z\"/><path d=\"M10 18H30V22H10z\" transform=\"rotate(90 20 20)\"/></svg><span>خلفية جديدة</span></button>",
+      "css": ".ds-btn-primary { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 15px; color: #fff; background: #b4232a; border: 0; border-radius: 10px; font: 700 0.78rem/1.4 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 160ms ease, transform 160ms ease; } .ds-btn-primary svg { width: 18px; height: 18px; flex: 0 0 18px; fill: currentColor; } .ds-btn-primary:hover { background: #971c22; transform: translateY(-1px); } .ds-btn-primary:active { transform: translateY(0); } .ds-btn-primary:focus-visible { outline: 3px solid rgba(7,104,159,.24); outline-offset: 2px; } .ds-btn-primary:disabled { cursor: wait; opacity: .62; transform: none; }"
+    },
+    {
+      "name": "Secondary Action",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A quiet cancel or alternate action beside the primary action.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">إلغاء</button>",
+      "css": ".ds-btn-secondary { min-height: 40px; padding: 9px 15px; color: #344054; background: #fff; border: 1px solid #e4e7ec; border-radius: 10px; font: 700 0.78rem/1.4 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease; } .ds-btn-secondary:hover { background: #f9fafb; border-color: #cfd4dc; } .ds-btn-secondary:active { background: #f2f4f7; } .ds-btn-secondary:focus-visible { outline: 3px solid rgba(7,104,159,.24); outline-offset: 2px; } .ds-btn-secondary:disabled { cursor: wait; opacity: .62; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "text-input",
+      "description": "A compact Arabic-first field with clear focus and validation states.",
+      "html": "<label class=\"ds-field\" dir=\"rtl\"><span>اسم الخلفية</span><input type=\"text\" value=\"خلفية الاجتماع\" /></label>",
+      "css": ".ds-field { display: grid; gap: 8px; color: #344054; font: 700 .78rem/1.4 'Segoe UI', system-ui, sans-serif; } .ds-field input { min-width: 0; min-height: 42px; padding: 9px 12px; color: #1f2937; background: #fff; border: 1px solid #d0d5dd; border-radius: 10px; font: 400 1rem/1.5 'Segoe UI', system-ui, sans-serif; } .ds-field input:hover { border-color: #98a2b3; } .ds-field input:focus { border-color: #2684aa; outline: 0; box-shadow: 0 0 0 3px rgba(7,104,159,.12); } .ds-field input[aria-invalid='true'] { border-color: #f04438; box-shadow: 0 0 0 3px rgba(240,68,56,.10); } .ds-field input:disabled { color: #667085; background: #f2f4f7; cursor: not-allowed; }"
+    },
+    {
+      "name": "Segmented Choice",
+      "kind": "custom",
+      "refersTo": "segmented-selected",
+      "description": "Two compact choices with an immediate, accessible selected state.",
+      "html": "<div class=\"ds-segmented\" dir=\"rtl\" role=\"radiogroup\" aria-label=\"نوع الخلفية\"><label><input type=\"radio\" name=\"ds-background\" checked /><span>لون</span></label><label><input type=\"radio\" name=\"ds-background\" /><span>صورة</span></label></div>",
+      "css": ".ds-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: #f2f4f7; border-radius: 11px; font: 700 .8rem/1.4 'Segoe UI', system-ui, sans-serif; } .ds-segmented label { position: relative; cursor: pointer; } .ds-segmented input { position: absolute; width: 1px; height: 1px; opacity: 0; } .ds-segmented span { display: grid; min-height: 35px; place-items: center; color: #667085; border-radius: 8px; transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease; } .ds-segmented input:checked + span { color: #1f2937; background: #fff; box-shadow: 0 1px 3px rgba(16,24,40,.12); } .ds-segmented input:focus-visible + span { outline: 3px solid rgba(7,104,159,.24); outline-offset: 1px; }"
+    },
+    {
+      "name": "Background Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A saved presentation background with a swatch, name, and compact actions.",
+      "html": "<article class=\"ds-theme-card\" dir=\"rtl\"><div class=\"ds-theme-card-swatch\"></div><div class=\"ds-theme-card-body\"><strong>خلفية الاجتماع</strong><small>صورة · Calibri</small><button type=\"button\">تعديل</button></div></article>",
+      "css": ".ds-theme-card { overflow: hidden; color: #1f2937; background: #fff; border: 1px solid #e4e7ec; border-radius: 14px; font-family: 'Segoe UI', system-ui, sans-serif; transition: border-color 160ms ease, transform 160ms ease; } .ds-theme-card:hover { border-color: #b4232a; transform: translateY(-1px); } .ds-theme-card:focus-within { outline: 3px solid rgba(7,104,159,.18); outline-offset: 2px; } .ds-theme-card-swatch { height: 72px; background: #15171d; } .ds-theme-card-body { display: grid; grid-template-columns: 1fr auto; gap: 5px 8px; padding: 12px; } .ds-theme-card strong { font-size: .91rem; } .ds-theme-card small { grid-column: 1; color: #667085; font-size: .72rem; } .ds-theme-card button { grid-column: 2; grid-row: 1 / span 2; align-self: center; min-height: 32px; padding: 5px 8px; color: #475467; background: #f8fafc; border: 1px solid #eaecf0; border-radius: 8px; cursor: pointer; } .ds-theme-card button:hover { color: #b4232a; background: #fff1f2; } .ds-theme-card button:focus-visible { outline: 3px solid rgba(7,104,159,.24); outline-offset: 1px; }"
+    },
+    {
+      "name": "Settings Navigation Row",
+      "kind": "nav",
+      "description": "A full-width settings destination with an icon, concise label, and stable affordance.",
+      "html": "<button class=\"ds-settings-row\" type=\"button\" dir=\"rtl\"><span class=\"ds-settings-icon\" aria-hidden=\"true\">◐</span><span>الخلفيات</span><span class=\"ds-settings-arrow\" aria-hidden=\"true\">‹</span></button>",
+      "css": ".ds-settings-row { width: 100%; min-height: 48px; display: grid; grid-template-columns: 32px 1fr 20px; align-items: center; gap: 10px; padding: 8px 12px; color: #1f2937; background: #fff; border: 0; border-radius: 10px; font: 700 .9rem/1.4 'Segoe UI', system-ui, sans-serif; text-align: right; cursor: pointer; transition: background-color 160ms ease, color 160ms ease; } .ds-settings-row:hover { color: #b4232a; background: #fff1f2; } .ds-settings-row:active { background: #f2f4f7; } .ds-settings-row:focus-visible { outline: 3px solid rgba(7,104,159,.24); outline-offset: 2px; } .ds-settings-icon { width: 32px; height: 32px; display: grid; place-items: center; color: #b4232a; background: #fff1f2; border-radius: 8px; } .ds-settings-arrow { color: #667085; text-align: center; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calm Control Desk",
+    "overview": "Taraneem should feel like a purpose-built control surface beside a live church service: quiet enough to disappear, clear enough to operate under pressure, and dependable enough that every state is understood immediately. The visual system uses compact Shadcn-like controls, familiar icons with concise Arabic labels, and strong RTL structure. It is an application, not a dashboard. The full UI refresh should normalize the strongest patterns already present in the app: white working surfaces, cool neutral canvases, restrained red and blue accents, gently curved controls, and fast state feedback. Legacy styling may be migrated toward these tokens, but search normalization, keyboard shortcuts, mistake prevention, and second-screen behavior are never redesigned away. Custom presentation backgrounds may be expressive inside their preview and output. The editor around them stays neutral.",
+    "keyCharacteristics": [
+      "Arabic-first RTL composition with predictable keyboard focus.",
+      "Compact, familiar controls with 10-14px radii.",
+      "One primary red and one guidance blue over quiet neutral surfaces.",
+      "Icons support concise text; they never become visual decoration.",
+      "Motion is subtle, functional, and normally 150-250ms.",
+      "Flat working surfaces with elevation reserved for real hierarchy."
+    ],
+    "rules": [
+      {
+        "name": "The Two-Accent Rule",
+        "body": "Signal Red indicates decisive action or selection; Guidance Blue indicates focus or navigation. Never add a third decorative accent to an application surface.",
+        "section": "colors"
+      },
+      {
+        "name": "The Presentation Separation Rule",
+        "body": "User-selected background, text, and accent colors affect only the presentation preview and output. They never recolor editor labels, screen tags, controls, or validation states.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ten-Percent Rule",
+        "body": "Saturated accent color occupies no more than ten percent of a normal working screen. Its rarity makes it useful.",
+        "section": "colors"
+      },
+      {
+        "name": "The UI/Output Rule",
+        "body": "Changing a custom background font changes the preview and second-screen output only. Application chrome remains stable.",
+        "section": "typography"
+      },
+      {
+        "name": "The Compact Hierarchy Rule",
+        "body": "Adjacent UI roles use a tight 1.125-1.2 scale. Large marketing-style headings are prohibited.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-at-Rest Rule",
+        "body": "Cards and controls are flat at rest. Never combine a full border with a wide ambient shadow merely to make a surface feel premium.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One-Elevation-Cue Rule",
+        "body": "A component uses a border, tonal change, or shadow as its primary depth cue—not all three.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do build every screen as an Arabic-first RTL workflow with predictable keyboard order and visible Guidance Blue focus.",
+      "Do use Signal Red for decisive action or selection and Guidance Blue for focus or navigation.",
+      "Do keep common controls 40-42px high with 10px radii and compact spacing.",
+      "Do pair familiar icons with concise Arabic labels and accessible names.",
+      "Do preserve shortcuts, forgiving behavior, normalization, safe defaults, recovery paths, and second-screen behavior during the full UI update.",
+      "Do use subtle 150-250ms motion for state feedback and provide a reduced-motion equivalent.",
+      "Do let presentation themes be expressive inside preview/output while the editor stays neutral."
+    ],
+    "donts": [
+      "Don't use generic AI-generated dashboard styling: repeated nested cards, excessive badges, decorative eyebrows, gradients, glass effects, oversized rounding, or wide soft shadows.",
+      "Don't make the interface colorful for decoration rather than communication.",
+      "Don't turn settings into a dense corporate dashboard that makes a simple workflow feel technical.",
+      "Don't use text-heavy controls when a familiar icon and concise label communicate the action faster.",
+      "Don't remove shortcuts, forgiving behavior, normalization, or safeguards to make a visual redesign cleaner.",
+      "Don't use decorative animation, slow transitions, or motion that delays live operation.",
+      "Don't recolor preview screen tags or application controls with a user's custom presentation colors.",
+      "Don't invent unfamiliar controls where a standard button, field, select, segmented control, or dialog action is clearer."
+    ]
+  }
+}

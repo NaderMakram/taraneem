@@ -46,7 +46,13 @@ const NEW_THEME_DEFAULTS = {
   background: { type: "color", color: "#15171D", imageUrl: null },
   textColor: "#F5F5F5",
   accentColor: "#CA2328",
-  shadow: "none",
+  shadow: {
+    enabled: false,
+    color: "#000000",
+    direction: "bottom-right",
+    strength: 3,
+    blur: 4,
+  },
   fonts: { bible: "MyTimesNewRoman", song: "MyCalibri" },
   alignment: {
     song: { vertical: "center" },
@@ -55,7 +61,20 @@ const NEW_THEME_DEFAULTS = {
 };
 
 const MAX_THEME_NAME_LENGTH = 40;
-const VALID_SHADOWS = new Set(["none", "light", "dark"]);
+const LEGACY_SHADOWS = new Set(["none", "light", "dark"]);
+const VALID_SHADOW_DIRECTIONS = new Set([
+  "bottom-right",
+  "bottom-left",
+  "top-right",
+  "top-left",
+]);
+const DEFAULT_SHADOW = Object.freeze({
+  enabled: false,
+  color: "#000000",
+  direction: "bottom-right",
+  strength: 3,
+  blur: 4,
+});
 const VALID_FONTS = new Set([
   "ibm-plex",
   "traditional-arabic",
@@ -107,7 +126,7 @@ function cloneTheme(theme) {
       theme?.accentColor,
       NEW_THEME_DEFAULTS.accentColor
     ),
-    shadow: VALID_SHADOWS.has(theme?.shadow) ? theme.shadow : "none",
+    shadow: normalizeShadow(theme?.shadow),
     fonts: {
       bible: VALID_FONTS.has(theme?.fonts?.bible)
         ? theme.fonts.bible
@@ -153,6 +172,98 @@ function normalizeHex(value, fallback = null) {
       .join("");
   }
   return /^[0-9a-f]{6}$/i.test(raw) ? `#${raw.toUpperCase()}` : fallback;
+}
+
+function clampShadowNumber(value, minimum, maximum, fallback) {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue)) return fallback;
+  return Math.min(maximum, Math.max(minimum, Math.round(numericValue)));
+}
+
+function normalizeShadow(value) {
+  if (LEGACY_SHADOWS.has(value)) {
+    return {
+      ...DEFAULT_SHADOW,
+      enabled: value !== "none",
+      color: value === "light" ? "#FFFFFF" : "#000000",
+    };
+  }
+
+  if (!value || typeof value !== "object") {
+    return { ...DEFAULT_SHADOW };
+  }
+
+  return {
+    enabled:
+      typeof value.enabled === "boolean"
+        ? value.enabled
+        : DEFAULT_SHADOW.enabled,
+    color: normalizeHex(value.color, DEFAULT_SHADOW.color),
+    direction: VALID_SHADOW_DIRECTIONS.has(value.direction)
+      ? value.direction
+      : DEFAULT_SHADOW.direction,
+    strength: clampShadowNumber(
+      value.strength,
+      1,
+      8,
+      DEFAULT_SHADOW.strength
+    ),
+    blur: clampShadowNumber(value.blur, 0, 12, DEFAULT_SHADOW.blur),
+  };
+}
+
+function getShadowDirectionVector(direction) {
+  return {
+    "bottom-right": [1, 1],
+    "bottom-left": [-1, 1],
+    "top-right": [1, -1],
+    "top-left": [-1, -1],
+  }[direction] || [1, 1];
+}
+
+function hexToRgba(hex, alpha) {
+  const normalized = normalizeHex(hex, DEFAULT_SHADOW.color);
+  const red = Number.parseInt(normalized.slice(1, 3), 16);
+  const green = Number.parseInt(normalized.slice(3, 5), 16);
+  const blue = Number.parseInt(normalized.slice(5, 7), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha.toFixed(2)})`;
+}
+
+function getShadowCssParts(value, { relative = false } = {}) {
+  const shadow = normalizeShadow(value);
+  if (!shadow.enabled) return null;
+
+  const [horizontalDirection, verticalDirection] =
+    getShadowDirectionVector(shadow.direction);
+  const distance = relative
+    ? 0.012 + shadow.strength * 0.0075
+    : 0.5 + shadow.strength * 0.5;
+  const blur = relative ? shadow.blur * 0.012 : shadow.blur * 0.55;
+  const alpha = Math.min(0.95, 0.5 + shadow.strength * 0.055);
+  const unit = relative ? "em" : "px";
+  const formatValue = (number) =>
+    `${Number(number.toFixed(relative ? 3 : 1))}${unit}`;
+
+  return {
+    x: formatValue(distance * horizontalDirection),
+    y: formatValue(distance * verticalDirection),
+    blur: formatValue(blur),
+    color: hexToRgba(shadow.color, alpha),
+  };
+}
+
+function getTextShadowCss(value, options) {
+  const parts = getShadowCssParts(value, options);
+  return parts
+    ? `${parts.x} ${parts.y} ${parts.blur} ${parts.color}`
+    : "none";
+}
+
+function getDropShadowCss(value) {
+  const parts = getShadowCssParts(value);
+  return parts
+    ? `drop-shadow(${parts.x} ${parts.y} ${parts.blur} ${parts.color})`
+    : "none";
 }
 
 function getHexInputValue(input) {
@@ -222,6 +333,16 @@ function cacheElements(themeSelect) {
     textHex: document.getElementById("theme-text-hex"),
     accentColor: document.getElementById("theme-accent-color"),
     accentHex: document.getElementById("theme-accent-hex"),
+    shadowEnabled: document.getElementById("theme-shadow-enabled"),
+    shadowControls: document.getElementById("theme-shadow-controls"),
+    shadowColor: document.getElementById("theme-shadow-color"),
+    shadowHex: document.getElementById("theme-shadow-hex"),
+    shadowStrength: document.getElementById("theme-shadow-strength"),
+    shadowStrengthValue: document.getElementById(
+      "theme-shadow-strength-value"
+    ),
+    shadowBlur: document.getElementById("theme-shadow-blur"),
+    shadowBlurValue: document.getElementById("theme-shadow-blur-value"),
     songFont: document.getElementById("theme-song-font"),
     bibleFont: document.getElementById("theme-bible-font"),
     songVerticalAlignment: document.getElementById(
@@ -299,6 +420,11 @@ function bindEvents() {
   bindColorInputs(elements.backgroundColor, elements.backgroundHex);
   bindColorInputs(elements.textColor, elements.textHex);
   bindColorInputs(elements.accentColor, elements.accentHex);
+  bindColorInputs(elements.shadowColor, elements.shadowHex);
+
+  elements.shadowEnabled?.addEventListener("change", updateShadowControls);
+  elements.shadowStrength?.addEventListener("input", updateShadowRangeValues);
+  elements.shadowBlur?.addEventListener("input", updateShadowRangeValues);
 
   document.addEventListener(
     "pointerdown",
@@ -335,7 +461,8 @@ function bindEvents() {
     if (
       event.target === elements.backgroundHex ||
       event.target === elements.textHex ||
-      event.target === elements.accentHex
+      event.target === elements.accentHex ||
+      event.target === elements.shadowHex
     ) {
       return;
     }
@@ -406,14 +533,25 @@ function setCardColors(swatch, theme) {
   );
   swatch.style.setProperty("--card-text-color", textColor);
   swatch.style.setProperty("--card-accent-color", accentColor);
+  swatch.style.setProperty(
+    "--card-shadow-filter",
+    getDropShadowCss(theme.shadow)
+  );
+}
 
-  const shadow =
-    theme.shadow === "light"
-      ? "drop-shadow(0 1px 1px rgba(255, 255, 255, 0.9))"
-      : theme.shadow === "dark"
-        ? "drop-shadow(0 1px 1px rgba(0, 0, 0, 0.9))"
-        : "none";
-  swatch.style.setProperty("--card-shadow-filter", shadow);
+function createThemeActionButton(iconSource, className, label, onClick) {
+  const button = document.createElement("button");
+  const icon = document.createElement("img");
+  button.type = "button";
+  button.className = className;
+  button.setAttribute("aria-label", label);
+  button.title = label;
+  icon.src = iconSource;
+  icon.alt = "";
+  icon.setAttribute("aria-hidden", "true");
+  button.appendChild(icon);
+  button.addEventListener("click", onClick);
+  return button;
 }
 
 function createThemeCard(theme) {
@@ -422,8 +560,12 @@ function createThemeCard(theme) {
   card.dataset.themeId = theme.id;
   if (theme.id === activeThemeId) card.classList.add("is-active");
 
-  const swatch = document.createElement("div");
+  const swatch = document.createElement("button");
+  swatch.type = "button";
   swatch.className = "theme-card-swatch";
+  swatch.setAttribute("aria-label", `تعديل خلفية ${theme.name}`);
+  swatch.title = `تعديل خلفية ${theme.name}`;
+  swatch.addEventListener("click", () => openEditor(theme.id));
   setCardColors(swatch, theme);
   swatch.appendChild(document.createElement("span")).className =
     "theme-card-swatch-lines";
@@ -440,48 +582,24 @@ function createThemeCard(theme) {
   const copy = document.createElement("div");
   copy.className = "theme-card-copy";
   copy.appendChild(createTextElement("strong", "", theme.name));
-  copy.appendChild(
-    createTextElement(
-      "small",
-      "",
-      theme.background?.type === "image"
-        ? "خلفية بصورة"
-        : "خلفية بلون"
-    )
-  );
 
   const actions = document.createElement("div");
   actions.className = "theme-card-actions";
 
-  const applyButton = createTextElement(
-    "button",
+  const editButton = createThemeActionButton(
+    "./img/edit.png",
     "theme-card-action",
-    theme.id === activeThemeId ? "مستخدمة" : "استخدام"
+    `تعديل خلفية ${theme.name}`,
+    () => openEditor(theme.id)
   );
-  applyButton.type = "button";
-  applyButton.disabled = theme.id === activeThemeId;
-  applyButton.setAttribute("aria-label", `استخدام خلفية ${theme.name}`);
-  applyButton.addEventListener("click", () => applyThemeFromCard(theme.id));
-  actions.appendChild(applyButton);
-
-  const editButton = createTextElement(
-    "button",
-    "theme-card-action",
-    "تعديل"
-  );
-  editButton.type = "button";
-  editButton.setAttribute("aria-label", `تعديل خلفية ${theme.name}`);
-  editButton.addEventListener("click", () => openEditor(theme.id));
   actions.appendChild(editButton);
 
-  const deleteButton = createTextElement(
-    "button",
+  const deleteButton = createThemeActionButton(
+    "./img/minus-64.png",
     "theme-card-action is-danger",
-    "حذف"
+    `حذف خلفية ${theme.name}`,
+    () => deleteThemeById(theme.id)
   );
-  deleteButton.type = "button";
-  deleteButton.setAttribute("aria-label", `حذف خلفية ${theme.name}`);
-  deleteButton.addEventListener("click", () => deleteThemeById(theme.id));
   actions.appendChild(deleteButton);
 
   content.append(copy, actions);
@@ -624,17 +742,6 @@ async function setActiveTheme(themeId, { announce = true } = {}) {
   }
 }
 
-async function applyThemeFromCard(themeId) {
-  showListStatus("جارٍ تطبيق الخلفية...");
-  try {
-    await setActiveTheme(themeId);
-    showListStatus("");
-  } catch (error) {
-    console.error("Failed to apply theme", error);
-    showListStatus("تعذر تطبيق الخلفية. حاول مرة أخرى.", true);
-  }
-}
-
 function openEditor(themeId) {
   window.settingsModal?.navigateTo("theme-editor", { themeId: themeId || null });
 }
@@ -706,6 +813,57 @@ function getImageFileName(imageUrl) {
   }
 }
 
+function updateShadowRangeValues() {
+  if (elements.shadowStrengthValue) {
+    elements.shadowStrengthValue.textContent = clampShadowNumber(
+      elements.shadowStrength?.value,
+      1,
+      8,
+      DEFAULT_SHADOW.strength
+    ).toLocaleString("ar-EG");
+  }
+  if (elements.shadowBlurValue) {
+    elements.shadowBlurValue.textContent = clampShadowNumber(
+      elements.shadowBlur?.value,
+      0,
+      12,
+      DEFAULT_SHADOW.blur
+    ).toLocaleString("ar-EG");
+  }
+}
+
+function updateShadowControls() {
+  if (!elements.shadowControls || !elements.shadowEnabled) return;
+  elements.shadowControls.hidden = !elements.shadowEnabled.checked;
+}
+
+function setShadowValues(value) {
+  const shadow = normalizeShadow(value);
+  elements.shadowEnabled.checked = shadow.enabled;
+  setColorValues(elements.shadowColor, elements.shadowHex, shadow.color);
+  setRadioValue("shadowDirection", shadow.direction);
+  elements.shadowStrength.value = String(shadow.strength);
+  elements.shadowBlur.value = String(shadow.blur);
+  updateShadowRangeValues();
+  updateShadowControls();
+}
+
+function getShadowValueFromEditor() {
+  return normalizeShadow({
+    enabled: Boolean(elements.shadowEnabled?.checked),
+    color:
+      getHexInputValue(elements.shadowHex) ||
+      elements.shadowColor?.value ||
+      DEFAULT_SHADOW.color,
+    direction: getRadioValue(
+      "shadowDirection",
+      DEFAULT_SHADOW.direction
+    ),
+    strength: elements.shadowStrength?.value,
+    blur: elements.shadowBlur?.value,
+  });
+}
+
 async function prepareEditor(options = {}) {
   const requestedThemeId =
     typeof options.themeId === "string" ? options.themeId : null;
@@ -741,7 +899,7 @@ async function prepareEditor(options = {}) {
   setColorValues(elements.textColor, elements.textHex, theme.textColor);
   setColorValues(elements.accentColor, elements.accentHex, theme.accentColor);
   setRadioValue("backgroundType", theme.background.type);
-  setRadioValue("shadow", theme.shadow);
+  setShadowValues(theme.shadow);
   elements.songFont.value = theme.fonts.song;
   elements.bibleFont.value = theme.fonts.bible;
   setAlignmentValue("song", "vertical", theme.alignment.song.vertical);
@@ -790,7 +948,7 @@ function getDraftSnapshot() {
     backgroundHex: elements.backgroundHex?.value || "",
     textHex: elements.textHex?.value || "",
     accentHex: elements.accentHex?.value || "",
-    shadow: getRadioValue("shadow", "none"),
+    shadow: getShadowValueFromEditor(),
     songFont: elements.songFont?.value || "",
     bibleFont: elements.bibleFont?.value || "",
     songVerticalAlignment: elements.songVerticalAlignment?.value || "",
@@ -837,16 +995,11 @@ function updatePreview() {
     getHexInputValue(elements.accentHex) ||
     elements.accentColor?.value ||
     NEW_THEME_DEFAULTS.accentColor;
-  const shadow = getRadioValue("shadow", "none");
+  const shadow = getShadowValueFromEditor();
   const imageUrl = selectedImage?.previewUrl || existingImageUrl;
   const backgroundImage =
     backgroundType === "image" && imageUrl ? toCssImageUrl(imageUrl) : "none";
-  const textShadow =
-    shadow === "light"
-      ? "0 1px 2px rgba(255, 255, 255, 0.95), 0 0 5px rgba(255, 255, 255, 0.55)"
-      : shadow === "dark"
-        ? "0 2px 3px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.5)"
-        : "none";
+  const textShadow = getTextShadowCss(shadow);
 
   elements.previewStage.style.setProperty(
     "--preview-background-color",
@@ -970,8 +1123,19 @@ function validateDraft() {
   const backgroundColor = getHexInputValue(elements.backgroundHex);
   const textColor = getHexInputValue(elements.textHex);
   const accentColor = getHexInputValue(elements.accentHex);
+  const shadowEnabled = Boolean(elements.shadowEnabled?.checked);
+  const shadowColor = getHexInputValue(elements.shadowHex);
+  const shadow = getShadowValueFromEditor();
   const backgroundType = getRadioValue("backgroundType", "color");
   const imageUrl = selectedImage?.previewUrl || existingImageUrl;
+  const colorInputs = [
+    [backgroundColor, elements.backgroundHex],
+    [textColor, elements.textHex],
+    [accentColor, elements.accentHex],
+  ];
+  if (shadowEnabled) {
+    colorInputs.push([shadowColor, elements.shadowHex]);
+  }
 
   elements.name.toggleAttribute(
     "aria-invalid",
@@ -983,6 +1147,10 @@ function validateDraft() {
   );
   elements.textHex.toggleAttribute("aria-invalid", !textColor);
   elements.accentHex.toggleAttribute("aria-invalid", !accentColor);
+  elements.shadowHex.toggleAttribute(
+    "aria-invalid",
+    shadowEnabled && !shadowColor
+  );
 
   if (!name) {
     elements.name.focus();
@@ -996,13 +1164,12 @@ function validateDraft() {
       )} حرفًا.`,
     };
   }
-  if (!backgroundColor || !textColor || !accentColor) {
-    const firstInvalidColorInput = [
-      [backgroundColor, elements.backgroundHex],
-      [textColor, elements.textHex],
-      [accentColor, elements.accentHex],
-    ].find(([color]) => !color)?.[1];
-    firstInvalidColorInput?.focus();
+
+  const firstInvalidColorInput = colorInputs.find(
+    ([color]) => !color
+  )?.[1];
+  if (firstInvalidColorInput) {
+    firstInvalidColorInput.focus();
     return { error: "تأكد أن كل رمز لون يحتوي على ٣ أو ٦ خانات صحيحة." };
   }
   if (backgroundType === "image" && !imageUrl) {
@@ -1020,7 +1187,10 @@ function validateDraft() {
       },
       textColor,
       accentColor,
-      shadow: getRadioValue("shadow", "none"),
+      shadow: {
+        ...shadow,
+        color: shadowColor || shadow.color,
+      },
       fonts: {
         bible: elements.bibleFont.value,
         song: elements.songFont.value,
@@ -1047,6 +1217,16 @@ function setEditorBusy(isBusy) {
   elements.chooseImage.disabled = isBusy;
   elements.songFont.disabled = isBusy;
   elements.bibleFont.disabled = isBusy;
+  elements.shadowEnabled.disabled = isBusy;
+  elements.shadowColor.disabled = isBusy;
+  elements.shadowHex.disabled = isBusy;
+  elements.shadowStrength.disabled = isBusy;
+  elements.shadowBlur.disabled = isBusy;
+  elements.form
+    .querySelectorAll('input[name="shadowDirection"]')
+    .forEach((input) => {
+      input.disabled = isBusy;
+    });
   elements.songVerticalAlignment.disabled = isBusy;
   elements.bibleHorizontalAlignment.disabled = isBusy;
   elements.bibleVerticalAlignment.disabled = isBusy;

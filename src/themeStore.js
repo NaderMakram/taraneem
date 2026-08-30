@@ -8,6 +8,19 @@ const MAX_THEME_NAME_LENGTH = 40;
 const MAX_IMAGE_SIZE_BYTES = 20 * 1024 * 1024;
 const ALLOWED_IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const SHADOW_PRESETS = new Set(["none", "light", "dark"]);
+const SHADOW_DIRECTIONS = new Set([
+  "bottom-right",
+  "bottom-left",
+  "top-right",
+  "top-left",
+]);
+const DEFAULT_SHADOW = Object.freeze({
+  enabled: false,
+  color: "#000000",
+  direction: "bottom-right",
+  strength: 3,
+  blur: 4,
+});
 const FONT_IDS = new Set([
   "ibm-plex",
   "traditional-arabic",
@@ -68,6 +81,45 @@ function normalizeHexColor(value) {
   return /^#[0-9a-f]{6}$/i.test(normalized)
     ? normalized.toUpperCase()
     : null;
+}
+
+function normalizeShadowConfiguration(value, fallback = DEFAULT_SHADOW) {
+  const useFallback = () => (fallback ? { ...fallback } : null);
+
+  if (SHADOW_PRESETS.has(value)) {
+    return {
+      ...DEFAULT_SHADOW,
+      enabled: value !== "none",
+      color: value === "light" ? "#FFFFFF" : "#000000",
+    };
+  }
+
+  if (!value || typeof value !== "object") return useFallback();
+
+  const color = normalizeHexColor(value.color);
+  const strength = Number(value.strength);
+  const blur = Number(value.blur);
+  if (
+    typeof value.enabled !== "boolean" ||
+    !color ||
+    !SHADOW_DIRECTIONS.has(value.direction) ||
+    !Number.isInteger(strength) ||
+    strength < 1 ||
+    strength > 8 ||
+    !Number.isInteger(blur) ||
+    blur < 0 ||
+    blur > 12
+  ) {
+    return useFallback();
+  }
+
+  return {
+    enabled: value.enabled,
+    color,
+    direction: value.direction,
+    strength,
+    blur,
+  };
 }
 
 function validImageDimensions(width, height) {
@@ -213,7 +265,7 @@ function sanitizeStoredTheme(theme) {
   const backgroundColor = normalizeHexColor(theme.background?.color);
   const textColor = normalizeHexColor(theme.textColor);
   const accentColor = normalizeHexColor(theme.accentColor);
-  const shadow = SHADOW_PRESETS.has(theme.shadow) ? theme.shadow : "none";
+  const shadow = normalizeShadowConfiguration(theme.shadow);
   const bibleFont = FONT_IDS.has(theme.fonts?.bible)
     ? theme.fonts.bible
     : DEFAULT_PRESENTATION.fonts.bible;
@@ -573,7 +625,7 @@ function createThemeStore(userDataPath) {
       },
       textColor: theme.textColor,
       accentColor: theme.accentColor,
-      shadow: theme.shadow,
+      shadow: { ...theme.shadow },
       fonts: { ...theme.fonts },
       alignment: {
         song: { ...theme.alignment.song },
@@ -622,7 +674,7 @@ function createThemeStore(userDataPath) {
       throw new Error("أحد ألوان الخلفية غير صالح");
     }
 
-    const shadow = SHADOW_PRESETS.has(input.shadow) ? input.shadow : null;
+    const shadow = normalizeShadowConfiguration(input.shadow, null);
     if (!shadow) throw new Error("اختيار الظل غير صالح");
 
     const bibleFont = FONT_IDS.has(input.fonts?.bible)
@@ -735,7 +787,7 @@ function createThemeStore(userDataPath) {
       },
       textColor: values.textColor,
       accentColor: values.accentColor,
-      shadow: values.shadow,
+      shadow: { ...values.shadow },
       fonts: {
         bible: values.bibleFont,
         song: values.songFont,
@@ -813,6 +865,7 @@ module.exports = {
   IMAGE_FILE_PATTERN,
   MAX_IMAGE_SIZE_BYTES,
   MAX_THEME_NAME_LENGTH,
+  SHADOW_DIRECTIONS,
   SHADOW_PRESETS,
   VERTICAL_ALIGNMENTS,
   createThemeStore,

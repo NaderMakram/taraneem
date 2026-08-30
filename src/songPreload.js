@@ -34,11 +34,20 @@ const CUSTOM_THEME_VARIABLES = [
   "--custom-theme-accent-color",
   "--custom-theme-text-shadow",
 ];
-const SHADOW_VALUES = {
-  none: "none",
-  dark: "0.035em 0.045em 0.08em rgba(0, 0, 0, 0.9)",
-  light: "0.035em 0.045em 0.08em rgba(255, 255, 255, 0.95)",
-};
+const LEGACY_SHADOW_VALUES = new Set(["none", "light", "dark"]);
+const SHADOW_DIRECTIONS = new Set([
+  "bottom-right",
+  "bottom-left",
+  "top-right",
+  "top-left",
+]);
+const DEFAULT_SHADOW = Object.freeze({
+  enabled: false,
+  color: "#000000",
+  direction: "bottom-right",
+  strength: 3,
+  blur: 4,
+});
 const FONT_IDS = new Set([
   "ibm-plex",
   "traditional-arabic",
@@ -167,6 +176,73 @@ function applyPresentationPreferences(payload) {
   }
 }
 
+function normalizeShadow(value) {
+  if (LEGACY_SHADOW_VALUES.has(value)) {
+    return {
+      ...DEFAULT_SHADOW,
+      enabled: value !== "none",
+      color: value === "light" ? "#FFFFFF" : "#000000",
+    };
+  }
+
+  if (!value || typeof value !== "object") return null;
+
+  const colorPattern = /^#[0-9A-F]{6}$/i;
+  const strength = Number(value.strength);
+  const blur = Number(value.blur);
+  if (
+    typeof value.enabled !== "boolean" ||
+    !colorPattern.test(value.color) ||
+    !SHADOW_DIRECTIONS.has(value.direction) ||
+    !Number.isInteger(strength) ||
+    strength < 1 ||
+    strength > 8 ||
+    !Number.isInteger(blur) ||
+    blur < 0 ||
+    blur > 12
+  ) {
+    return null;
+  }
+
+  return {
+    enabled: value.enabled,
+    color: value.color.toUpperCase(),
+    direction: value.direction,
+    strength,
+    blur,
+  };
+}
+
+function shadowColorToRgba(hex, alpha) {
+  const red = Number.parseInt(hex.slice(1, 3), 16);
+  const green = Number.parseInt(hex.slice(3, 5), 16);
+  const blue = Number.parseInt(hex.slice(5, 7), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha.toFixed(2)})`;
+}
+
+function getTextShadowValue(value) {
+  const shadow = normalizeShadow(value);
+  if (!shadow?.enabled) return "none";
+
+  const [horizontalDirection, verticalDirection] = {
+    "bottom-right": [1, 1],
+    "bottom-left": [-1, 1],
+    "top-right": [1, -1],
+    "top-left": [-1, -1],
+  }[shadow.direction];
+  const distance = 0.012 + shadow.strength * 0.0075;
+  const blur = shadow.blur * 0.012;
+  const alpha = Math.min(0.95, 0.5 + shadow.strength * 0.055);
+  const formatValue = (number) => `${Number(number.toFixed(3))}em`;
+
+  return [
+    formatValue(distance * horizontalDirection),
+    formatValue(distance * verticalDirection),
+    formatValue(blur),
+    shadowColorToRgba(shadow.color, alpha),
+  ].join(" ");
+}
+
 function applyThemePayload(payload) {
   resetCustomThemeStyles();
   applyPresentationPreferences(payload);
@@ -192,11 +268,12 @@ function applyThemePayload(payload) {
 
   const colorPattern = /^#[0-9A-F]{6}$/i;
   const backgroundColor = payload.background?.color;
+  const shadow = normalizeShadow(payload.shadow);
   if (
     !colorPattern.test(backgroundColor) ||
     !colorPattern.test(payload.textColor) ||
     !colorPattern.test(payload.accentColor) ||
-    !Object.prototype.hasOwnProperty.call(SHADOW_VALUES, payload.shadow)
+    !shadow
   ) {
     document.body.setAttribute("data-theme", "dark");
     return;
@@ -229,7 +306,7 @@ function applyThemePayload(payload) {
   );
   document.documentElement.style.setProperty(
     "--custom-theme-text-shadow",
-    SHADOW_VALUES[payload.shadow]
+    getTextShadowValue(shadow)
   );
 }
 

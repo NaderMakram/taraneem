@@ -45,7 +45,13 @@ function themeInput(overrides = {}) {
     },
     textColor: "ffffff",
     accentColor: "#ca2328",
-    shadow: "none",
+    shadow: {
+      enabled: false,
+      color: "#000000",
+      direction: "bottom-right",
+      strength: 3,
+      blur: 4,
+    },
     fonts: {
       bible: "MyTimesNewRoman",
       song: "MyCalibri",
@@ -159,7 +165,13 @@ test("creates and edits themes with stable generated IDs", (t) => {
       id: created.id,
       name: "Updated theme",
       textColor: "#101010",
-      shadow: "dark",
+      shadow: {
+        enabled: true,
+        color: "#123456",
+        direction: "top-left",
+        strength: 6,
+        blur: 8,
+      },
       fonts: { bible: "traditional-arabic", song: "din-next" },
       alignment: {
         song: { vertical: "center" },
@@ -171,7 +183,13 @@ test("creates and edits themes with stable generated IDs", (t) => {
   assert.equal(edited.id, created.id);
   assert.equal(edited.createdAt, created.createdAt);
   assert.equal(edited.name, "Updated theme");
-  assert.equal(edited.shadow, "dark");
+  assert.deepEqual(edited.shadow, {
+    enabled: true,
+    color: "#123456",
+    direction: "top-left",
+    strength: 6,
+    blur: 8,
+  });
   assert.deepEqual(edited.fonts, {
     bible: "traditional-arabic",
     song: "din-next",
@@ -263,6 +281,13 @@ test("adds presentation defaults when loading backgrounds saved by older version
   );
 
   const [loadedTheme] = store.listThemes();
+  assert.deepEqual(loadedTheme.shadow, {
+    enabled: false,
+    color: "#000000",
+    direction: "bottom-right",
+    strength: 3,
+    blur: 4,
+  });
   assert.deepEqual(loadedTheme.fonts, {
     bible: "MyTimesNewRoman",
     song: "MyCalibri",

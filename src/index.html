@@ -255,10 +255,9 @@
                 <aside class="theme-live-preview" aria-labelledby="theme-preview-title">
                   <div class="theme-preview-heading">
                     <div>
-                      <span class="theme-eyebrow">معاينة مباشرة</span>
                       <h3 id="theme-preview-title">شاشة العرض</h3>
                     </div>
-                    <span class="theme-live-badge"><span aria-hidden="true"></span> مباشر</span>
+                    <!-- <span class="theme-live-badge"><span aria-hidden="true"></span> مباشر</span> -->
                   </div>
 
                   <div id="theme-preview-stage" class="theme-preview-stage">
@@ -266,36 +265,39 @@
                       <span class="theme-preview-card-label">ترنيمة</span>
                       <div class="theme-preview-copy">
                         <span class="theme-preview-accent theme-preview-reference">١</span>
-                        <div class="theme-preview-text">يا رب أنت نوري وخلاصي<br />وبك يطمئن قلبي</div>
+                        <div class="theme-preview-text">
+                          في موكب جيش الغالبين</br>
+سوف أسير مع يسوع</br>
+فادي حياتي على الصليب</br>
+قائد الجيش العظيم
+
+                        </div>
                       </div>
                     </article>
 
                     <article class="theme-preview-card" data-preview-type="bible" aria-label="معاينة آية من الكتاب المقدس">
                       <span class="theme-preview-card-label">الكتاب المقدس</span>
                       <div class="theme-preview-copy">
-                        <span class="theme-preview-accent theme-preview-reference">مزمور ١١٩</span>
+                        <span class="theme-preview-accent theme-preview-reference">أفسس ٢</span>
                         <div class="theme-preview-verse-block">
-                          <span class="theme-preview-accent theme-preview-verse-number">١٠٥</span>
-                          <div class="theme-preview-text">سراج لرجلي كلامك ونور لسبيلي</div>
+                          <span class="theme-preview-accent theme-preview-verse-number">٨</span>
+                          <div class="theme-preview-text">لأنَّكُمْ بالنِّعمَةِ مُخَلَّصونَ، بالإيمانِ، وذلكَ ليس مِنكُمْ. هو عَطيَّةُ اللهِ.</div>
                         </div>
                       </div>
                     </article>
                   </div>
 
-                  <p class="theme-preview-note">كل تعديل يظهر هنا فورًا قبل الحفظ.</p>
                 </aside>
 
                 <div class="theme-editor-controls" dir="rtl">
                   <div class="theme-editor-intro">
                     <span class="theme-eyebrow" id="theme-editor-mode-label">خلفية جديدة</span>
                     <h3 id="theme-editor-heading">صمّم خلفية خاصة بك</h3>
-                    <p>غيّر الخلفية والألوان والظل، وشاهد النتيجة مباشرة.</p>
                   </div>
 
                   <div class="theme-field">
                     <label for="theme-name">اسم الخلفية</label>
-                    <input id="theme-name" name="themeName" type="text" maxlength="40" autocomplete="off" placeholder="مثال: اجتماع الشباب" required data-settings-page-focus aria-describedby="theme-name-hint theme-editor-message" />
-                    <span id="theme-name-hint" class="theme-field-hint">يمكنك كتابة الاسم بالعربية أو الإنجليزية.</span>
+                    <input id="theme-name" name="themeName" type="text" maxlength="40" autocomplete="off" placeholder="مثال: اجتماع الشباب" required data-settings-page-focus aria-describedby="theme-editor-message" />
                   </div>
 
                   <fieldset class="theme-control-group theme-background-group">
@@ -312,7 +314,7 @@
                     </div>
 
                     <div id="theme-color-background-panel" class="theme-background-panel">
-                      <label for="theme-background-color">لون الخلفية</label>
+                      <span class="theme-field-label">لون الخلفية</span>
                       <div class="theme-color-input-row">
                         <input id="theme-background-color" class="theme-native-color" type="color" value="#15171d" aria-label="اختيار لون الخلفية" />
                         <div class="theme-hex-field" dir="ltr">
@@ -344,7 +346,7 @@
 
                   <div class="theme-colors-grid">
                     <div class="theme-field">
-                      <label for="theme-text-color">لون النص</label>
+                      <span class="theme-field-label">لون النص</span>
                       <div class="theme-color-input-row">
                         <input id="theme-text-color" class="theme-native-color" type="color" value="#F5F5F5" aria-label="اختيار لون النص" />
                         <div class="theme-hex-field" dir="ltr">
@@ -355,7 +357,7 @@
                     </div>
 
                     <div class="theme-field">
-                      <label for="theme-accent-color">اللون الثانوي</label>
+                      <span class="theme-field-label">اللون الثانوي</span>
                       <div class="theme-color-input-row">
                         <input id="theme-accent-color" class="theme-native-color" type="color" value="#CA2328" aria-label="اختيار اللون الثانوي" />
                         <div class="theme-hex-field" dir="ltr">
@@ -371,7 +373,7 @@
                     <div class="theme-font-grid">
                       <label class="theme-select-field" for="theme-song-font">
                         <span>خط الترانيم</span>
-                        <select id="theme-song-font" aria-describedby="theme-font-hint">
+                        <select id="theme-song-font" dir="ltr">
                           <option value="ibm-plex">IBM Plex Sans</option>
                           <option value="traditional-arabic">Traditional Arabic</option>
                           <option value="din-next">DIN Next</option>
@@ -382,7 +384,7 @@
                       </label>
                       <label class="theme-select-field" for="theme-bible-font">
                         <span>خط الكتاب المقدس</span>
-                        <select id="theme-bible-font" aria-describedby="theme-font-hint">
+                        <select id="theme-bible-font" dir="ltr">
                           <option value="ibm-plex">IBM Plex Sans</option>
                           <option value="traditional-arabic">Traditional Arabic</option>
                           <option value="din-next">DIN Next</option>
@@ -392,7 +394,6 @@
                         </select>
                       </label>
                     </div>
-                    <p id="theme-font-hint" class="theme-field-hint">يُضبط الحجم وارتفاع السطر تلقائيًا لكل خط ليظهر بالحجم المناسب على شاشة العرض.</p>
                   </fieldset>
 
                   <fieldset class="theme-control-group theme-alignment-group">
@@ -445,19 +446,63 @@
 
                   <fieldset class="theme-control-group theme-shadow-group">
                     <legend>ظل النص</legend>
-                    <div class="theme-shadow-options">
-                      <label>
-                        <input type="radio" name="shadow" value="none" checked />
-                        <span><i class="theme-shadow-sample theme-shadow-none" aria-hidden="true">أ</i>بدون ظل</span>
+                    <div class="theme-shadow-header">
+                      <div>
+                        <strong>تفعيل الظل</strong>
+                        <small>أضف وضوحًا للنص فوق الخلفيات المختلفة.</small>
+                      </div>
+                      <label class="theme-shadow-switch">
+                        <input id="theme-shadow-enabled" type="checkbox" role="switch" aria-label="تفعيل ظل النص" aria-controls="theme-shadow-controls" />
+                        <span aria-hidden="true"></span>
                       </label>
-                      <label>
-                        <input type="radio" name="shadow" value="light" />
-                        <span><i class="theme-shadow-sample theme-shadow-light" aria-hidden="true">أ</i>ظل فاتح</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="shadow" value="dark" />
-                        <span><i class="theme-shadow-sample theme-shadow-dark" aria-hidden="true">أ</i>ظل داكن</span>
-                      </label>
+                    </div>
+
+                    <div id="theme-shadow-controls" class="theme-shadow-controls" hidden>
+                      <div class="theme-shadow-customization-grid">
+                        <div class="theme-field theme-shadow-color-field">
+                          <span class="theme-field-label">لون الظل</span>
+                          <div class="theme-color-input-row">
+                            <input id="theme-shadow-color" class="theme-native-color" type="color" value="#000000" aria-label="اختيار لون الظل" />
+                            <div class="theme-hex-field" dir="ltr">
+                              <span aria-hidden="true">#</span>
+                              <input id="theme-shadow-hex" type="text" value="000000" maxlength="7" spellcheck="false" aria-label="رمز لون الظل" aria-describedby="theme-editor-message" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="theme-shadow-direction-field">
+                          <span class="theme-field-label">اتجاه الظل</span>
+                          <div class="theme-shadow-directions" role="radiogroup" aria-label="اتجاه ظل النص">
+                            <label title="أسفل اليمين">
+                              <input type="radio" name="shadowDirection" value="bottom-right" aria-label="أسفل اليمين" checked />
+                              <span aria-hidden="true">↘</span>
+                            </label>
+                            <label title="أسفل اليسار">
+                              <input type="radio" name="shadowDirection" value="bottom-left" aria-label="أسفل اليسار" />
+                              <span aria-hidden="true">↙</span>
+                            </label>
+                            <label title="أعلى اليمين">
+                              <input type="radio" name="shadowDirection" value="top-right" aria-label="أعلى اليمين" />
+                              <span aria-hidden="true">↗</span>
+                            </label>
+                            <label title="أعلى اليسار">
+                              <input type="radio" name="shadowDirection" value="top-left" aria-label="أعلى اليسار" />
+                              <span aria-hidden="true">↖</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="theme-shadow-sliders">
+                        <label class="theme-range-field" for="theme-shadow-strength">
+                          <span>القوة <output id="theme-shadow-strength-value" for="theme-shadow-strength">٣</output></span>
+                          <input id="theme-shadow-strength" type="range" min="1" max="8" step="1" value="3" />
+                        </label>
+                        <label class="theme-range-field" for="theme-shadow-blur">
+                          <span>النعومة <output id="theme-shadow-blur-value" for="theme-shadow-blur">٤</output></span>
+                          <input id="theme-shadow-blur" type="range" min="0" max="12" step="1" value="4" />
+                        </label>
+                      </div>
                     </div>
                   </fieldset>
 
