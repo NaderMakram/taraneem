@@ -466,8 +466,9 @@
 
 .theme-preview-stage {
   display: grid;
+  align-items: start;
   gap: 16px;
-  min-height: 470px;
+  min-height: 0;
   padding: 18px;
   background-color: #e9edf2;
   border: 1px solid #d9dee7;
@@ -478,7 +479,10 @@
 .theme-preview-card {
   position: relative;
   display: flex;
-  min-height: 205px;
+  min-height: 0;
+  width: min(100%, calc(88.889vh - 234px));
+  aspect-ratio: 16 / 9;
+  justify-self: center;
   overflow: hidden;
   align-items: center;
   justify-content: center;
@@ -542,6 +546,10 @@
   max-width: 100%;
 }
 
+.theme-preview-card[data-preview-type="song"] .theme-preview-text {
+  font-size: clamp(1.265rem, 2.07vw, 1.633rem);
+}
+
 .theme-preview-card[data-preview-type="song"] .theme-preview-reference {
   position: absolute;
   top: -0.35em;
@@ -595,6 +603,7 @@
   top: auto;
   right: auto;
   flex: 0 0 auto;
+  transform: translateY(-0.12em);
 }
 
 .theme-preview-stage[data-bible-horizontal="right"]
@@ -1393,11 +1402,11 @@
 
   .theme-preview-stage {
     grid-template-columns: 1fr 1fr;
-    min-height: 240px;
+    min-height: 0;
   }
 
   .theme-preview-card {
-    min-height: 190px;
+    min-height: 0;
     padding: 20px;
   }
 
