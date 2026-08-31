@@ -1,10 +1,24 @@
-const { app, BrowserWindow, screen, ipcMain } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  nativeImage,
+  screen,
+} = require("electron");
 const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
+const crypto = require("crypto");
 const path = require("path");
 const fs = require("fs");
 const analytics = require("./analytics/analyticsService");
 const analyticsDebug = require("./analytics/analyticsDebug");
+const {
+  ALLOWED_IMAGE_EXTENSIONS,
+  MAX_IMAGE_SIZE_BYTES,
+  createThemeStore,
+  readImageDimensions,
+} = require("./themeStore");
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -32,6 +46,7 @@ const bibleDB = JSON.parse(
 );
 const userDataPath = app.getPath("userData");
 const localDBPath = path.join(userDataPath, "localTaraneemDB.json");
+const themeStore = createThemeStore(userDataPath);
 
 const prevNextIndices = bibleDB.map((_, index) => ({
   prevIndex: index - 1 >= 0 ? index - 1 : null,
@@ -259,6 +274,229 @@ const createMainWindow = () => {
 // song window
 let songWindow;
 
+const DEFAULT_THEME_ID = "dark";
+const BUILT_IN_THEME_IDS = new Set([
+  "light",
+  "dark",
+  "black",
+  "wedding1",
+  "wedding2",
+  "christmas",
+  "christmas-simple",
+  "christmas-dark",
+  "christmas-dark-simple",
+  "elsoora-light",
+  "elsoora-dark",
+]);
+const THEME_IMAGE_TOKEN_TTL_MS = 15 * 60 * 1000;
+const MAX_THEME_IMAGE_DIMENSION = 8192;
+const MAX_THEME_IMAGE_PIXELS = 40 * 1000 * 1000;
+const approvedThemeImages = new Map();
+let activeThemeId = DEFAULT_THEME_ID;
+
+function createImageToken() {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  return crypto.randomBytes(24).toString("hex");
+}
+
+function resolveThemePayload(themeId) {
+  const normalizedId = typeof themeId === "string" ? themeId.trim() : "";
+  if (BUILT_IN_THEME_IDS.has(normalizedId)) {
+    return { version: 1, kind: "builtin", id: normalizedId };
+  }
+
+  const customTheme = normalizedId ? themeStore.getTheme(normalizedId) : null;
+  if (customTheme) {
+    return { version: 1, kind: "custom", ...customTheme };
+  }
+
+  return { version: 1, kind: "builtin", id: DEFAULT_THEME_ID };
+}
+
+function applyThemeSelection(themeId) {
+  const payload = resolveThemePayload(themeId);
+  activeThemeId = payload.id;
+
+  if (
+    songWindow &&
+    !songWindow.isDestroyed() &&
+    !songWindow.webContents.isLoadingMainFrame()
+  ) {
+    songWindow.webContents.send("set-theme", payload);
+  }
+
+  return payload;
+}
+
+function pruneExpiredThemeImageTokens(now = Date.now()) {
+  for (const [token, approval] of approvedThemeImages.entries()) {
+    if (approval.expiresAt <= now || approval.webContents.isDestroyed()) {
+      approvedThemeImages.delete(token);
+    }
+  }
+}
+
+function detectThemeImageType(filePath) {
+  const fileDescriptor = fs.openSync(filePath, "r");
+  const signature = Buffer.alloc(12);
+  let bytesRead;
+  try {
+    bytesRead = fs.readSync(fileDescriptor, signature, 0, signature.length, 0);
+  } finally {
+    fs.closeSync(fileDescriptor);
+  }
+
+  if (
+    bytesRead >= 8 &&
+    signature.subarray(0, 8).equals(
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+    )
+  ) {
+    return ".png";
+  }
+  if (
+    bytesRead >= 3 &&
+    signature[0] === 0xff &&
+    signature[1] === 0xd8 &&
+    signature[2] === 0xff
+  ) {
+    return ".jpeg";
+  }
+  if (
+    bytesRead >= 12 &&
+    signature.subarray(0, 4).toString("ascii") === "RIFF" &&
+    signature.subarray(8, 12).toString("ascii") === "WEBP"
+  ) {
+    return ".webp";
+  }
+  return null;
+}
+
+function isAllowedThemeImageSize(dimensions) {
+  const width = dimensions?.width;
+  const height = dimensions?.height;
+  return (
+    Number.isSafeInteger(width) &&
+    Number.isSafeInteger(height) &&
+    width > 0 &&
+    height > 0 &&
+    width <= MAX_THEME_IMAGE_DIMENSION &&
+    height <= MAX_THEME_IMAGE_DIMENSION &&
+    width * height <= MAX_THEME_IMAGE_PIXELS
+  );
+}
+
+function validateThemeImageFile(selectedPath) {
+  if (typeof selectedPath !== "string" || !selectedPath) {
+    throw new Error("اختر صورة للخلفية");
+  }
+
+  const extension = path.extname(selectedPath).toLowerCase();
+  if (!ALLOWED_IMAGE_EXTENSIONS.has(extension)) {
+    throw new Error("صيغة الصورة غير مدعومة. استخدم PNG أو JPG أو WebP");
+  }
+
+  let resolvedPath;
+  let stats;
+  try {
+    resolvedPath = fs.realpathSync(selectedPath);
+    stats = fs.statSync(resolvedPath);
+  } catch (error) {
+    throw new Error("تعذر قراءة صورة الخلفية");
+  }
+
+  if (!stats.isFile() || stats.size === 0) {
+    throw new Error("ملف صورة الخلفية غير صالح");
+  }
+  if (stats.size > MAX_IMAGE_SIZE_BYTES) {
+    throw new Error("حجم الصورة يجب ألا يتجاوز 20 ميجابايت");
+  }
+
+  let detectedType;
+  try {
+    detectedType = detectThemeImageType(resolvedPath);
+  } catch (error) {
+    throw new Error("تعذر قراءة محتوى صورة الخلفية");
+  }
+  const extensionMatches =
+    detectedType === extension ||
+    (detectedType === ".jpeg" && [".jpg", ".jpeg"].includes(extension));
+  if (!extensionMatches) {
+    throw new Error("محتوى الصورة لا يطابق صيغتها");
+  }
+
+  let declaredDimensions;
+  try {
+    declaredDimensions = readImageDimensions(resolvedPath, detectedType);
+  } catch (error) {
+    throw new Error("تعذر قراءة أبعاد صورة الخلفية");
+  }
+  if (!isAllowedThemeImageSize(declaredDimensions)) {
+    throw new Error("أبعاد الصورة كبيرة جدًا أو غير صالحة");
+  }
+
+  let image;
+  try {
+    image = nativeImage.createFromPath(resolvedPath);
+  } catch (error) {
+    throw new Error("تعذر فتح الصورة المختارة");
+  }
+  if (!image || image.isEmpty()) {
+    throw new Error("تعذر فتح الصورة المختارة");
+  }
+
+  const { width, height } = image.getSize();
+  if (!isAllowedThemeImageSize({ width, height })) {
+    throw new Error("أبعاد الصورة كبيرة جدًا أو غير صالحة");
+  }
+
+  const previewScale = Math.min(1, 1600 / width, 900 / height);
+  const previewImage =
+    previewScale < 1
+      ? image.resize({
+          width: Math.max(1, Math.round(width * previewScale)),
+          height: Math.max(1, Math.round(height * previewScale)),
+          quality: "good",
+        })
+      : image;
+
+  return {
+    fileName: path.basename(resolvedPath),
+    height,
+    previewUrl: previewImage.toDataURL(),
+    resolvedPath,
+    width,
+  };
+}
+
+function getApprovedThemeImage(event, imageToken) {
+  pruneExpiredThemeImageTokens();
+  if (typeof imageToken !== "string" || !imageToken) {
+    throw new Error("اختر صورة الخلفية مرة أخرى");
+  }
+
+  const approval = approvedThemeImages.get(imageToken);
+  if (!approval || approval.webContents !== event.sender) {
+    throw new Error("انتهت صلاحية اختيار الصورة. اخترها مرة أخرى");
+  }
+
+  return validateThemeImageFile(approval.sourcePath);
+}
+
+function isMainWindowThemeSender(event) {
+  return Boolean(
+    mainWindow &&
+      !mainWindow.isDestroyed() &&
+      event?.sender === mainWindow.webContents
+  );
+}
+
+function assertMainWindowThemeSender(event) {
+  if (!isMainWindowThemeSender(event)) {
+    throw new Error("Unauthorized theme IPC sender");
+  }
+}
+
 const createSongWindow = () => {
   let displays = screen.getAllDisplays();
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -311,6 +549,9 @@ const createSongWindow = () => {
   }
 
   songWindow.removeMenu();
+  songWindow.webContents.on("did-finish-load", () => {
+    applyThemeSelection(activeThemeId);
+  });
   // and load the index.html of the app.
   songWindow.loadFile(path.join(__dirname, "song.html"));
 
@@ -355,74 +596,25 @@ app.on("ready", () => {
     .executeJavaScript("({...localStorage});", true)
     .then((localStorage) => {
       if (localStorage.theme) {
-        // This is fine (IPC communication)
-        songWindow.webContents.send("set-theme", localStorage.theme);
-
-        // 2. FIX: Inject the DOM manipulation back into mainWindow
-        // We pass the theme variable into the script string safely
+        const resolvedTheme = applyThemeSelection(localStorage.theme);
+        const resolvedThemeId = JSON.stringify(resolvedTheme.id);
         const setSelectScript = `
+          const resolvedThemeId = ${resolvedThemeId};
+          localStorage.setItem("theme", resolvedThemeId);
           const themeSelect = document.querySelector("#theme_select");
-          if (themeSelect) {
-            themeSelect.value = "${localStorage.theme}";
-            const event = new Event("change");
-            themeSelect.dispatchEvent(event);
+          if (
+            themeSelect &&
+            Array.from(themeSelect.options).some(
+              (option) => option.value === resolvedThemeId
+            )
+          ) {
+            themeSelect.value = resolvedThemeId;
           }
         `;
 
-        // Execute the script inside the window
         mainWindow.webContents.executeJavaScript(setSelectScript);
-      }
-
-      if (localStorage.bibleFont) {
-        songWindow.webContents.send("set-bible-font", localStorage.bibleFont);
-        const setBibleFontScript = `
-          const bibleFontSelect = document.querySelector("#bible_font_select");
-          if (bibleFontSelect) {
-            bibleFontSelect.value = "${localStorage.bibleFont}";
-            const event = new Event("change");
-            bibleFontSelect.dispatchEvent(event);
-          }
-        `;
-        mainWindow.webContents.executeJavaScript(setBibleFontScript);
-      }
-
-      if (localStorage.songFont) {
-        songWindow.webContents.send("set-song-font", localStorage.songFont);
-        const setSongFontScript = `
-          const songFontSelect = document.querySelector("#song_font_select");
-          if (songFontSelect) {
-            songFontSelect.value = "${localStorage.songFont}";
-            const event = new Event("change");
-            songFontSelect.dispatchEvent(event);
-          }
-        `;
-        mainWindow.webContents.executeJavaScript(setSongFontScript);
-      }
-
-      if (localStorage.alignment) {
-        songWindow.webContents.send("set-alignment", localStorage.alignment);
-        // Update the button state in renderer
-        const setAlignmentScript = `
-            document.body.dataset.alignment = "${localStorage.alignment}";
-            const alignHorizBtn = document.querySelector("#alignHorizBtn");
-            if (alignHorizBtn) {
-              alignHorizBtn.setAttribute("value", "${localStorage.alignment}");
-            }
-          `;
-        mainWindow.webContents.executeJavaScript(setAlignmentScript);
-      }
-
-      if (localStorage.vertAlignment) {
-        songWindow.webContents.send("set-vert-alignment", localStorage.vertAlignment);
-        // Update the button state in renderer
-        const setVertAlignmentScript = `
-            document.body.dataset.vertAlignment = "${localStorage.vertAlignment}";
-            const alignVertBtn = document.querySelector("#alignVertBtn");
-            if (alignVertBtn) {
-              alignVertBtn.setAttribute("value", "${localStorage.vertAlignment}");
-            }
-          `;
-        mainWindow.webContents.executeJavaScript(setVertAlignmentScript);
+      } else {
+        applyThemeSelection(DEFAULT_THEME_ID);
       }
 
     });
@@ -458,27 +650,113 @@ ipcMain.on("update-font-size", (event, message) => {
 ipcMain.on("update-font-weight", (event) => {
   songWindow.webContents.send("update-font-weight");
 });
+
+ipcMain.handle("themes:list", () => themeStore.listThemes());
+
+ipcMain.handle("themes:get", (_event, themeId) => themeStore.getTheme(themeId));
+
+ipcMain.handle("themes:choose-image", async (event) => {
+  assertMainWindowThemeSender(event);
+  const ownerWindow = BrowserWindow.fromWebContents(event.sender);
+  const options = {
+    title: "اختيار صورة خلفية",
+    buttonLabel: "اختيار الصورة",
+    properties: ["openFile"],
+    filters: [
+      {
+        name: "الصور",
+        extensions: ["png", "jpg", "jpeg", "webp"],
+      },
+    ],
+  };
+  const result = ownerWindow
+    ? await dialog.showOpenDialog(ownerWindow, options)
+    : await dialog.showOpenDialog(options);
+
+  if (result.canceled || result.filePaths.length !== 1) {
+    return { canceled: true };
+  }
+
+  const selectedImage = validateThemeImageFile(result.filePaths[0]);
+  if (event.sender.isDestroyed()) return { canceled: true };
+
+  pruneExpiredThemeImageTokens();
+  const imageToken = createImageToken();
+  approvedThemeImages.set(imageToken, {
+    expiresAt: Date.now() + THEME_IMAGE_TOKEN_TTL_MS,
+    sourcePath: selectedImage.resolvedPath,
+    webContents: event.sender,
+  });
+
+  return {
+    canceled: false,
+    imageToken,
+    previewUrl: selectedImage.previewUrl,
+    fileName: selectedImage.fileName,
+    width: selectedImage.width,
+    height: selectedImage.height,
+  };
+});
+
+ipcMain.handle("themes:save", (event, theme, imageToken = null) => {
+  assertMainWindowThemeSender(event);
+  let approvedImage = null;
+  if (theme?.background?.type === "image" && imageToken) {
+    approvedImage = getApprovedThemeImage(event, imageToken);
+  }
+
+  let savedTheme;
+  try {
+    savedTheme = themeStore.saveTheme(
+      theme,
+      approvedImage?.resolvedPath || null
+    );
+  } catch (error) {
+    if (error?.code) {
+      console.error("Failed to persist a custom theme", error);
+      throw new Error("تعذر حفظ الخلفية في ملفات التطبيق");
+    }
+    throw error;
+  }
+
+  if (imageToken) {
+    const approval = approvedThemeImages.get(imageToken);
+    if (approval?.webContents === event.sender) {
+      approvedThemeImages.delete(imageToken);
+    }
+  }
+
+  if (activeThemeId === savedTheme.id) {
+    applyThemeSelection(savedTheme.id);
+  }
+
+  return savedTheme;
+});
+
+ipcMain.handle("themes:delete", (event, themeId) => {
+  assertMainWindowThemeSender(event);
+  let deleted;
+  try {
+    deleted = themeStore.deleteTheme(themeId);
+  } catch (error) {
+    console.error("Failed to delete a custom theme", error);
+    throw new Error("تعذر حذف الخلفية من ملفات التطبيق");
+  }
+  if (deleted && activeThemeId === themeId) {
+    applyThemeSelection(DEFAULT_THEME_ID);
+  }
+  return deleted;
+});
+
+ipcMain.handle("themes:apply", (event, themeId) => {
+  assertMainWindowThemeSender(event);
+  return applyThemeSelection(themeId);
+});
+
 ipcMain.on("set-theme", (event, theme) => {
-  songWindow.webContents.send("set-theme", theme);
+  if (!isMainWindowThemeSender(event)) return;
+  applyThemeSelection(theme);
 });
-ipcMain.on("set-alignment", (event, alignment) => {
-  console.log("alignment: ", alignment);
-  songWindow.webContents.send("set-alignment", alignment);
-});
-
-ipcMain.on("set-vert-alignment", (event, alignment) => {
-  console.log("vert alignment: ", alignment);
-  songWindow.webContents.send("set-vert-alignment", alignment);
-});
-
-ipcMain.on("set-bible-font", (event, font) => {
-  songWindow.webContents.send("set-bible-font", font);
-});
-
-ipcMain.on("set-song-font", (event, font) => {
-  songWindow.webContents.send("set-song-font", font);
-});
-
 
 let manageDisplays = () => {
   let displays = screen.getAllDisplays();

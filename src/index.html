@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="styles/loader.css" />
     <link rel="stylesheet" href="styles/dragula.css" />
     <link rel="stylesheet" href="styles/settings-modal.css" />
+    <link rel="stylesheet" href="styles/theme-editor.css" />
   </head>
   <body class="waiting-mode">
     <div id="startup-loader">
@@ -80,32 +81,6 @@
         </select>
       </div>
 
-       <!-- Bible Font -->
-       <div class="theme-picker">
-        <label for="bible_font_select" class="font-picker-label">Bible Font</label>
-        <select id="bible_font_select" class="theme-select" aria-label="Bible Font">
-          <option value="ibm-plex">IBM Plex Sans</option>
-          <option value="traditional-arabic">Traditional Arabic</option>
-           <option value="din-next">DIN Next</option>
-           <option value="adobe-arabic">Adobe Arabic</option>
-           <option value="MyCalibri">Calibri</option>
-           <option value="MyTimesNewRoman">Times New Roman</option>
-          </select>
-        </div>
-        
-        <!-- Song Font -->
-        <div class="theme-picker">
-          <label for="song_font_select" class="font-picker-label">Songs Font</label>
-          <select id="song_font_select" class="theme-select" aria-label="Song Font">
-           <option value="ibm-plex">IBM Plex Sans</option>
-           <option value="traditional-arabic">Traditional Arabic</option>
-           <option value="din-next">DIN Next</option>
-           <option value="adobe-arabic">Adobe Arabic</option>
-           <option value="MyCalibri">Calibri</option>
-           <option value="MyTimesNewRoman">Times New Roman</option>
-        </select>
-      </div>
-
       <!-- waiting toggle (deprecated) -->
       <!-- <div id="list-toggle-group">
         <img src="./img/list.png" />
@@ -125,34 +100,6 @@
       >
         <img src="./img/extend.png" />
       </button> -->
-
-
-      <!-- text align button -->
-      
-    <div class="alignment-wrapper">
-      <label class="alignment-label">Bible Alignment</label>
-      <div class="alignment-buttons">
-        <!-- Horizontal Align -->
-        <button id="alignHorizBtn" class="material-btn" value="right" aria-label="Change Horizontal Alignment" title="Horizontal Alignment">
-        <svg class="icon-svg" viewBox="0 0 24 24">
-            <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
-            <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
-            <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
-        </svg>
-        
-      </button>
-      
-      <!-- Vertical Align -->
-      <button id="alignVertBtn" class="material-btn" value="top" aria-label="Change Vertical Alignment" title="Vertical Alignment">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-              <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
-              <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
-              <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
-          </svg>
-       </button>
-      </div>
-    </div>
-
 
 
       <button id="open-info-btn" class="icon-btn" aria-label="معلومات">
@@ -218,13 +165,13 @@
       aria-hidden="true"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="settings-title"
     >
       <div class="settings-overlay" data-action="close"></div>
 
       <div
         class="settings-panel"
         role="document"
-        aria-labelledby="settings-title"
       >
         <header class="settings-header">
           <button class="settings-close-btn" aria-label="إغلاق" title="إغلاق">
@@ -237,9 +184,15 @@
         </header>
 
         <!-- Toast Notification -->
-        <div id="toast-notification" class="toast-notification">
+        <div
+          id="toast-notification"
+          class="toast-notification"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <div class="toast-content">
-             <img src="./img/edit-success.png" alt="Success" class="toast-icon" />
+             <img src="./img/edit-success.png" alt="نجاح" class="toast-icon" />
              <span class="toast-message">تم الحفظ بنجاح</span>
           </div>
         </div>
@@ -252,9 +205,8 @@
                 <button class="settings-option ripple" data-nav-to="songs-management">
                   الترانيم
                 </button>
-                <button class="settings-option soon" data-nav-to="">
+                <button class="settings-option ripple" data-nav-to="themes-management">
                   الخلفيات
-                  <span>قريبًا</span>
                 </button>
                 <button class="settings-option soon" data-nav-to="">
                   البث المباشر
@@ -262,7 +214,308 @@
                 </button>
             
               <!-- future options go here -->
-            </ul>
+            </div>
+          </section>
+
+          <!-- Page: Themes Management -->
+          <section class="settings-page" data-page="themes-management" hidden>
+            <div class="themes-management" dir="rtl">
+              <div class="themes-management-heading">
+                <div>
+                  <h3 tabindex="-1" data-settings-page-focus>الخلفيات</h3>
+                  <p>أنشئ خلفياتك الخاصة وأدرها من مكان واحد.</p>
+                </div>
+                <button id="add-theme-button" class="theme-primary-button" type="button">
+                  <span aria-hidden="true">＋</span>
+                  خلفية جديدة
+                </button>
+              </div>
+
+              <div id="theme-list-status" class="theme-list-status" role="status" aria-live="polite"></div>
+
+              <section class="theme-list-section" aria-labelledby="custom-themes-title">
+                <div class="theme-list-title-row">
+                  <h4 id="custom-themes-title">خلفياتي</h4>
+                  <span id="custom-theme-count" class="theme-count" aria-live="polite"></span>
+                </div>
+                <div id="custom-theme-list" class="theme-card-grid"></div>
+                <div id="empty-custom-themes" class="empty-custom-themes" hidden>
+                  <span class="empty-custom-themes-icon" aria-hidden="true">◫</span>
+                  <p>لم تُنشئ أي خلفية بعد.</p>
+                  <button id="empty-add-theme-button" type="button">أنشئ أول خلفية</button>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <!-- Page: Theme Editor -->
+          <section class="settings-page" data-page="theme-editor" hidden>
+            <form id="theme-editor-form" class="theme-editor-form" novalidate>
+              <div class="theme-editor-layout">
+                <aside class="theme-live-preview" aria-labelledby="theme-preview-title">
+                  <div class="theme-preview-heading">
+                    <div>
+                      <h3 id="theme-preview-title">شاشة العرض</h3>
+                    </div>
+                    <!-- <span class="theme-live-badge"><span aria-hidden="true"></span> مباشر</span> -->
+                  </div>
+
+                  <div id="theme-preview-stage" class="theme-preview-stage">
+                    <article class="theme-preview-card" data-preview-type="song" aria-label="معاينة ترنيمة">
+                      <span class="theme-preview-card-label">ترنيمة</span>
+                      <div class="theme-preview-copy">
+                        <span class="theme-preview-accent theme-preview-reference">١</span>
+                        <div class="theme-preview-text">
+                          في موكب جيش الغالبين</br>
+سوف أسير مع يسوع</br>
+فادي حياتي على الصليب</br>
+قائد الجيش العظيم
+
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="theme-preview-card" data-preview-type="bible" aria-label="معاينة آية من الكتاب المقدس">
+                      <span class="theme-preview-card-label">الكتاب المقدس</span>
+                      <div class="theme-preview-copy">
+                        <span class="theme-preview-accent theme-preview-reference">أفسس ٢</span>
+                        <div class="theme-preview-verse-block">
+                          <span class="theme-preview-accent theme-preview-verse-number">٨</span>
+                          <div class="theme-preview-text">لأنَّكُمْ بالنِّعمَةِ مُخَلَّصونَ، بالإيمانِ، وذلكَ ليس مِنكُمْ. هو عَطيَّةُ اللهِ.</div>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+
+                </aside>
+
+                <div class="theme-editor-controls" dir="rtl">
+                  <div class="theme-editor-intro">
+                    <span class="theme-eyebrow" id="theme-editor-mode-label">خلفية جديدة</span>
+                    <h3 id="theme-editor-heading">صمّم خلفية خاصة بك</h3>
+                  </div>
+
+                  <div class="theme-field">
+                    <label for="theme-name">اسم الخلفية</label>
+                    <input id="theme-name" name="themeName" type="text" maxlength="40" autocomplete="off" placeholder="مثال: اجتماع الشباب" required data-settings-page-focus aria-describedby="theme-editor-message" />
+                  </div>
+
+                  <fieldset class="theme-control-group theme-background-group">
+                    <legend>الخلفية</legend>
+                    <div class="theme-segmented-control" aria-label="نوع الخلفية">
+                      <label>
+                        <input type="radio" name="backgroundType" value="color" checked />
+                        <span>لون</span>
+                      </label>
+                      <label>
+                        <input type="radio" name="backgroundType" value="image" />
+                        <span>صورة</span>
+                      </label>
+                    </div>
+
+                    <div id="theme-color-background-panel" class="theme-background-panel">
+                      <span class="theme-field-label">لون الخلفية</span>
+                      <div class="theme-color-input-row">
+                        <input id="theme-background-color" class="theme-native-color" type="color" value="#15171d" aria-label="اختيار لون الخلفية" />
+                        <div class="theme-hex-field" dir="ltr">
+                          <span aria-hidden="true">#</span>
+                          <input id="theme-background-hex" type="text" value="15171D" maxlength="7" inputmode="text" spellcheck="false" aria-label="رمز لون الخلفية" aria-describedby="theme-editor-message" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="theme-image-background-panel" class="theme-background-panel" hidden>
+                      <button id="choose-theme-image" class="theme-image-picker" type="button" aria-describedby="theme-editor-message">
+                        <span class="theme-image-picker-icon" aria-hidden="true">↥</span>
+                        <span class="theme-image-picker-copy">
+                          <strong>اختر صورة من جهازك</strong>
+                          <small>PNG أو JPG أو WebP — حتى ٢٠ م.ب، ويفضل أن تكون أفقية</small>
+                        </span>
+                      </button>
+                      <div id="theme-image-summary" class="theme-image-summary" hidden>
+                        <span class="theme-image-thumbnail" aria-hidden="true"></span>
+                        <span class="theme-image-details">
+                          <strong id="theme-image-name"></strong>
+                          <small id="theme-image-meta"></small>
+                        </span>
+                        <button id="remove-theme-image" type="button" aria-label="إزالة صورة الخلفية" title="إزالة الصورة">✕</button>
+                      </div>
+                      <p id="theme-image-warning" class="theme-image-warning" role="status" hidden></p>
+                    </div>
+                  </fieldset>
+
+                  <div class="theme-colors-grid">
+                    <div class="theme-field">
+                      <span class="theme-field-label">لون النص</span>
+                      <div class="theme-color-input-row">
+                        <input id="theme-text-color" class="theme-native-color" type="color" value="#F5F5F5" aria-label="اختيار لون النص" />
+                        <div class="theme-hex-field" dir="ltr">
+                          <span aria-hidden="true">#</span>
+                          <input id="theme-text-hex" type="text" value="F5F5F5" maxlength="7" spellcheck="false" aria-label="رمز لون النص" aria-describedby="theme-editor-message" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="theme-field">
+                      <span class="theme-field-label">اللون الثانوي</span>
+                      <div class="theme-color-input-row">
+                        <input id="theme-accent-color" class="theme-native-color" type="color" value="#CA2328" aria-label="اختيار اللون الثانوي" />
+                        <div class="theme-hex-field" dir="ltr">
+                          <span aria-hidden="true">#</span>
+                          <input id="theme-accent-hex" type="text" value="CA2328" maxlength="7" spellcheck="false" aria-label="رمز اللون الثانوي" aria-describedby="theme-editor-message" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <fieldset class="theme-control-group theme-font-group">
+                    <legend>الخطوط</legend>
+                    <div class="theme-font-grid">
+                      <label class="theme-select-field" for="theme-song-font">
+                        <span>خط الترانيم</span>
+                        <select id="theme-song-font" dir="ltr">
+                          <option value="ibm-plex">IBM Plex Sans</option>
+                          <option value="traditional-arabic">Traditional Arabic</option>
+                          <option value="din-next">DIN Next</option>
+                          <option value="adobe-arabic">Adobe Arabic</option>
+                          <option value="MyCalibri">Calibri</option>
+                          <option value="MyTimesNewRoman">Times New Roman</option>
+                        </select>
+                      </label>
+                      <label class="theme-select-field" for="theme-bible-font">
+                        <span>خط الكتاب المقدس</span>
+                        <select id="theme-bible-font" dir="ltr">
+                          <option value="ibm-plex">IBM Plex Sans</option>
+                          <option value="traditional-arabic">Traditional Arabic</option>
+                          <option value="din-next">DIN Next</option>
+                          <option value="adobe-arabic">Adobe Arabic</option>
+                          <option value="MyCalibri">Calibri</option>
+                          <option value="MyTimesNewRoman">Times New Roman</option>
+                        </select>
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="theme-control-group theme-alignment-group">
+                    <legend>المحاذاة</legend>
+                    <div class="theme-alignment-section" role="group" aria-labelledby="theme-song-alignment-title">
+                      <span id="theme-song-alignment-title" class="theme-alignment-section-title">الترانيم</span>
+                      <div class="theme-alignment-options is-single">
+                        <div class="theme-alignment-field">
+                          <span>رأسيًا</span>
+                          <button id="theme-song-vertical-alignment" class="theme-alignment-button" type="button" value="center" aria-label="محاذاة الترانيم الرأسية: وسط">
+                            <svg class="theme-alignment-icon" viewBox="0 0 24 24" aria-hidden="true">
+                              <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
+                              <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
+                              <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
+                            </svg>
+                            <span id="theme-song-vertical-alignment-label">وسط</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="theme-alignment-section" role="group" aria-labelledby="theme-bible-alignment-title">
+                      <span id="theme-bible-alignment-title" class="theme-alignment-section-title">الكتاب المقدس</span>
+                      <div class="theme-alignment-options">
+                        <div class="theme-alignment-field">
+                          <span>أفقيًا</span>
+                          <button id="theme-bible-horizontal-alignment" class="theme-alignment-button" type="button" value="right" aria-label="محاذاة الكتاب المقدس الأفقية: يمين">
+                            <svg class="theme-alignment-icon" viewBox="0 0 24 24" aria-hidden="true">
+                              <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
+                              <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
+                              <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
+                            </svg>
+                            <span id="theme-bible-horizontal-alignment-label">يمين</span>
+                          </button>
+                        </div>
+                        <div class="theme-alignment-field">
+                          <span>رأسيًا</span>
+                          <button id="theme-bible-vertical-alignment" class="theme-alignment-button" type="button" value="top" aria-label="محاذاة الكتاب المقدس الرأسية: أعلى">
+                            <svg class="theme-alignment-icon" viewBox="0 0 24 24" aria-hidden="true">
+                              <rect class="bar top" x="3" y="6" width="18" height="2" rx="1" />
+                              <rect class="bar mid" x="3" y="11" width="18" height="2" rx="1" />
+                              <rect class="bar bot" x="3" y="16" width="18" height="2" rx="1" />
+                            </svg>
+                            <span id="theme-bible-vertical-alignment-label">أعلى</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="theme-control-group theme-shadow-group">
+                    <legend>ظل النص</legend>
+                    <div class="theme-shadow-header">
+                      <div>
+                        <strong>تفعيل الظل</strong>
+                        <small>أضف وضوحًا للنص فوق الخلفيات المختلفة.</small>
+                      </div>
+                      <label class="theme-shadow-switch">
+                        <input id="theme-shadow-enabled" type="checkbox" role="switch" aria-label="تفعيل ظل النص" aria-controls="theme-shadow-controls" />
+                        <span aria-hidden="true"></span>
+                      </label>
+                    </div>
+
+                    <div id="theme-shadow-controls" class="theme-shadow-controls" hidden>
+                      <div class="theme-shadow-customization-grid">
+                        <div class="theme-field theme-shadow-color-field">
+                          <span class="theme-field-label">لون الظل</span>
+                          <div class="theme-color-input-row">
+                            <input id="theme-shadow-color" class="theme-native-color" type="color" value="#000000" aria-label="اختيار لون الظل" />
+                            <div class="theme-hex-field" dir="ltr">
+                              <span aria-hidden="true">#</span>
+                              <input id="theme-shadow-hex" type="text" value="000000" maxlength="7" spellcheck="false" aria-label="رمز لون الظل" aria-describedby="theme-editor-message" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="theme-shadow-direction-field">
+                          <span class="theme-field-label">اتجاه الظل</span>
+                          <div class="theme-shadow-directions" role="radiogroup" aria-label="اتجاه ظل النص">
+                            <label title="أسفل اليمين">
+                              <input type="radio" name="shadowDirection" value="bottom-right" aria-label="أسفل اليمين" checked />
+                              <span aria-hidden="true">↘</span>
+                            </label>
+                            <label title="أسفل اليسار">
+                              <input type="radio" name="shadowDirection" value="bottom-left" aria-label="أسفل اليسار" />
+                              <span aria-hidden="true">↙</span>
+                            </label>
+                            <label title="أعلى اليمين">
+                              <input type="radio" name="shadowDirection" value="top-right" aria-label="أعلى اليمين" />
+                              <span aria-hidden="true">↗</span>
+                            </label>
+                            <label title="أعلى اليسار">
+                              <input type="radio" name="shadowDirection" value="top-left" aria-label="أعلى اليسار" />
+                              <span aria-hidden="true">↖</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="theme-shadow-sliders">
+                        <label class="theme-range-field" for="theme-shadow-strength">
+                          <span>مسافة الظل <output id="theme-shadow-strength-value" for="theme-shadow-strength">٣</output></span>
+                          <input id="theme-shadow-strength" type="range" min="1" max="8" step="1" value="3" />
+                        </label>
+                        <label class="theme-range-field" for="theme-shadow-blur">
+                          <span>تمويه الظل <output id="theme-shadow-blur-value" for="theme-shadow-blur">٤</output></span>
+                          <input id="theme-shadow-blur" type="range" min="0" max="12" step="1" value="4" />
+                        </label>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <div id="theme-editor-message" class="theme-editor-message" role="alert" aria-live="assertive" hidden></div>
+
+                  <div class="theme-editor-actions">
+                    <button id="save-theme-button" class="theme-primary-button" type="submit">حفظ</button>
+                    <button id="cancel-theme-edit" class="theme-secondary-button" type="button">إلغاء</button>
+                    <button id="delete-theme-button" class="theme-danger-button" type="button" hidden>حذف الخلفية</button>
+                  </div>
+                </div>
+              </div>
+            </form>
           </section>
 
           <!-- Page: Songs Management (list stub) -->
@@ -392,6 +645,7 @@
                     <h4>الجديد في هذا الإصدار:</h4>
                     <ul class="info-list">
                         <li>إمكانية إضافة ترانيم جديدة.</li>
+                        <li>إنشاء خلفيات مخصصة لشاشة العرض وحفظها على الجهاز.</li>
                         <li>بحث أسرع مع تظليل نتيجة البحث.</li>
                         <li>إختصارات اسهل للبحث والتحكم</br>
                           (تقدر تعرف اكتر من طريقة الاستخدام 👇).</li>
@@ -401,7 +655,6 @@
                     <ul class="info-list">
                         <li>خاصية البث المباشر</li>
                         <li>شاشة عرض خاصة بالمرنمين</li>
-                        <li>إمكانية إضافة خلفيات جديدة - Themes</li>
                     </ul>
                     
                     <h2 class="info-section-title">طريقة استخدام البرنامج</h2>
