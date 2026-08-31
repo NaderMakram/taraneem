@@ -1,58 +1,41 @@
-# macOS release setup
+# macOS release setup: unsigned and manual
 
-The numeric tag workflow builds Windows and macOS in parallel. It creates the GitHub release as a draft, uploads and re-verifies every update artifact, and only then publishes the release. Existing Windows installations continue to use `latest.yml` and the unchanged `Taraneem-Windows-<version>-Setup.exe` name. macOS installations use the separate `latest-mac.yml` feed.
+The numeric tag workflow builds Windows and macOS in parallel.
 
-## One-time Apple setup
+Windows keeps its existing automatic updater contract:
 
-An Apple Developer Program membership is required for a distributable app that Gatekeeper accepts and that can update itself.
+- The installer name remains Taraneem-Windows-VERSION-Setup.exe.
+- The blockmap and latest.yml are published with it.
+- Existing Windows installations continue to download and install updates automatically.
+- Windows publication depends only on the Windows build. A failed Mac build cannot prevent a Windows release.
 
-1. Create a **Developer ID Application** certificate, export it with its private key as a password-protected `.p12`, and base64-encode that file.
-2. In App Store Connect, create an API key with the Developer role. Download its `.p8` file and base64-encode it. Apple only allows the key file to be downloaded once.
-3. Add these GitHub Actions repository secrets:
+macOS uses a deliberately unsigned, manual-update path:
 
-   - `MAC_CSC_LINK`: base64-encoded Developer ID Application `.p12`
-   - `MAC_CSC_KEY_PASSWORD`: password used when exporting the `.p12`
-   - `APPLE_API_KEY_BASE64`: base64-encoded App Store Connect `.p8`
-   - `APPLE_API_KEY_ID`: App Store Connect key ID
-   - `APPLE_API_ISSUER`: App Store Connect issuer ID
+- GitHub Actions creates one universal DMG for Intel and Apple-silicon Macs.
+- No Apple Developer account, certificate, API key, signing secret, hardened runtime, notarization, or stapling is required.
+- The app checks GitHub's public latest-release endpoint for a newer numeric version.
+- When a newer version exists, the existing information popup shows a manual download button.
+- The app does not download, replace, or restart itself on macOS.
+- No latest-mac.yml or macOS updater ZIP is published.
 
-Keep the Developer ID identity consistent between macOS releases. Do not publish an unsigned macOS build: macOS auto-update requires code signing, and the workflow deliberately fails if signing credentials or signature verification are missing.
+## Publishing
 
-## Release behavior
+Push a three-part numeric tag such as 3.7.0. The Windows and Mac builds start from that same tag.
 
-Push the same numeric tag used for the app version:
+The Windows release is published as soon as the verified Windows installer, blockmap, and latest.yml are ready. When the Mac build succeeds, its verified DMG is attached to the same GitHub release afterward.
 
-```sh
-git tag 3.5.4
-git push origin 3.5.4
-```
+The Mac file name is Taraneem-macOS-VERSION-universal.dmg.
 
-The workflow sets `package.json` and `package-lock.json` to the tag version inside each runner before building, so artifact names and update metadata cannot drift from the tag.
+## What Mac users will see
 
-Published Windows assets remain:
+Because the app is unsigned, macOS Gatekeeper may warn that Apple cannot check it for malicious software. Users can normally open it by Control-clicking the app, choosing Open, and confirming. On some macOS versions they may need to use System Settings, Privacy & Security, then Open Anyway.
 
-- `Taraneem-Windows-<version>-Setup.exe`
-- `Taraneem-Windows-<version>-Setup.exe.blockmap`
-- `latest.yml`
+This warning cannot be removed without Apple's paid Developer ID signing and notarization. It does not prevent the public release version check or the manual download button from working.
 
-Published macOS assets are:
+## Website handoff
 
-- `Taraneem-macOS-<version>-universal.dmg` — user-facing installer
-- `Taraneem-macOS-<version>-universal.zip` — payload required by `electron-updater`
-- generated blockmap files, when emitted by `electron-builder`
-- `latest-mac.yml`
+The current fallback button opens the latest GitHub release. When the website download page is ready, change RELEASES_PAGE_URL in src/update/manualUpdate.js to that HTTPS page. Direct DMG links discovered in the GitHub release continue to be preferred.
 
-The universal app contains both `x86_64` and `arm64`, so the same DMG works on Intel and Apple silicon Macs.
+## Verification
 
-## Verification performed by CI
-
-Before the release becomes visible, CI verifies:
-
-- the Windows installer name and `latest.yml` contract are unchanged;
-- update metadata versions, file names, sizes, and SHA-512 hashes match the built artifacts;
-- `latest.yml` contains only Windows files and `latest-mac.yml` contains only macOS files;
-- the macOS updater selects the ZIP while the DMG remains available for direct download;
-- the app is a signed universal binary, its signature passes strict validation, and its notarization ticket is stapled and accepted by Gatekeeper;
-- the artifacts still pass the same update-feed checks after transfer between build and release jobs.
-
-For the first live macOS update, install one published macOS version from its DMG, publish the next numeric tag, launch the installed older version, and verify the in-app status reaches download completion and **Restart to install** launches the new version. This two-release smoke test exercises Apple's installed-app update handoff, which cannot be reproduced on a Windows development machine.
+Run npm test locally. The release tests protect the established Windows file name and latest.yml feed, confirm that Windows publication does not depend on macOS, reject Apple-secret requirements, validate the unsigned DMG configuration, and exercise numeric Mac version comparison and download-link selection.

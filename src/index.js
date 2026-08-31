@@ -5,6 +5,7 @@ const {
   ipcMain,
   nativeImage,
   screen,
+  shell,
 } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
@@ -19,6 +20,10 @@ const {
   createThemeStore,
   readImageDimensions,
 } = require("./themeStore");
+const {
+  RELEASES_PAGE_URL,
+  checkForMacUpdate: checkForManualMacUpdate,
+} = require("./update/manualUpdate");
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -997,41 +1002,169 @@ ipcMain.handle("get-version", () => {
 
 // auto update
 
-app.on("ready", function () {
-  let currentVersion = app.getVersion();
-  updateVersionMessage(`Version: ${currentVersion}`);
-  autoUpdater.checkForUpdates();
-});
-autoUpdater.on("checking-for-update", () => {
+const MAC_UPDATE_CACHE_MS = 15 * 60 * 1000;
+let macUpdateCheckPromise = null;
+let macUpdateCheckedAt = 0;
+let updateStatus = {
+  platform: process.platform,
+  state: "idle",
+  currentVersion: app.getVersion(),
+  latestVersion: null,
+  downloadUrl: null,
+};
+
+function publishUpdateStatus(state, details = {}) {
+  updateStatus = {
+    ...updateStatus,
+    ...details,
+    platform: process.platform,
+    state,
+    currentVersion: app.getVersion(),
+  };
+
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send("update-status", updateStatus);
+  }
+
+  return updateStatus;
+}
+
+async function checkMacUpdateAvailability() {
+  if (process.platform !== "darwin") return updateStatus;
+  if (macUpdateCheckPromise) return macUpdateCheckPromise;
+
+  const cacheIsFresh =
+    macUpdateCheckedAt > 0 &&
+    Date.now() - macUpdateCheckedAt < MAC_UPDATE_CACHE_MS;
+  if (cacheIsFresh) return updateStatus;
+
+  publishUpdateStatus("checking", {
+    latestVersion: null,
+    downloadUrl: null,
+    error: null,
+  });
   updateVersionMessage("Checking for new version...");
-});
-autoUpdater.on("update-available", (info) => {
-  updateVersionMessage("New version available");
-});
-autoUpdater.on("update-not-available", (info) => {
-  let currentVersion = app.getVersion();
-  updateVersionMessage(`Up to date | Version: ${currentVersion}`);
-});
-autoUpdater.on("error", (err) => {
-  let currentVersion = app.getVersion();
-  updateVersionMessage(`Version: ${currentVersion} !`);
+
+  macUpdateCheckPromise = checkForManualMacUpdate(app.getVersion())
+    .then((status) => {
+      publishUpdateStatus(status.state, status);
+      updateVersionMessage(
+        status.state === "available"
+          ? "New version available: " + status.latestVersion
+          : "Up to date | Version: " + app.getVersion()
+      );
+      return updateStatus;
+    })
+    .catch((error) => {
+      console.error("macOS update check failed:", error);
+      publishUpdateStatus("error", {
+        latestVersion: null,
+        downloadUrl: RELEASES_PAGE_URL,
+        error: error.message,
+      });
+      updateVersionMessage("Version: " + app.getVersion() + " !");
+      return updateStatus;
+    })
+    .finally(() => {
+      macUpdateCheckedAt = Date.now();
+      macUpdateCheckPromise = null;
+    });
+
+  return macUpdateCheckPromise;
+}
+
+ipcMain.handle("get-update-status", () => updateStatus);
+ipcMain.handle("refresh-update-status", () => checkMacUpdateAvailability());
+ipcMain.handle("open-update-download", async () => {
+  if (process.platform !== "darwin") return false;
+
+  const downloadUrl = updateStatus.downloadUrl || RELEASES_PAGE_URL;
+  try {
+    const parsedUrl = new URL(downloadUrl);
+    if (parsedUrl.protocol !== "https:") return false;
+    await shell.openExternal(parsedUrl.toString());
+    return true;
+  } catch (error) {
+    console.error("Failed to open the macOS download page:", error);
+    return false;
+  }
 });
 
-autoUpdater.on("download-progress", (progressObj) => {
-  let log_message = "Downloading: " + Math.floor(progressObj.percent) + "%";
-  updateVersionMessage(log_message);
+app.on("ready", function () {
+  const currentVersion = app.getVersion();
+  updateVersionMessage("Version: " + currentVersion);
+  if (process.platform === "win32") {
+    autoUpdater.checkForUpdates();
+  } else if (process.platform === "darwin") {
+    checkMacUpdateAvailability();
+  }
 });
+
+autoUpdater.on("checking-for-update", () => {
+  publishUpdateStatus("checking", {
+    latestVersion: null,
+    downloadUrl: null,
+    error: null,
+  });
+  updateVersionMessage("Checking for new version...");
+});
+
+autoUpdater.on("update-available", (info) => {
+  publishUpdateStatus("available", {
+    latestVersion: info?.version || null,
+    downloadUrl: null,
+    error: null,
+  });
+  updateVersionMessage("New version available");
+});
+
+autoUpdater.on("update-not-available", () => {
+  const currentVersion = app.getVersion();
+  publishUpdateStatus("up-to-date", {
+    latestVersion: currentVersion,
+    downloadUrl: null,
+    error: null,
+  });
+  updateVersionMessage("Up to date | Version: " + currentVersion);
+});
+
+autoUpdater.on("error", (error) => {
+  const currentVersion = app.getVersion();
+  publishUpdateStatus("error", {
+    latestVersion: null,
+    downloadUrl: null,
+    error: error?.message || String(error),
+  });
+  updateVersionMessage("Version: " + currentVersion + " !");
+});
+
+autoUpdater.on("download-progress", (progress) => {
+  const percent = Math.floor(progress.percent);
+  publishUpdateStatus("downloading", {
+    latestVersion: updateStatus.latestVersion,
+    downloadUrl: null,
+    percent,
+  });
+  updateVersionMessage("Downloading: " + percent + "%");
+});
+
 autoUpdater.on("update-downloaded", (info) => {
+  publishUpdateStatus("downloaded", {
+    latestVersion: info?.version || updateStatus.latestVersion,
+    downloadUrl: null,
+    percent: 100,
+  });
   updateVersionMessage(
     "✅ Finished downloading, Restart the app to install updates."
   );
-  mainWindow.webContents
-    .executeJavaScript(`document.querySelector('#installBtn').style.display = 'inline-block'
-  `);
-  // autoUpdater.quitAndInstall();
+  mainWindow.webContents.executeJavaScript(
+    `document.querySelector("#installBtn").style.display = "inline-block"`
+  );
 });
 
 ipcMain.on("quit-and-install", () => {
-  console.log("closing");
-  autoUpdater.quitAndInstall();
+  if (process.platform === "win32") {
+    console.log("closing");
+    autoUpdater.quitAndInstall();
+  }
 });

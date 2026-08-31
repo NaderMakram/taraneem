@@ -156,6 +156,15 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   createSortable: (el, options) => Sortable.create(el, options),
   appReady: () => ipcRenderer.send("app-ready"),
   getVersion: () => ipcRenderer.invoke("get-version"),
+  getUpdateStatus: () => ipcRenderer.invoke("get-update-status"),
+  refreshUpdateStatus: () => ipcRenderer.invoke("refresh-update-status"),
+  openUpdateDownload: () => ipcRenderer.invoke("open-update-download"),
+  onUpdateStatus: (callback) => {
+    if (typeof callback !== "function") return () => {};
+    const listener = (_event, status) => callback(status);
+    ipcRenderer.on("update-status", listener);
+    return () => ipcRenderer.removeListener("update-status", listener);
+  },
   trackPresentation: (meta) =>
     ipcRenderer.send("analytics:track-presentation", meta),
   analyticsForceSync: () => ipcRenderer.invoke("analytics:force-sync"),

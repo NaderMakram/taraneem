@@ -11,12 +11,11 @@
   },
   files: ["src"],
   mac: {
-    target: ["dmg", "zip"],
+    target: ["dmg"],
     icon: "./src/assets/taraneem-mac.png",
     artifactName: "${productName}-macOS-${version}-${arch}.${ext}",
-    hardenedRuntime: true,
-    notarize: true,
-    publish: ["github"],
+    identity: null,
+    hardenedRuntime: false,
   },
   win: {
     target: [

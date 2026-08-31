@@ -638,8 +638,23 @@
         <main class="settings-body">
             <div class="info-content">
                 <img src="./assets/taraneem logo transparent.png" alt="Logo" class="logo-img">
-                <h3>انت الآن على أحدث إصدار 🎉</h3>
+                <h3 id="info-update-title">أنت الآن على أحدث إصدار 🎉</h3>
                 <p id="info-version-number"></p>
+                <section
+                  id="info-update-notice"
+                  class="info-update-notice"
+                  aria-live="polite"
+                  hidden
+                >
+                  <p id="info-update-message" class="info-update-message"></p>
+                  <button
+                    id="info-update-download"
+                    class="info-update-action"
+                    type="button"
+                  >
+                    تحميل الإصدار الجديد
+                  </button>
+                </section>
                 
                 <div class="info-details">
                     <h4>الجديد في هذا الإصدار:</h4>
