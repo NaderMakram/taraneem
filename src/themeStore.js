@@ -34,7 +34,7 @@ const VERTICAL_ALIGNMENTS = new Set(["top", "center"]);
 const DEFAULT_PRESENTATION = Object.freeze({
   fonts: Object.freeze({ bible: "MyTimesNewRoman", song: "MyCalibri" }),
   alignment: Object.freeze({
-    song: Object.freeze({ vertical: "top" }),
+    song: Object.freeze({ vertical: "center" }),
     bible: Object.freeze({ horizontal: "right", vertical: "top" }),
   }),
 });

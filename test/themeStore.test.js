@@ -7,12 +7,17 @@ const { fileURLToPath } = require("node:url");
 
 const {
   CUSTOM_THEME_ID_PATTERN,
+  DEFAULT_PRESENTATION,
   createThemeStore,
   normalizeHexColor,
   readImageDimensions,
 } = require("../src/themeStore");
 
 const temporaryRoots = new Set();
+
+test("defaults song presentations to vertical center alignment", () => {
+  assert.equal(DEFAULT_PRESENTATION.alignment.song.vertical, "center");
+});
 
 afterEach(() => {
   const resolvedTempDirectory = path.resolve(os.tmpdir());
@@ -293,7 +298,7 @@ test("adds presentation defaults when loading backgrounds saved by older version
     song: "MyCalibri",
   });
   assert.deepEqual(loadedTheme.alignment, {
-    song: { vertical: "top" },
+    song: { vertical: "center" },
     bible: { horizontal: "right", vertical: "top" },
   });
 });

@@ -8,7 +8,7 @@ const BUILT_IN_THEMES = [
     shadow: "none",
     fonts: { bible: "MyTimesNewRoman", song: "MyCalibri" },
     alignment: {
-      song: { vertical: "top" },
+      song: { vertical: "center" },
       bible: { horizontal: "right", vertical: "top" },
     },
   },
@@ -21,7 +21,7 @@ const BUILT_IN_THEMES = [
     shadow: "none",
     fonts: { bible: "MyTimesNewRoman", song: "MyCalibri" },
     alignment: {
-      song: { vertical: "top" },
+      song: { vertical: "center" },
       bible: { horizontal: "right", vertical: "top" },
     },
   },
@@ -34,7 +34,7 @@ const BUILT_IN_THEMES = [
     shadow: "none",
     fonts: { bible: "MyTimesNewRoman", song: "MyCalibri" },
     alignment: {
-      song: { vertical: "top" },
+      song: { vertical: "center" },
       bible: { horizontal: "right", vertical: "top" },
     },
   },

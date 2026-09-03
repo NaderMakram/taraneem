@@ -61,7 +61,7 @@ const VERTICAL_ALIGNMENTS = new Set(["top", "center"]);
 const DEFAULT_PRESENTATION = {
   fonts: { bible: "MyTimesNewRoman", song: "MyCalibri" },
   alignment: {
-    song: { vertical: "top" },
+    song: { vertical: "center" },
     bible: { horizontal: "right", vertical: "top" },
   },
 };
