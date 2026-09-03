@@ -26,7 +26,8 @@ import { initializeThemeManager } from "./helpers/theme-manager.js";
 
 import {
   searchAndDisplayResults,
-  initSearchEngine
+  initSearchEngine,
+  shouldSearchTerm
 } from "./helpers/searchService.js";
 
 initializeThemeManager({ themeSelect });
@@ -60,7 +61,7 @@ import {
 
 import { previewSelectedChapter } from "./helpers/previewSelectedSong.js";
 
-document.addEventListener("keydown", () => handleKeyDown(event));
+document.addEventListener("keydown", (event) => handleKeyDown(event));
 
 whiteButton.addEventListener("click", () => {
   // newSlide("");
@@ -146,9 +147,8 @@ let loader_HTML = `
 
 input.addEventListener("input", function (e) {
   let term = e.target.value;
-  if (term.length < 3) return (search_output.innerHTML = "");
-  let containsDigit = /\d/.test(term);
-  if (!containsDigit && search_output.innerHTML != loader_HTML) {
+  if (!shouldSearchTerm(term)) return (search_output.innerHTML = "");
+  if (search_output.innerHTML != loader_HTML) {
     // search_output.innerHTML = '';
     // search_output.innerHTML = loader_HTML;
   }

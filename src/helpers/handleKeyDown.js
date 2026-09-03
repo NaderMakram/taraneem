@@ -1,4 +1,5 @@
 import { pause } from "./pause.js";
+import { isSupportedDigit, normalizeDigits } from "./bibleSearchUtils.mjs";
 const input = document.querySelector("input#title-input");
 let keySequence = [];
 const slideScreen = document.querySelector("#slide-screen");
@@ -102,8 +103,24 @@ export function handleKeyDown(e) {
     return;
   }
 
-  // Arabic letter quick focus & start typing
-  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+  // Capture Latin, Arabic-Indic, and Eastern Arabic-Indic digits while
+  // preserving the exact glyphs the user typed in the on-screen overlay.
+  if (isSupportedDigit(key)) {
+    keySequence.push(key);
+    slideScreen.textContent = keySequence.join("");
+
+    if (keySequence.length === 4) {
+      keySequence = [];
+      slideScreen.textContent = "";
+    }
+
+    e.preventDefault();
+    return;
+  }
+
+  // Arabic letter quick focus & start typing. These ranges deliberately omit
+  // Arabic digits, which are handled by the numeric capture above.
+  const arabicRegex = /[\u0621-\u063A\u0641-\u064A\u066E-\u06D3\u0750-\u077F\u08A0-\u08FF]/;
 
   if (
     !e.ctrlKey && // make sure Ctrl is NOT pressed
@@ -125,25 +142,7 @@ export function handleKeyDown(e) {
     return;
   }
 
-  // Check if the pressed key is a number
-  if (key.length === 1 && key >= "0" && key <= "9") {
-    // Add the pressed key to the sequence
-    keySequence.push(key);
-
-    // Display the key sequence in the slide screen
-    slideScreen.textContent = keySequence.join("");
-
-    // Reset the sequence every 3 digits
-    if (keySequence.length === 4) {
-      // Reset the sequence
-      keySequence = [];
-      // Clear the slide screen
-      slideScreen.textContent = "";
-    }
-
-    // Pre default behavior
-    e.preventDefault();
-  } else if (e.keyCode === 13) {
+  if (e.keyCode === 13) {
     // Check if the pressed key is Enter
     // Check if there's content in the slide screen
     let bigElement = document.querySelector(".big");
@@ -159,7 +158,10 @@ export function handleKeyDown(e) {
       }
     } else if (slideScreen.textContent.trim() !== "") {
       // Log the content
-      const numberPressed = parseInt(slideScreen.textContent.trim());
+      const numberPressed = parseInt(
+        normalizeDigits(slideScreen.textContent.trim()),
+        10
+      );
       console.log(numberPressed);
 
       let element = document.querySelector(

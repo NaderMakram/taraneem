@@ -196,30 +196,7 @@ export function generate_item_html(element, term, truncateLimit = 100, isWaiting
   else {
     let { chapter_book_short, chapter_book, chapter, verse, verses, custom_ref, chapter_name, chapter_number } = element;
 
-    // Search Mode Filtering Logic
-    if (!isWaitingList) {
-      term = term ? term.trim() : "";
-
-      let bookNumberMatch = term.match(/^(\d+)(?=\D)/);
-      let searched_book_series = bookNumberMatch ? bookNumberMatch[1] : null;
-      if (searched_book_series) term = term.replace(/^\d+/, ""); 
-
-      let match = term.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
-      let searched_chapter = match ? match[1] : null;
-      let searched_verse = (match && match[2]) ? match[2] : null;
-
-      let book_series = (chapter_book_short.match(/\d+/) || [null])[0];
-
-      if (searched_book_series && searched_book_series != book_series) return "";
-
-      if (searched_chapter) {
-        if (!searched_chapter || chapter_number != searched_chapter || (searched_verse && !verses[searched_verse])) {
-          return "";
-        }
-        chapter = searched_chapter;
-        verse = searched_verse;
-      }
-    }
+    term = term ? term.trim() : "";
 
     // HTML Generation
     let titleHTML;

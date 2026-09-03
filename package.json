@@ -11,7 +11,7 @@
   "scripts": {
     "start": "electron-forge start",
     "test": "npm run test:unit && npm run test:release",
-    "test:unit": "node --test test/themeStore.test.js test/manualUpdate.test.js",
+    "test:unit": "node --test test/themeStore.test.js test/manualUpdate.test.js test/bibleSearchUtils.test.mjs",
     "test:release": "node scripts/test-release-config.js",
     "package": "electron-forge package",
     "make": "electron-forge make",

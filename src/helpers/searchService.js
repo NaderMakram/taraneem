@@ -1,4 +1,11 @@
 import { generate_item_html } from "../helpers/htmlGenerators.js"; // Adjust path if needed
+import {
+  containsSupportedDigit,
+  findSingleChapterBookShorts,
+  getReferenceInterpretations,
+  interpretationMatchesChapter,
+  parseBibleReferenceQuery,
+} from "./bibleSearchUtils.mjs";
 
 // ==========================================================
 // 1. GLOBAL CACHE
@@ -7,6 +14,7 @@ const SEARCH_CACHE = {
   songs: null,
   bible: null,
   chapters: null,
+  singleChapterBookShorts: new Set(),
   isReady: false
 };
 
@@ -42,6 +50,7 @@ export async function initSearchEngine() {
     // 3. Store Bible Data
     SEARCH_CACHE.bible = rawBible;
     SEARCH_CACHE.chapters = rawChapters;
+    SEARCH_CACHE.singleChapterBookShorts = findSingleChapterBookShorts(rawChapters);
     SEARCH_CACHE.isReady = true;
 
     console.log(`✅ Search Engine Ready: Loaded ${rawSongs.length} songs.`);
@@ -56,6 +65,19 @@ export async function initSearchEngine() {
 // ==========================================================
 // 2. MAIN SEARCH FUNCTION (Instant)
 // ==========================================================
+export function shouldSearchTerm(term) {
+  const parsedQuery = parseBibleReferenceQuery(term);
+  if (parsedQuery.normalized.length >= 3) return true;
+  if (!parsedQuery.bookTerm || !SEARCH_CACHE.isReady) return false;
+  if (parsedQuery.hasDigits) return true;
+
+  const normalizedBookTerm = normalizeBibleVerse(parsedQuery.bookTerm);
+  return SEARCH_CACHE.chapters.some((chapter) =>
+    isSingleChapterBook(chapter) &&
+    chapterMatchesBookTerm(chapter, normalizedBookTerm)
+  );
+}
+
 export function searchAndDisplayResults(term) {
   if (!SEARCH_CACHE.isReady) {
     console.warn("Search is loading...");
@@ -65,23 +87,14 @@ export function searchAndDisplayResults(term) {
   // 1. Sanitize
   const originalTerm = term;
   const normalizedTerm = normalize(term);
-  const containsDigit = /\d/.test(originalTerm);
+  const containsDigit = containsSupportedDigit(originalTerm);
   let results = [];
 
   console.time("Search Logic");
 
   if (containsDigit) {
     // --- BIBLE CHAPTER SEARCH ---
-    let termWithoutSpaces = originalTerm.trim().replace(/\s+/g, " ");
-    let book_and_chapter = termWithoutSpaces.replace(/[^\u0600-\u06FF\s]/g, "").trim();
-
-    if (book_and_chapter) {
-      let normalChapter = normalizeBibleVerse(book_and_chapter);
-      if (normalChapter === "مزمور") normalChapter = "مز";
-      
-      // Use Cached Chapters
-      results = searchChaptersOptimized(normalChapter, SEARCH_CACHE.chapters);
-    }
+    results = searchBibleReferences(originalTerm);
   } else {
     // --- SONG & BIBLE SEARCH ---
     
@@ -109,9 +122,15 @@ export function searchAndDisplayResults(term) {
       bibleCandidates = searchBibleOptimized(normalizedTerm, SEARCH_CACHE.bible);
     }
 
+    const singleChapterCandidates = searchSingleChapterBooks(originalTerm);
+
     // C. MERGE & SORT
     // Combine and rank results for both together
-    let allCandidates = [...songCandidates, ...bibleCandidates];
+    let allCandidates = [
+      ...singleChapterCandidates,
+      ...songCandidates,
+      ...bibleCandidates,
+    ];
     allCandidates.sort((a, b) => b.score - a.score);
 
     // Take Top 50
@@ -141,27 +160,10 @@ let generateHTML = (term, results) => {
     behavior: "auto",
   });
 
-  let filtered_results = results;
-  let containsDigit = /\d/.test(term);
-  
-  if (containsDigit) {
-    filtered_results = results.filter((item) => {
-      if (item.chapter_number) {
-        let cleanTerm = term.trim();
-        let match = cleanTerm.match(/(\d+)(?:\s*[:\s]\s*(\d+))?$/);
-        if (match) {
-          let searched_chapter = match[1];
-          return searched_chapter == item.chapter_number;
-        }
-      }
-      return false; 
-    });
-  }
-
-  const maxResults = Math.min(50, filtered_results.length);
+  const maxResults = Math.min(50, results.length);
 
   for (let i = 0; i < maxResults; i++) {
-    let slide_content = generate_item_html(filtered_results[i], term);
+    let slide_content = generate_item_html(results[i], term);
     
     if (slide_content) {
       let slide = document.createElement("div");
@@ -173,7 +175,7 @@ let generateHTML = (term, results) => {
 
       // OPTIONAL: Attach the specific object to the DOM element directly
       // This is safer than relying on global 'res' index
-      slide.songData = filtered_results[i]; 
+      slide.songData = results[i];
 
       search_output.appendChild(slide);
 
@@ -398,7 +400,8 @@ function searchChaptersOptimized(term, bibleChapters) {
         let matchedKey = null;
         let matchIndex = -1;
 
-        let idx = chapter.chapter_book_short.indexOf(term);
+        const normalizedShortName = normalizeBibleVerse(chapter.chapter_book_short);
+        let idx = normalizedShortName.indexOf(term);
         if (idx !== -1) {
             score += 10;
             matchedKey = "chapter_book_short";
@@ -426,6 +429,74 @@ function searchChaptersOptimized(term, bibleChapters) {
         }
     }
     return candidates.sort((a, b) => b.score - a.score)
+}
+
+function isSingleChapterBook(chapter) {
+  return SEARCH_CACHE.singleChapterBookShorts.has(chapter.chapter_book_short);
+}
+
+function chapterMatchesBookTerm(chapter, term) {
+  return normalizeBibleVerse(chapter.chapter_book_short).includes(term) ||
+    (term.length >= 3 && chapter.chapter_book_normalized.includes(term));
+}
+
+function normalizeBookTerm(term) {
+  const normalized = normalizeBibleVerse(term);
+  return normalized === "\u0645\u0632\u0645\u0648\u0631" ? "\u0645\u0632" : normalized;
+}
+
+function searchSingleChapterBooks(term) {
+  const bookTerm = normalizeBookTerm(term.trim());
+  if (!bookTerm) return [];
+
+  return searchChaptersOptimized(bookTerm, SEARCH_CACHE.chapters)
+    .filter(isSingleChapterBook)
+    .map((chapter) => ({
+      ...chapter,
+      chapter: chapter.chapter_number,
+      verse: null,
+      score: chapter.score + 150,
+    }));
+}
+
+function searchBibleReferences(term) {
+  const parsedQuery = parseBibleReferenceQuery(term);
+  const bookTerm = normalizeBookTerm(parsedQuery.bookTerm);
+  if (!bookTerm) return [];
+
+  const chapterCandidates = searchChaptersOptimized(
+    bookTerm,
+    SEARCH_CACHE.chapters
+  );
+  const results = [];
+  const seen = new Set();
+
+  for (const chapter of chapterCandidates) {
+    const interpretations = getReferenceInterpretations(
+      parsedQuery,
+      isSingleChapterBook(chapter)
+    );
+
+    for (const interpretation of interpretations) {
+      if (!interpretationMatchesChapter(interpretation, chapter)) continue;
+
+      const verse = interpretation.verse === null
+        ? null
+        : String(interpretation.verse);
+      const resultKey = `${chapter.custom_ref}:${verse ?? "chapter"}`;
+      if (seen.has(resultKey)) continue;
+      seen.add(resultKey);
+
+      results.push({
+        ...chapter,
+        chapter: chapter.chapter_number,
+        verse,
+        score: chapter.score + (interpretation.series === null ? 0 : 20),
+      });
+    }
+  }
+
+  return results.sort((a, b) => b.score - a.score).slice(0, 50);
 }
 
 function normalize(text) {
