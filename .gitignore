@@ -98,3 +98,5 @@ dist/
 
 # desktop
 desktop.ini
+# Local UI verification screenshots
+.impeccable/review/

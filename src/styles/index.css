@@ -215,7 +215,8 @@ h2 {
   border-right: 1px solid var(--gray-1);
 } */
 
-.song-preview .slide {
+.song-preview .slide,
+.chapter-peek-verse {
   text-align: center;
   direction: rtl;
   padding: 1rem;
@@ -273,6 +274,47 @@ h2 {
 .song-preview .bible-verse div {
   text-align: right;
 }
+/* Next-chapter verses are a navigation target, outside the active slides. */
+.chapter-continuation {
+  position: relative;
+  cursor: pointer;
+  border-radius: var(--border-radius-1);
+}
+
+.chapter-continuation-reference {
+  margin: 16px 0 12px;
+  text-align: center;
+  direction: rtl;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.chapter-peek {
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.7) 35%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.7) 35%, transparent 100%);
+}
+
+.chapter-peek-verse div {
+  text-align: right;
+}
+
+.chapter-peek-verse .verse-number-center {
+  display: none;
+}
+
+.chapter-continuation:hover .chapter-peek-verse {
+  border-color: var(--primary);
+}
+
+.chapter-continuation:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
+}
+
+.song-preview .bible-verse {
+  overflow-anchor: none;
+}
+
 .song-title {
   height: 48px;
   direction: rtl;
@@ -1069,15 +1111,18 @@ input[type="checkbox"]::before {
 }
 
 /* Center Alignment Preview */
-body[data-alignment="center"] .song-preview .bible-verse > div {
+body[data-alignment="center"] .song-preview .bible-verse > div,
+body[data-alignment="center"] .chapter-peek-verse > div {
   text-align: center;
 }
 
-body[data-alignment="center"] .song-preview .bible-verse .verseNumber {
+body[data-alignment="center"] .song-preview .bible-verse .verseNumber,
+body[data-alignment="center"] .chapter-peek-verse .verseNumber {
   display: none;
 }
 
-.song-preview .verse-number-center {
+.song-preview .verse-number-center,
+.chapter-peek-verse .verse-number-center {
   display: none;
   position: absolute;
   top: -0.8rem;
@@ -1089,11 +1134,13 @@ body[data-alignment="center"] .song-preview .bible-verse .verseNumber {
   line-height: 1;
 }
 
-.song-preview .first-word-wrapper {
+.song-preview .first-word-wrapper,
+.chapter-peek-verse .first-word-wrapper {
   position: relative;
   display: inline-block;
 }
 
-body[data-alignment="center"] .song-preview .verse-number-center {
+body[data-alignment="center"] .song-preview .verse-number-center,
+body[data-alignment="center"] .chapter-peek-verse .verse-number-center {
   display: block;
 }

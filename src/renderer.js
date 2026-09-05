@@ -59,7 +59,7 @@ import {
 } from "./helpers/handleSelectedSong.js";
 
 
-import { previewSelectedChapter } from "./helpers/previewSelectedSong.js";
+import { previewSiblingChapter } from "./helpers/bibleChapterPreview.js";
 
 document.addEventListener("keydown", (event) => handleKeyDown(event));
 
@@ -92,33 +92,14 @@ scrollToTop.addEventListener("click", () => {
   });
 });
 
-const previewSiblingChapter = async function (event) {
-  let index = parseInt(event.target.dataset.chapterindex);
-  let siblingChapter = await window.myCustomAPI.getSiblingChapter(index);
-  console.log(siblingChapter);
-
-  // should clear current slide
-  window.myCustomAPI.updateSongWindow("");
-  // should remove any active slides
-  let activeSong = document.querySelector(".selectedSong");
-  if (activeSong) {
-    activeSong.classList.remove("selectedSong");
-  }
-
-  previewSelectedChapter(siblingChapter);
-};
-
-prevChapterBtn.addEventListener("click", (event) => {
-  previewSiblingChapter(event);
+prevChapterBtn.addEventListener("click", () => {
+  previewSiblingChapter(-1);
   prevChapterBtn.blur();
 });
-nextChapterBtn.addEventListener("click", (event) => {
-  previewSiblingChapter(event);
+nextChapterBtn.addEventListener("click", () => {
+  previewSiblingChapter(1);
   nextChapterBtn.blur();
 });
-
-
-
 
 fontSizePlus.addEventListener("click", () => {
   let currentValue = parseInt(fontSizeInput.textContent);

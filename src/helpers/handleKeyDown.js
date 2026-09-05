@@ -1,5 +1,6 @@
 import { pause } from "./pause.js";
 import { isSupportedDigit, normalizeDigits } from "./bibleSearchUtils.mjs";
+import { continueToNextChapter } from "./bibleChapterPreview.js";
 const input = document.querySelector("input#title-input");
 let keySequence = [];
 const slideScreen = document.querySelector("#slide-screen");
@@ -22,10 +23,16 @@ export function handleKeyDown(e) {
     const activeElement = previewOutput.querySelector(".active");
 
     if (activeElement) {
+      e.preventDefault();
       const elements = document.querySelector(".song-preview").children;
       const index = Array.from(activeElement.parentElement.children).indexOf(
         activeElement
       );
+
+      if (index === elements.length - 1 && e.key === "ArrowDown") {
+        continueToNextChapter();
+        return;
+      }
 
       if (
         (index === 0 && e.key === "ArrowUp") ||

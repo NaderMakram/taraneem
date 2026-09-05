@@ -1,6 +1,6 @@
 import { trackPresentationFromSlide } from "./presentationMeta.js";
 
-export function newSlide(html) {
+export function newSlide(html, { scroll = true } = {}) {
   // console.log(html);
   let paused = document.querySelector(".pause");
   if (paused) paused.classList.remove("pause");
@@ -44,6 +44,15 @@ export function newSlide(html) {
   ///////////////////////  //
 
   trackPresentationFromSlide(html);
+
+  // Scroll here so a delayed IPC callback cannot override chapter navigation.
+  if (scroll && activeElement) {
+    window.scrollTo({
+      top: activeElement.getBoundingClientRect().top + window.scrollY - window.innerHeight / 3,
+      left: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  }
 
   if (
     (document.querySelector(".slide").classList.contains("bible-verse") &&

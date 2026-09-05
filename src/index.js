@@ -628,24 +628,6 @@ app.on("ready", () => {
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content, isBible) => {
     songWindow.webContents.send("update-song-window", content, isBible);
-    if (content != "") {
-      mainWindow.webContents.executeJavaScript(
-        `
-        element = document.querySelector('.active');
-        if(element){
-
-          elementRect = element.getBoundingClientRect();
-          absoluteElementTop = elementRect.top + window.pageYOffset;
-          middle = absoluteElementTop - (window.innerHeight / 3);
-          window.scrollTo({
-            top: middle,
-            left: 0,
-            behavior: "smooth",
-          });
-        }
-        `
-      );
-    }
   });
 }
 

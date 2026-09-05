@@ -148,8 +148,9 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   extendSongWindow: () => ipcRenderer.send("extend-song-window"),
   setTheme: (theme) => ipcRenderer.send("set-theme", theme),
 
-  getSiblingChapter: (content) =>
-    ipcRenderer.invoke("get-sibling-chapter", content),
+  // Read the cached Bible synchronously so the next chapter can be prepared.
+  getSiblingChapter: (index) =>
+    Number.isInteger(index) ? getBibleData().bibleDBIndexed[index] : undefined,
   quitAndInstall: () => ipcRenderer.send("quit-and-install"),
   scrollToActive: (Yamount) => ipcRenderer.send("scroll-to-active"),
   readJson: () => ipcRenderer.invoke("read-json"),

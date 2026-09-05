@@ -23,7 +23,8 @@
     "dist:mac": "electron-builder --mac --universal -p never",
     "dist32": "electron-builder --win --ia32 -p never",
     "dist-local": "electron-builder --win --x64 -p never && rd /s /q \"release\\${npm_package_version}\\win-unpacked\"",
-    "publish": "electron-builder -p always"
+    "publish": "electron-builder -p always",
+    "test:bible-preview": "node scripts/test-bible-preview.js"
   },
   "keywords": [],
   "author": {
