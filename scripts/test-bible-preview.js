@@ -34,6 +34,8 @@ if (!process.versions.electron) {
       const moduleUrl = pathToFileURL(path.join(root, "test", "bibleChapterPreview.integration.mjs")).href;
       const result = await win.webContents.executeJavaScript(`import(${JSON.stringify(moduleUrl)}).then(m => m.run(${JSON.stringify(chapters)}))`);
       console.log(result);
+      const searchModuleUrl = pathToFileURL(path.join(root, "test", "bibleReferenceSearch.integration.mjs")).href;
+      console.log(await win.webContents.executeJavaScript(`import(${JSON.stringify(searchModuleUrl)}).then(m => m.run(${JSON.stringify(chapters)}))`));
       const review = path.join(root, ".impeccable", "review");
       fs.mkdirSync(review, { recursive: true });
       for (const [width, name] of [[1280, "desktop"], [1024, "desktop-compact"]]) {

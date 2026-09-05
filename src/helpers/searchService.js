@@ -504,5 +504,6 @@ function normalize(text) {
 }
 
 function normalizeBibleVerse(text) {
-  return text.replace(/أ|آ|إ/g, "ا").replace(/ى/g, "ي").replace(/ه/g, "ة").replace(/[؟!،.]/g, "");
+  // Match the hamza folding used by chapter_book_normalized in the Bible data.
+  return text.replace(/ؤ|ئ/g, "ء").replace(/أ|آ|إ/g, "ا").replace(/ى/g, "ي").replace(/ه/g, "ة").replace(/[؟!،.]/g, "");
 }
