@@ -8,6 +8,11 @@ const slideScreen = document.querySelector("#slide-screen");
 import { newSlide } from "./newSlide.js";
 
 export function handleKeyDown(e) {
+  const activeControl = document.activeElement;
+  const focusedTag = activeControl?.tagName?.toLowerCase();
+  if (document.getElementById("settings-modal")?.classList.contains("open") ||
+      ["input", "textarea", "select"].includes(focusedTag) || activeControl?.isContentEditable) return;
+
   // ///////////////
   // handle up and down keys
   // ///////////////
@@ -15,9 +20,7 @@ export function handleKeyDown(e) {
   if (e.target.id == "fontSize") {
     return;
   }
-  if (document.getElementById("settings-modal").classList.contains("open")) {
-    return;
-  }
+
   if (e.key === "ArrowUp" || e.key === "ArrowDown") {
     const previewOutput = document.getElementById("preview_output");
     const activeElement = previewOutput.querySelector(".active");
@@ -104,7 +107,8 @@ export function handleKeyDown(e) {
     if (activeSlide) {
       activeSlide.classList.remove("active");
     }
-    let firstSlide = document.querySelector("#preview_output div[data-verse-number='1']");
+    let firstSlide = document.querySelector('#preview_output [data-parent-type="verse"][data-parent-number="1"]') ||
+      document.querySelector("#preview_output div[data-verse-number='1']");
     firstSlide.classList.add("active");
     newSlide(firstSlide.innerHTML);
     return;
@@ -171,9 +175,8 @@ export function handleKeyDown(e) {
       );
       console.log(numberPressed);
 
-      let element = document.querySelector(
-        `[data-verse-number="${numberPressed}"]`
-      );
+      let element = document.querySelector(`[data-parent-type="verse"][data-parent-number="${numberPressed}"]`) ||
+        document.querySelector(`[data-verse-number="${numberPressed}"]`);
       if (element) {
         const elements = document.querySelector(".song-preview").children;
 

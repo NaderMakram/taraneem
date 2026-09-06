@@ -29,11 +29,13 @@
       "add-new-song": "إضافة ترنيمة جديدة",
       "themes-management": "الخلفيات",
       "theme-editor": "تصميم الخلفية",
+      livestream: "البث المباشر",
     };
     titleEl.textContent = titles[name] || "الإعدادات";
     backBtn.style.visibility = stack.length <= 1 ? "hidden" : "visible";
     modal.dataset.currentPage = name;
 
+    if (name === "livestream") window.dispatchEvent(new CustomEvent("livestream-page-shown"));
     const pageHook = window.themeManager?.onPageShown?.(name, options);
     if (pageHook && typeof pageHook.catch === "function") {
       pageHook.catch((error) => {

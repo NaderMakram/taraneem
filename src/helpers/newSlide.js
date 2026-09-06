@@ -1,85 +1,35 @@
 import { trackPresentationFromSlide } from "./presentationMeta.js";
+import { publishCurrentLivestreamSlide } from "./livestream-controller.js";
 
-export function newSlide(html, { scroll = true } = {}) {
-  // console.log(html);
-  let paused = document.querySelector(".pause");
-  if (paused) paused.classList.remove("pause");
-  // if it's a bible verse, add the chapter title
-
-  ///////////////////////  // change the current verse number
-
-  const activeElement = document.querySelector(".active");
-
+export function newSlide(html = "", { scroll = true } = {}) {
+  document.querySelector(".pause")?.classList.remove("pause");
+  const activeElement = document.querySelector("#preview_output .slide.active");
   if (activeElement) {
-    // Check if .active has a non-empty data-verse-number
-    let targetElement = activeElement.getAttribute("data-verse-number")
-      ? activeElement
-      : activeElement.previousElementSibling?.closest("[data-verse-number]");
-
-    // Special Case: Initial Chorus acts as Verse 1
-    if (
-      !targetElement &&
-      activeElement.classList.contains("initial-chorus")
-    ) {
-      document.querySelector(".current-verse").textContent = "1";
-      let separator = document.querySelector(".separator");
-      if (separator) separator.style.display = "inline";
-    }
-
-    else if (targetElement) {
-      const verseNumber = targetElement.getAttribute("data-verse-number");
-
-      if (verseNumber) {
-        document.querySelector(".current-verse").textContent = verseNumber;
-        // Show separator
-        let separator = document.querySelector(".separator");
-        if (separator) separator.style.display = "inline";
-      } else {
-        console.log("Found an element, but data-verse-number is empty.");
-      }
-    } else {
-      console.log("No previous element with data-verse-number found.");
+    const targetElement = activeElement.dataset.parentType === "verse" ? activeElement :
+      (activeElement.getAttribute("data-verse-number") ? activeElement : activeElement.previousElementSibling?.closest("[data-verse-number]"));
+    if (!targetElement && activeElement.classList.contains("initial-chorus")) {
+      const current = document.querySelector(".current-verse"); if (current) current.textContent = "1";
+      const separator = document.querySelector(".separator"); if (separator) separator.style.display = "inline";
+    } else if (targetElement) {
+      const verseNumber = targetElement.dataset.parentNumber || targetElement.getAttribute("data-verse-number");
+      const current = document.querySelector(".current-verse"); if (current && verseNumber) current.textContent = verseNumber;
+      const separator = document.querySelector(".separator"); if (separator && verseNumber) separator.style.display = "inline";
     }
   }
-  ///////////////////////  //
-
   trackPresentationFromSlide(html);
-
-  // Scroll here so a delayed IPC callback cannot override chapter navigation.
   if (scroll && activeElement) {
-    window.scrollTo({
-      top: activeElement.getBoundingClientRect().top + window.scrollY - window.innerHeight / 3,
-      left: 0,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-    });
+    window.scrollTo({ top: activeElement.getBoundingClientRect().top + window.scrollY - window.innerHeight / 3, left: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
-
-  if (
-    (document.querySelector(".slide").classList.contains("bible-verse") &&
-      document.querySelector(".slide.active")) ||
-    html.legnth == 0
-  ) {
-    let chapter_title =
-      document.querySelector(".song-title").outerHTML +
-      document.querySelector(".chapter-title-en").outerHTML;
-    // console.log(chapter_title);
-    let combined_html = `<div class="container bible-container">
-      <div class="head bible-head">
-      ${html.length > 53 ? chapter_title : ""}
-      </div>
-      
-      <div class="body bible-body">
-      ${html}
-      </div>
-      </div>`;
-    // console.log(combined_html);
-    window.myCustomAPI.updateSongWindow(combined_html, true);
+  publishCurrentLivestreamSlide();
+  const isBible = Boolean(document.querySelector("#preview_output .slide.bible-verse"));
+  if (isBible) {
+    const songTitle = document.querySelector(".song-title");
+    const englishTitle = document.querySelector(".chapter-title-en");
+    const chapterTitle = songTitle && englishTitle ? songTitle.outerHTML + englishTitle.outerHTML : "";
+    const combined = `<div class="container bible-container"><div class="head bible-head">${html.length > 53 ? chapterTitle : ""}</div><div class="body bible-body">${html}</div></div>`;
+    window.myCustomAPI.updateSongWindow(combined, true);
   } else {
-    let combined_html = `<div class="container song-container">
-      <div class="body song-body">
-      ${html}
-      </div>
-      </div>`;
-    window.myCustomAPI.updateSongWindow(combined_html, false);
+    window.myCustomAPI.updateSongWindow(`<div class="container song-container"><div class="body song-body">${html}</div></div>`, false);
   }
 }

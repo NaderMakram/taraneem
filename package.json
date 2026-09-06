@@ -11,7 +11,7 @@
   "scripts": {
     "start": "electron-forge start",
     "test": "npm run test:unit && npm run test:release",
-    "test:unit": "node --test test/themeStore.test.js test/manualUpdate.test.js test/bibleSearchUtils.test.mjs",
+    "test:unit": "node --test test/themeStore.test.js test/manualUpdate.test.js test/bibleSearchUtils.test.mjs test/livestreamCore.test.js test/livestreamChunking.test.mjs",
     "test:release": "node scripts/test-release-config.js",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -24,7 +24,10 @@
     "dist32": "electron-builder --win --ia32 -p never",
     "dist-local": "electron-builder --win --x64 -p never && rd /s /q \"release\\${npm_package_version}\\win-unpacked\"",
     "publish": "electron-builder -p always",
-    "test:bible-preview": "node scripts/test-bible-preview.js"
+    "test:bible-preview": "node scripts/test-bible-preview.js",
+    "test:livestream": "node --test test/livestreamCore.test.js test/livestreamChunking.test.mjs",
+    "test:livestream-browser": "node scripts/test-livestream-browser.js",
+    "test:livestream-e2e": "node scripts/test-livestream-e2e.js"
   },
   "keywords": [],
   "author": {

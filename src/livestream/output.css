@@ -1,0 +1,23 @@
+@font-face { font-family: TaraneemTimes; src: url('/fonts/times.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: TaraneemTraditional; src: url('/fonts/traditional.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: TaraneemPlex; src: url('/fonts/plex.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: TaraneemDin; src: url('/fonts/din.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: TaraneemAdobe; src: url('/fonts/adobe.otf') format('opentype'); font-display: block; }
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
+body { font-family: serif; }
+#scene { font-family: var(--font-family), serif; position: absolute; inset: 0 auto auto 0; width: var(--canvas-w, 1920px); height: var(--canvas-h, 1080px); transform-origin: top left; color: #fff; }
+#text-box, #reference-box { position: absolute; display: flex; align-items: center; direction: rtl; }
+#text-box { left: var(--text-x); top: var(--text-y); width: var(--text-w); height: var(--text-h); padding: var(--padding); background: rgba(var(--banner-rgb), var(--banner-alpha)); border-radius: var(--radius); }
+#text { width: 100%; white-space: pre; line-height: 1.28; text-align: var(--text-align); font-size: var(--font-size); font-weight: var(--font-weight); color: var(--text-color); }
+#reference-box { left: var(--ref-x); top: var(--ref-y); width: var(--ref-w); height: var(--ref-h); justify-content: var(--ref-justify); padding-inline: 12px; }
+#reference { width: 100%; white-space: nowrap; text-align: var(--ref-align); font-size: var(--ref-size); color: var(--ref-color); font-weight: 700; }
+body[data-preset="text"] #text-box { background: transparent; }
+body[data-preset="solid"] #text-box { border-radius: 0; }
+body[data-shadow="true"] #text, body[data-shadow="true"] #reference { text-shadow: 0 3px 8px rgba(0,0,0,.78), 0 0 2px rgba(0,0,0,.9); }
+body[data-layer="text"] #reference-box, body[data-layer="reference"] #text-box { display: none; }
+body[data-hidden="true"] #text-box, body[data-hidden="true"] #reference-box,
+body[data-empty="true"] #text-box, body[data-empty="true"] #reference-box { visibility: hidden; }
+body[data-reference="false"] #reference-box { display: none; }
+body[data-preview="true"] { background: repeating-conic-gradient(#151b26 0 25%, #1d2634 0 50%) 0 / 32px 32px; }

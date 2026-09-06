@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="styles/loader.css" />
     <link rel="stylesheet" href="styles/dragula.css" />
     <link rel="stylesheet" href="styles/settings-modal.css" />
+    <link rel="stylesheet" href="styles/livestream.css" />
     <link rel="stylesheet" href="styles/theme-editor.css" />
   </head>
   <body class="waiting-mode">
@@ -208,12 +209,53 @@
                 <button class="settings-option ripple" data-nav-to="themes-management">
                   الخلفيات
                 </button>
-                <button class="settings-option soon" data-nav-to="">
+                <button class="settings-option ripple" data-nav-to="livestream">
                   البث المباشر
-                  <span>قريبًا</span>
                 </button>
             
               <!-- future options go here -->
+            </div>
+          </section>
+
+          <!-- Page: Livestream -->
+          <section class="settings-page" data-page="livestream" hidden>
+            <div class="livestream-settings">
+              <div class="livestream-heading">
+                <div><h3 tabindex="-1" data-settings-page-focus>البث المباشر</h3><p>اعرض كلمات قصيرة فوق الفيديو في OBS من نفس اختيارات ترانيم. يعمل المخرج على هذا الجهاز فقط.</p></div>
+                <span id="livestream-service-status" class="livestream-status" role="status" aria-live="polite">متوقف</span>
+              </div>
+              <form id="livestream-form" class="livestream-form" novalidate>
+                <fieldset class="livestream-section"><legend>المخرج</legend>
+                  <label class="livestream-switch"><input id="livestream-enabled" type="checkbox" /> تفعيل وضع البث المباشر</label>
+                  <div class="livestream-source"><label class="livestream-field"><span>رابط مصدر المتصفح</span><input id="livestream-url" class="livestream-url" readonly aria-label="رابط مصدر المتصفح" /></label><button id="livestream-copy-url" type="button">نسخ الرابط</button></div>
+                  <div class="livestream-actions"><button id="livestream-open-preview" type="button">فتح المعاينة</button><button id="livestream-visibility" type="button">إخفاء النص</button></div>
+                </fieldset>
+                <fieldset class="livestream-section"><legend>لوحة العرض ومساحة النص</legend>
+                  <div class="livestream-preset-actions"><button id="livestream-preset-1080" type="button">١٩٢٠×١٠٨٠</button><button id="livestream-preset-720" type="button">١٢٨٠×٧٢٠</button></div>
+                  <div class="livestream-grid">
+                    <label class="livestream-field"><span>عرض اللوحة px</span><input id="livestream-canvas-width" type="number" min="640" max="3840" /></label><label class="livestream-field"><span>ارتفاع اللوحة px</span><input id="livestream-canvas-height" type="number" min="360" max="2160" /></label>
+                    <label class="livestream-field"><span>موضع النص X</span><input id="livestream-x" type="number" min="0" /></label><label class="livestream-field"><span>موضع النص Y</span><input id="livestream-y" type="number" min="0" /></label>
+                    <label class="livestream-field"><span>عرض النص</span><input id="livestream-width" type="number" min="1" /></label><label class="livestream-field"><span>ارتفاع النص</span><input id="livestream-height" type="number" min="1" /></label>
+                  </div>
+                </fieldset>
+                <fieldset class="livestream-section"><legend>النص</legend><div class="livestream-grid">
+                  <label class="livestream-field"><span>سطور الترنيمة</span><select id="livestream-song-lines"><option value="2">سطران</option><option value="1">سطر واحد</option></select></label>
+                  <label class="livestream-field"><span>حجم خط الترنيمة px</span><input id="livestream-song-size" type="number" min="24" max="120" /></label><label class="livestream-field"><span>أصغر حجم للترنيمة</span><input id="livestream-song-min-size" type="number" min="20" max="120" /></label><label class="livestream-field"><span>خط الترنيمة</span><select id="livestream-song-font"><option value="times">Times New Roman</option><option value="traditional">Traditional Arabic</option><option value="plex">IBM Plex Arabic</option><option value="din">DIN Next Arabic</option><option value="adobe">Adobe Arabic</option></select></label><label class="livestream-field"><span>وزن خط الترنيمة</span><select id="livestream-song-weight"><option value="700">عريض</option><option value="600">نصف عريض</option><option value="400">عادي</option></select></label><label class="livestream-field"><span>محاذاة الترنيمة</span><select id="livestream-song-align"><option value="right">يمين</option><option value="center">وسط</option></select></label>
+                  <label class="livestream-field"><span>حجم خط الكتاب px</span><input id="livestream-bible-size" type="number" min="24" max="120" /></label><label class="livestream-field"><span>أصغر حجم للكتاب</span><input id="livestream-bible-min-size" type="number" min="20" max="120" /></label><label class="livestream-field"><span>خط الكتاب</span><select id="livestream-bible-font"><option value="times">Times New Roman</option><option value="traditional">Traditional Arabic</option><option value="plex">IBM Plex Arabic</option><option value="din">DIN Next Arabic</option><option value="adobe">Adobe Arabic</option></select></label><label class="livestream-field"><span>وزن خط الكتاب</span><select id="livestream-bible-weight"><option value="700">عريض</option><option value="600">نصف عريض</option><option value="400">عادي</option></select></label><label class="livestream-field"><span>محاذاة الكتاب</span><select id="livestream-bible-align"><option value="right">يمين</option><option value="center">وسط</option></select></label>
+                  <label class="livestream-field"><span>لون النص</span><input id="livestream-text-color" type="color" /></label>
+                </div><div class="livestream-settings-sample" aria-label="عينة الإعدادات"><span class="livestream-sample-label">عينة الإعدادات</span><strong id="livestream-sample-text">مبارك اسم الرب في كل زمان</strong><small id="livestream-sample-reference">مزمور ٣٤:١</small></div></fieldset>
+                <fieldset class="livestream-section"><legend>الشريط</legend><div class="livestream-grid">
+                  <label class="livestream-field"><span>النمط</span><select id="livestream-banner-preset"><option value="rounded">لوحة بحواف دائرية</option><option value="solid">شريط مستقيم</option><option value="text">نص فقط</option></select></label><label class="livestream-field"><span>لون الشريط</span><input id="livestream-banner-color" type="color" /></label>
+                  <label class="livestream-field"><span>الشفافية 0–1</span><input id="livestream-banner-opacity" type="number" min="0" max="1" step="0.05" /></label><label class="livestream-field"><span>الهامش الداخلي px</span><input id="livestream-padding" type="number" min="0" max="80" /></label><label class="livestream-field"><span>استدارة الحواف px</span><input id="livestream-radius" type="number" min="0" max="80" /></label><label class="livestream-switch"><input id="livestream-shadow" type="checkbox" /> ظل واضح للنص</label>
+                </div></fieldset>
+                <fieldset class="livestream-section"><legend>الشاهد</legend><label class="livestream-switch"><input id="livestream-reference-show" type="checkbox" /> إظهار شاهد الآية أو اسم الترنيمة</label><div class="livestream-grid">
+                  <label class="livestream-field"><span>الموضع</span><select id="livestream-reference-position"><option value="above">فوق النص</option><option value="inline">بجوار النص</option><option value="custom">مخصص</option></select></label><label class="livestream-field"><span>محاذاة الشاهد</span><select id="livestream-reference-align"><option value="right">يمين</option><option value="center">وسط</option></select></label><label class="livestream-field"><span>الحجم px</span><input id="livestream-reference-size" type="number" min="18" max="72" /></label><label class="livestream-field"><span>اللون</span><input id="livestream-reference-color" type="color" /></label>
+                  <label class="livestream-field"><span>X</span><input id="livestream-reference-x" type="number" min="0" /></label><label class="livestream-field"><span>Y</span><input id="livestream-reference-y" type="number" min="0" /></label><label class="livestream-field"><span>العرض</span><input id="livestream-reference-width" type="number" min="1" /></label><label class="livestream-field"><span>الارتفاع</span><input id="livestream-reference-height" type="number" min="1" /></label>
+                </div></fieldset>
+                <details class="livestream-help"><summary>إعداد OBS والمنفذ المتقدم</summary><p>أضف Browser Source، ألصق الرابط، وأدخل نفس عرض وارتفاع اللوحة. اجعل Local File مغلقًا، وضع المصدر فوق الكاميرا. مؤشر الاتصال يعني أن المصدر فتح الصفحة فقط.</p><label class="livestream-field"><span>المنفذ المحلي</span><input id="livestream-port" type="number" min="1024" max="65535" /></label><button id="livestream-reset" type="button">استعادة الإعدادات الافتراضية</button></details>
+                <div id="livestream-message" class="livestream-message" role="alert" aria-live="assertive" hidden></div>
+                <div class="livestream-actions"><button id="livestream-apply" type="submit">تطبيق</button><button id="livestream-cancel" type="button">إلغاء التعديلات</button></div>
+              </form>
             </div>
           </section>
 

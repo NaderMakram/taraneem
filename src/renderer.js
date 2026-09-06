@@ -23,6 +23,8 @@ import { handleKeyDown } from "./helpers/handleKeyDown.js";
 import { newSlide } from "./helpers/newSlide.js";
 import { pause } from "./helpers/pause.js";
 import { initializeThemeManager } from "./helpers/theme-manager.js";
+import { initializeLivestreamController } from "./helpers/livestream-controller.js";
+import "./helpers/livestream-settings.js";
 
 import {
   searchAndDisplayResults,
@@ -39,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Wait at least 1.5 seconds for branding awareness
   Promise.all([
     initSearchEngine(),
+    initializeLivestreamController(),
     new Promise((resolve) => setTimeout(resolve, 1500)),
   ]).then(() => {
     // Both done

@@ -1,0 +1,45 @@
+.livestream-settings { direction: rtl; color: var(--settings-text, #172033); min-width: 0; max-width: 100%; }
+.livestream-settings, .livestream-settings * { box-sizing: border-box; }
+.livestream-heading { display: flex; justify-content: space-between; gap: 24px; align-items: start; margin-bottom: 22px; }
+.livestream-heading h3 { margin: 0 0 6px; }
+.livestream-heading p { margin: 0; color: #5c667a; max-width: 62ch; }
+.livestream-status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 700; }
+.livestream-status::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #8791a3; }
+.livestream-status[data-state="running"]::before { background: #16834b; }
+.livestream-status[data-state="error"]::before { background: #b42318; }
+.livestream-form { display: grid; gap: 22px; }
+.livestream-section { border: 1px solid #d9deea; border-radius: 14px; padding: 18px; background: #fff; }
+.livestream-section legend { padding-inline: 8px; font-size: 1.05rem; font-weight: 800; color: #172033; }
+.livestream-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; min-width: 0; }
+.livestream-field { display: grid; gap: 7px; font-weight: 700; min-width: 0; }
+.livestream-field > span { color: #465168; font-size: .9rem; }
+.livestream-url { direction: ltr; text-align: left; min-width: 0; }
+.livestream-field input, .livestream-field select, .livestream-url { width: 100%; min-width: 0; max-width: 100%; min-height: 42px; border: 1px solid #bcc5d6; border-radius: 10px; padding: 8px 10px; font: inherit; color: #172033; background: #fff; }
+.livestream-field input:focus-visible, .livestream-field select:focus-visible, .livestream-actions button:focus-visible, .livestream-source button:focus-visible { outline: 3px solid rgba(29, 104, 220, .28); outline-offset: 2px; border-color: #1d68dc; }
+.livestream-switch { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+.livestream-switch input { width: 20px; height: 20px; accent-color: #1d68dc; }
+.livestream-source { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; min-width: 0; }
+.livestream-source .livestream-field { min-width: 0; }
+.livestream-source button, .livestream-actions button, .livestream-preset-actions button { min-height: 42px; border: 0; border-radius: 10px; padding: 9px 16px; font: inherit; font-weight: 800; cursor: pointer; }
+.livestream-source button, .livestream-preset-actions button, #livestream-cancel, #livestream-visibility { background: #e8eef9; color: #174b9b; }
+.livestream-actions { display: flex; flex-wrap: wrap; gap: 10px; position: sticky; bottom: -20px; padding: 14px 0 2px; background: inherit; }
+#livestream-apply { background: #1d68dc; color: #fff; }
+.livestream-actions button:disabled { opacity: .55; cursor: wait; }
+.livestream-message { padding: 11px 13px; border-radius: 10px; background: #e8f6ee; color: #17653c; font-weight: 700; }
+.livestream-message[data-error="true"] { background: #fdecea; color: #9f251a; }
+.livestream-settings-sample { display: grid; gap: 4px; margin-top: 16px; padding: 14px 18px; overflow: hidden; border-radius: 12px; background: #07111f; color: #fff; text-align: center; }
+.livestream-sample-label { color: #a9c8f4; font-size: .76rem; font-weight: 800; }
+.livestream-settings-sample strong { font-size: 1.25rem; line-height: 1.35; }
+.livestream-settings-sample small { color: #dbeafe; }
+.livestream-help button { margin-top: 10px; min-height: 40px; border: 0; border-radius: 10px; padding: 8px 14px; background: #e8eef9; color: #174b9b; font: inherit; font-weight: 800; cursor: pointer; }
+.livestream-help { color: #4d5870; line-height: 1.65; }
+.livestream-help summary { color: #174b9b; font-weight: 800; cursor: pointer; }
+.livestream-part-label { display: block; margin-top: 8px; color: #61708b; font-size: .76rem; font-weight: 700; }
+@media (max-width: 1050px) { .livestream-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .livestream-heading { display: grid; } }
+@media (max-width: 680px) { .livestream-grid, .livestream-source { grid-template-columns: 1fr; } .livestream-section { padding: 14px; } }
+[data-theme="dark"] .livestream-settings { color: #ecf1fa; }
+[data-theme="dark"] .livestream-heading p, [data-theme="dark"] .livestream-help { color: #bdc7d8; }
+[data-theme="dark"] .livestream-section { background: #171d29; border-color: #323c4d; }
+[data-theme="dark"] .livestream-section legend, [data-theme="dark"] .livestream-field input, [data-theme="dark"] .livestream-field select { color: #ecf1fa; }
+[data-theme="dark"] .livestream-field > span { color: #c6cfde; }
+[data-theme="dark"] .livestream-field input, [data-theme="dark"] .livestream-field select, [data-theme="dark"] .livestream-url { background: #101620; border-color: #465269; color: #ecf1fa; }

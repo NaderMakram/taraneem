@@ -780,7 +780,7 @@ export function selectSongEventFunction(e) {
 
     if (ref && currentSongRef && ref == currentSongRef) {
       let targetSlide = document.querySelector(
-        `.slide[data-verse-number="${verse ? verse : "1"}"]`
+        `[data-parent-type="verse"][data-parent-number="${verse ? verse : "1"}"], .slide[data-verse-number="${verse ? verse : "1"}"]`
       );
       if (targetSlide) {
         if (document.querySelector(".active")) {

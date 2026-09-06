@@ -166,6 +166,20 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
     ipcRenderer.on("update-status", listener);
     return () => ipcRenderer.removeListener("update-status", listener);
   },
+  livestream: {
+    getStatus: () => ipcRenderer.invoke("livestream:get-status"),
+    applySettings: settings => ipcRenderer.invoke("livestream:apply-settings", settings),
+    setVisible: visible => ipcRenderer.invoke("livestream:set-visible", visible),
+    openPreview: () => ipcRenderer.invoke("livestream:open-preview"),
+    publish: payload => ipcRenderer.send("livestream:publish", payload),
+    clear: () => ipcRenderer.send("livestream:clear"),
+    onStatus: callback => {
+      if (typeof callback !== "function") return () => {};
+      const listener = (_event, payload) => callback(payload);
+      ipcRenderer.on("livestream:status", listener);
+      return () => ipcRenderer.removeListener("livestream:status", listener);
+    },
+  },
   trackPresentation: (meta) =>
     ipcRenderer.send("analytics:track-presentation", meta),
   analyticsForceSync: () => ipcRenderer.invoke("analytics:force-sync"),

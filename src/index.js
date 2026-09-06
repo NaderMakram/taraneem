@@ -24,6 +24,7 @@ const {
   RELEASES_PAGE_URL,
   checkForMacUpdate: checkForManualMacUpdate,
 } = require("./update/manualUpdate");
+const { createLivestreamManager } = require("./livestream/main");
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -202,6 +203,7 @@ app.on("ready", () => {
 });
 
 let mainWindow;
+let livestreamManager;
 const createMainWindow = () => {
   // Get primary display dimensions
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -627,7 +629,9 @@ app.on("ready", () => {
 
 function addIPCs() {
   ipcMain.on("update-song-window", (event, content, isBible) => {
-    songWindow.webContents.send("update-song-window", content, isBible);
+    if (!mainWindow || mainWindow.isDestroyed() || event.sender !== mainWindow.webContents) return;
+    if (content === "" && livestreamManager?.isModeEnabled()) livestreamManager.clear();
+    if (songWindow && !songWindow.isDestroyed()) songWindow.webContents.send("update-song-window", content, isBible);
   });
 }
 
@@ -746,6 +750,11 @@ ipcMain.on("set-theme", (event, theme) => {
 });
 
 let manageDisplays = () => {
+  if (livestreamManager?.isModeEnabled()) {
+    if (mainWindow && !mainWindow.isDestroyed()) { mainWindow.setResizable(true); mainWindow.setMovable(true); }
+    livestreamManager.handleDisplaysChanged?.();
+    return;
+  }
   let displays = screen.getAllDisplays();
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width: screenWidth, height: screenHeight } =
@@ -815,6 +824,15 @@ let manageDisplays = () => {
   }
 };
 
+livestreamManager = createLivestreamManager({
+  app, BrowserWindow, screen, userDataPath,
+  getMainWindow: () => mainWindow,
+  getSongWindow: () => songWindow,
+  restoreProjectionLayout: () => manageDisplays(),
+});
+livestreamManager.registerIpc(ipcMain);
+app.on("ready", () => livestreamManager.initialize());
+
 app.on("ready", () => {
   screen.on("display-added", (event, newDisplay) => {
     manageDisplays();
@@ -826,7 +844,8 @@ app.on("ready", () => {
   ipcMain.on("app-ready", () => {
     analytics.startSession();
     if (songWindow) {
-      songWindow.show();
+      if (livestreamManager?.isModeEnabled()) songWindow.hide();
+      else songWindow.show();
     }
     // First sync shortly after startup (debug logs in DevTools console)
     setTimeout(() => {
@@ -849,10 +868,12 @@ ipcMain.handle("analytics:force-sync", async () => {
 ipcMain.handle("analytics:debug-status", () => analytics.getDebugStatus());
 
 app.on("before-quit", () => {
+  livestreamManager?.shutdown();
   analytics.endSession();
 });
 
 ipcMain.on("extend-song-window", (event) => {
+  if (livestreamManager?.isModeEnabled()) return;
   let displays = screen.getAllDisplays();
   if (displays.length > 1) {
     let secondScreen = displays[1];
