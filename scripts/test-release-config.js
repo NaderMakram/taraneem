@@ -49,6 +49,14 @@ function testBuilderConfiguration() {
     "electron-builder config is invalid: " + ajv.errorsText(validate.errors)
   );
   invariant(
+    JSON.stringify(config.files) === JSON.stringify(["src"]),
+    "electron-builder must package only src so private editor files cannot ship"
+  );
+  invariant(
+    config.afterPack === "./tools/song-editor/packageGuard.js",
+    "electron-builder must inspect the final app package for private editor files"
+  );
+  invariant(
     config.win.artifactName ===
       "${productName}-Windows-${version}-Setup.${ext}",
     "The Windows artifact name is a compatibility contract and must not change"
@@ -79,6 +87,27 @@ function testBuilderConfiguration() {
   );
   invariant(!("notarize" in config.mac), "macOS notarization must not be required");
   invariant(!("publish" in config.mac), "macOS must not generate an auto-update feed");
+}
+
+function testPrivateEditorExclusion() {
+  const forge = require("../forge.config");
+  const ignores = forge.packagerConfig.ignore || [];
+  invariant(
+    ignores.some((pattern) => pattern instanceof RegExp && pattern.test("/tools/song-editor/main.js")),
+    "Electron Forge must exclude the private song editor"
+  );
+  invariant(
+    ignores.some((pattern) => pattern instanceof RegExp && pattern.test("/tools")),
+    "Electron Forge must exclude the private tools directory itself"
+  );
+  invariant(
+    !ignores.some((pattern) => pattern instanceof RegExp && pattern.test("/src/index.js")),
+    "Electron Forge exclusion must not remove the user-facing app"
+  );
+  invariant(
+    typeof forge.hooks?.postPackage === "function",
+    "Electron Forge must inspect the final app package for private editor files"
+  );
 }
 
 function testUpdaterPlatformChannels() {
@@ -249,6 +278,7 @@ function testArtifactVerification() {
 }
 
 testBuilderConfiguration();
+testPrivateEditorExclusion();
 testUpdaterPlatformChannels();
 testWorkflow();
 testRuntimeUpdater();

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'" />
+    <title>محرر ترانيم قاعدة البيانات</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="formState.js" defer></script>
+    <script src="../../node_modules/sortablejs/Sortable.min.js" defer></script>
+    <script src="renderer.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>محرر الترانيم</h1>
+          <p>قاعدة الترانيم المدمجة <span id="song-count" class="count"></span></p>
+        </div>
+        <button id="add-song" class="button primary" type="button">إضافة ترنيمة</button>
+      </header>
+
+      <section class="search-panel" aria-label="البحث عن ترنيمة">
+        <label for="search-input">ابحث بعنوان الترنيمة أو كلماتها</label>
+        <div class="search-control">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 5 5" /></svg>
+          <input id="search-input" type="search" autocomplete="off" placeholder="اكتب جزءًا من العنوان أو القرار أو العدد" autofocus />
+        </div>
+      </section>
+
+      <div class="results-heading"><h2>نتائج البحث</h2><span id="result-count"></span></div>
+      <p id="list-message" class="list-message">اكتب كلمة للعثور على ترنيمة.</p>
+      <div id="results" class="results" aria-live="polite"></div>
+    </main>
+
+    <dialog id="editor-dialog" aria-labelledby="editor-title">
+      <div class="dialog-shell">
+        <header class="dialog-header">
+          <div><p id="editor-mode" class="mode-label"></p><h2 id="editor-title"></h2></div>
+          <button id="close-editor" type="button" class="icon-button" aria-label="إغلاق المحرر"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19" /></svg></button>
+        </header>
+        <div class="dialog-content">
+          <label class="field-label" for="title-field">عنوان الترنيمة</label>
+          <input id="title-field" type="text" required />
+
+          <div class="options-row">
+            <label class="check-label"><input id="chorus-enabled" type="checkbox" /> تحتوي على قرار</label>
+            <label class="check-label"><input id="chorus-first" type="checkbox" /> تبدأ بالقرار</label>
+          </div>
+
+          <div class="field-row">
+            <div>
+              <label class="field-label" for="scale-field">المقام الموسيقي</label>
+              <input id="scale-field" type="text" placeholder="مثال: Am — اتركه فارغًا للقيمة null" />
+            </div>
+            <label class="check-label scale-presence"><input id="scale-present" type="checkbox" /> حفظ حقل المقام</label>
+          </div>
+
+          <section id="chorus-section" class="song-section">
+            <div class="section-heading"><h3>القرار</h3></div>
+            <div id="chorus-slides" class="slide-list"></div>
+            <button id="add-chorus-slide" type="button" class="add-content-button">أضف شريحة جديدة للقرار<img src="../../src/img/plus.svg" alt="" /></button>
+          </section>
+
+          <section class="song-section">
+            <div class="section-heading"><h3>الأعداد</h3></div>
+            <div id="verses" class="verse-list"></div>
+            <button id="add-verse" type="button" class="add-content-button">أضف عدد جديد<img src="../../src/img/plus.svg" alt="" /></button>
+          </section>
+
+          <details class="advanced">
+            <summary>حقول قديمة ومتقدمة</summary>
+            <p>تظهر هذه الحقول كما هي في قاعدة البيانات. «غير موجود» يحذف الحقل من هذه الترنيمة.</p>
+            <div class="advanced-grid">
+              <label>formated <select id="formated-field"><option value="absent">غير موجود</option><option value="true">صحيح</option><option value="false">خطأ</option></select></label>
+              <label>formatted <select id="formatted-field"><option value="absent">غير موجود</option><option value="true">صحيح</option><option value="false">خطأ</option></select></label>
+              <label>آخر عدد معروف <input id="last-known-verse" type="number" min="1" step="1" placeholder="غير موجود" /></label>
+            </div>
+          </details>
+          <p id="form-error" class="form-error" role="alert" hidden></p>
+        </div>
+        <footer class="dialog-footer"><button id="cancel-editor" class="button quiet" type="button">إلغاء</button><button id="save-editor" class="button primary" type="button">حفظ الترنيمة</button></footer>
+      </div>
+    </dialog>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

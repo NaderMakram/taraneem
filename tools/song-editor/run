@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+editor_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+project_dir=$(CDPATH= cd -- "$editor_dir/../.." && pwd)
+electron_bin="$project_dir/node_modules/.bin/electron"
+
+if [ ! -x "$electron_bin" ]; then
+  printf '%s\n' 'Electron is not installed. Run npm ci in the repository first.' >&2
+  exit 1
+fi
+
+exec "$electron_bin" "$editor_dir/main.js"

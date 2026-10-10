@@ -14,6 +14,18 @@ module.exports = {
   packagerConfig: {
     asar: true,
     icon: "./src/assets/taraneem",
+    // The private database editor is a repository tool, never part of an app package.
+    ignore: [
+      /^\/tools(?:\/|$)/,
+      /^\/forge\.config\.js$/,
+      /^\/scripts\/test-release-config\.js$/,
+    ],
+  },
+  hooks: {
+    postPackage: async (_config, packageResult) => {
+      const { verifyPackagedApp } = require("./tools/song-editor/packageGuard");
+      for (const outputPath of packageResult.outputPaths) verifyPackagedApp(outputPath);
+    },
   },
   rebuildConfig: {},
   makers: [

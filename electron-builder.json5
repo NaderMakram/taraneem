@@ -10,6 +10,7 @@
     output: "release/${version}",
   },
   files: ["src"],
+  afterPack: "./tools/song-editor/packageGuard.js",
   mac: {
     target: ["dmg"],
     icon: "./src/assets/taraneem-mac.png",
