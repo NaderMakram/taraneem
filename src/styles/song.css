@@ -33,7 +33,7 @@ html {
   height: 100%;
   direction: rtl !important;
   font-family: MyCalibri;
-  cursor: none;
+  cursor: default;
 }
 body {
   color: rgb(25, 25, 25);
