@@ -425,3 +425,80 @@ function adjustFontSizeToFit() {
     console.timeEnd("OptimizedFontSizeCalculation"); // End measuring time for the optimized font size calculation and print the result
   }
 }
+
+// Measure actual browser line breaks, including repeat/verse numbers, before
+// hiding the text. The exporter captures only the background and adds native text.
+function measurePresentationText(content) {
+  const boxes = [];
+  const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    if (!node.textContent.trim()) continue;
+    const style = getComputedStyle(node.parentElement);
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const rects = [...range.getClientRects()].filter(rect => rect.width && rect.height);
+    const lines = [];
+    if (rects.length === 1) {
+      lines.push({ text: node.textContent, rect: rects[0] });
+    } else {
+      // Range rectangles follow visual positions; keep characters in logical
+      // order so Arabic shaping and bidirectional text remain PowerPoint's job.
+      for (let index = 0; index < node.length; index++) {
+        range.setStart(node, index);
+        range.setEnd(node, index + 1);
+        const rect = range.getBoundingClientRect();
+        if (!rect.height) continue;
+        let line = lines.find(line => Math.abs(line.rect.top - rect.top) < 1);
+        if (!line) {
+          line = { text: '', rect: { top: rect.top, left: rect.left, right: rect.right, height: rect.height } };
+          lines.push(line);
+        }
+        line.text += node.textContent[index];
+        line.rect.left = Math.min(line.rect.left, rect.left);
+        line.rect.right = Math.max(line.rect.right, rect.right);
+      }
+    }
+    for (const { text, rect } of lines) {
+      if (!text.trim()) continue;
+      boxes.push({ text, x: rect.left, y: rect.top,
+        width: rect.right - rect.left, height: rect.height,
+        fontFamily: style.fontFamily, fontSize: parseFloat(style.fontSize),
+        fontWeight: style.fontWeight, fontStyle: style.fontStyle,
+        color: style.color, textShadow: style.textShadow });
+    }
+  }
+  return boxes;
+}
+
+// Only the isolated export window accepts direct rendering requests.
+if (process.argv.includes('--pptx-export')) {
+  ipcRenderer.on('pptx:render', async (_event, payload) => {
+    try {
+      setPresentationTheme(payload.theme);
+      document.body.style.fontSize = `${payload.fontSize}vw`;
+      const content = document.getElementById('content');
+      content.style.visibility = 'visible';
+      content.classList.remove('fade-in-out');
+      content.classList.toggle('bold', Boolean(payload.bold));
+      content.innerHTML = `<div class="container song-container"><div class="body song-body">${payload.html}</div></div>`;
+      await document.fonts.ready;
+      const background = getComputedStyle(document.body);
+      const backgroundImage = background.backgroundImage;
+      const backgroundColor = background.backgroundColor;
+      const urls = [...backgroundImage.matchAll(/url\(["']?(.*?)["']?\)/g)];
+      await Promise.all(urls.map((match) => new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = resolve;
+        image.onerror = () => reject(new Error('تعذر تحميل صورة الخلفية'));
+        image.src = match[1];
+      })));
+      const textBoxes = measurePresentationText(content);
+      content.style.visibility = 'hidden';
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      ipcRenderer.send('pptx:rendered', { token: payload.token, textBoxes, backgroundColor, hasBackgroundImage: backgroundImage !== 'none' });
+    } catch (error) {
+      ipcRenderer.send('pptx:rendered', { token: payload.token, error: error.message });
+    }
+  });
+}

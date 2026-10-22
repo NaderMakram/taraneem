@@ -22,6 +22,7 @@ const themeSelect = document.getElementById("theme_select");
 import { handleKeyDown } from "./helpers/handleKeyDown.js";
 import { newSlide } from "./helpers/newSlide.js";
 import { pause } from "./helpers/pause.js";
+import { initializePreparationExport } from "./helpers/preparation-export.js";
 import { initializeThemeManager } from "./helpers/theme-manager.js";
 
 import {
@@ -31,6 +32,7 @@ import {
 } from "./helpers/searchService.js";
 
 initializeThemeManager({ themeSelect });
+initializePreparationExport();
 
 document.addEventListener("DOMContentLoaded", () => {
   const loader = document.getElementById("startup-loader");

@@ -11,7 +11,7 @@
   "scripts": {
     "start": "electron-forge start",
     "test": "npm run test:unit && npm run test:release",
-    "test:unit": "node --test test/themeStore.test.js test/manualUpdate.test.js test/bibleSearchUtils.test.mjs",
+    "test:unit": "node --test test/themeStore.test.js test/manualUpdate.test.js test/bibleSearchUtils.test.mjs test/preparationExport.test.mjs",
     "test:release": "node scripts/test-release-config.js",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -23,7 +23,8 @@
     "dist:mac": "electron-builder --mac --universal -p never",
     "dist32": "electron-builder --win --ia32 -p never",
     "dist-local": "electron-builder --win --x64 -p never && rd /s /q \"release\\${npm_package_version}\\win-unpacked\"",
-    "publish": "electron-builder -p always"
+    "publish": "electron-builder -p always",
+    "test:export": "electron test/preparationExport.smoke.cjs"
   },
   "keywords": [],
   "author": {
@@ -39,6 +40,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^6.1.8",
     "fuse.js": "^7.0.0",
+    "pptxgenjs": "^4.0.1",
     "sortablejs": "^1.15.2",
     "undici": "^5.28.5",
     "ws": "^8.18.0"

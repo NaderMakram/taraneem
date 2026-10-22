@@ -124,6 +124,12 @@ contextBridge.exposeInMainWorld("myCustomAPI", {
   updateSong: (songId, song) => ipcRenderer.invoke("update-song", songId, song),
   deleteSong: (songId) => ipcRenderer.invoke("delete-song", songId),
 
+  exportPreparation: (options) => ipcRenderer.invoke("preparation:export", options),
+  onExportProgress: (callback) => {
+    const listener = (_event, progress) => callback(progress);
+    ipcRenderer.on("preparation:export-progress", listener);
+    return () => ipcRenderer.removeListener("preparation:export-progress", listener);
+  },
   getThemes: () => ipcRenderer.invoke("themes:list"),
   getTheme: (themeId) => ipcRenderer.invoke("themes:get", themeId),
   chooseThemeImage: () => ipcRenderer.invoke("themes:choose-image"),

@@ -1097,3 +1097,37 @@ body[data-alignment="center"] .song-preview .bible-verse .verseNumber {
 body[data-alignment="center"] .song-preview .verse-number-center {
   display: block;
 }
+
+.preparation-export {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: relative;
+}
+#export-preparation {
+  white-space: nowrap;
+  font: inherit;
+  padding: 7px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  color: #191919;
+  cursor: pointer;
+}
+#export-preparation:hover { background: var(--gray-hover); }
+#export-aspect-ratio { min-width: 5rem; }
+#export-status {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  padding: 4px 8px;
+  background: var(--main-window-bg);
+  color: var(--text-color, #191919);
+  font-size: 13px;
+  white-space: nowrap;
+}
+#export-status:empty { display: none; }
+#export-preparation:disabled,
+#export-aspect-ratio:disabled { opacity: 0.5; cursor: wait; }
+.preparation-export :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }

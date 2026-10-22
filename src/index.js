@@ -652,8 +652,43 @@ function addIPCs() {
 ipcMain.on("update-font-size", (event, message) => {
   songWindow.webContents.send("update-font-size", message);
 });
+let presentationBold = false;
 ipcMain.on("update-font-weight", (event) => {
+  presentationBold = !presentationBold;
   songWindow.webContents.send("update-font-weight");
+});
+
+let preparationExportInProgress = false;
+ipcMain.handle("preparation:export", async (event, options) => {
+  assertMainWindowThemeSender(event);
+  if (preparationExportInProgress) throw new Error("يوجد تصدير قيد التنفيذ");
+  const { exportPreparation, LAYOUTS } = require("./exportPreparation");
+  if (!options || !Object.hasOwn(LAYOUTS, options.aspectRatio) || !Array.isArray(options.waiting)) {
+    throw new Error("خيارات التصدير غير صالحة");
+  }
+  if (!options.waiting.some((item) => item?.custom_ref?.includes("song"))) {
+    throw new Error("أضف ترنيمة إلى قائمة التحضير أولاً");
+  }
+  preparationExportInProgress = true;
+  const theme = resolveThemePayload(activeThemeId);
+  try {
+    const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+      title: "تصدير قائمة التحضير", defaultPath: "Taraneem-preparation.pptx",
+      filters: [{ name: "PowerPoint", extensions: ["pptx"] }],
+    });
+    if (canceled || !filePath) return { canceled: true };
+    const result = await exportPreparation({
+      waiting: options.waiting, aspectRatio: options.aspectRatio, theme,
+      fontSize: Number.isFinite(options.fontSize) ? Math.max(1, Math.min(30, options.fontSize)) : 7,
+      bold: presentationBold, filePath,
+      onProgress: (current, total) => {
+        if (!event.sender.isDestroyed()) event.sender.send("preparation:export-progress", { current, total });
+      },
+    });
+    return { ...result, filePath };
+  } finally {
+    preparationExportInProgress = false;
+  }
 });
 
 ipcMain.handle("themes:list", () => themeStore.listThemes());

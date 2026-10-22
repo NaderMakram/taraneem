@@ -81,6 +81,16 @@
         </select>
       </div>
 
+      <div class="preparation-export" dir="rtl">
+        <label class="font-picker-label" for="export-aspect-ratio">مقاس الشرائح</label>
+        <select id="export-aspect-ratio" class="theme-select" aria-label="مقاس شرائح PowerPoint" dir="ltr">
+          <option value="16:9">16:9</option>
+          <option value="3:2">3:2</option>
+        </select>
+        <button id="export-preparation" class="gray-hover" type="button" title="تصدير ترانيم قائمة التحضير بالخلفية الحالية">تصدير PPTX</button>
+        <span id="export-status" role="status" aria-live="polite"></span>
+      </div>
+
       <!-- waiting toggle (deprecated) -->
       <!-- <div id="list-toggle-group">
         <img src="./img/list.png" />

@@ -1,3 +1,5 @@
+import { buildSongSlides } from "./songSlides.mjs";
+
 export function previewSelectedChapter(chapter) {
   let {
     chapter_en,
@@ -120,12 +122,7 @@ export function previewSelectedChapter(chapter) {
 }
 // preview selected song
 export function previewSelectedSong(song) {
-  // const alignMode = document.querySelector("#alignBtn").value;
-  const alignMode = 'default';
-  // Expected values: "default", "top-1", "top-2", "bottom-1", "bottom-2"
-  console.log("Alignment Mode:", alignMode);
-
-  let { title, chorus, verses, chorusFirst, custom_ref, lastKnownVerse } = song;
+  const { title, verses, custom_ref } = song;
 
   // Clear previous content
   preview_output.innerHTML = "";
@@ -149,128 +146,15 @@ export function previewSelectedSong(song) {
   container.classList.add("song-preview");
   preview_output.appendChild(container);
 
-  // --- Helper: Format Text (HTML & Arabic Digits) ---
-  const replaceLineBreaks = (text) => {
-    const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
-    return (
-      "<div class='verse-line'>" +
-      text
-        .replace(/\n/g, "</div><div class='verse-line'>")
-        .replace(/\d+/g, (match) => {
-          const arabicNumber = match
-            .split("")
-            .map((digit) => arabicDigits[parseInt(digit)])
-            .join("");
-          return `<span class="repeat-number">${arabicNumber}</span>`;
-        }) +
-      "</div>"
-    );
-  };
-
-  // --- Helper: Split Logic based on Alignment State ---
-  const splitTextIntoChunks = (text) => {
-    // 1. If default, do not split
-    if (alignMode === "default") return [text];
-
-    // 2. Determine max lines allowed based on the state name
-    // If it contains "-1", max is 1. If "-2", max is 2.
-    let maxLines = 2; // Fallback
-    if (alignMode.includes("-1")) maxLines = 1;
-    if (alignMode.includes("-2")) maxLines = 2;
-
-    const lines = text.split("\n");
-
-    // 3. Optimization: if current lines <= maxLines, return as single chunk
-    if (lines.length <= maxLines) return [text];
-
-    // 4. Chunk the lines
-    const chunks = [];
-    for (let i = 0; i < lines.length; i += maxLines) {
-      // Slice the array from current index to current index + limit
-      const chunk = lines.slice(i, i + maxLines).join("\n");
-      chunks.push(chunk);
-    }
-    return chunks;
-  };
-
-  let slides = [];
-
-  // --- 1. Initial Chorus ---
-  if ((chorus && chorusFirst && chorus.length > 0) || verses.length === 0) {
-    chorus.forEach((line) => {
-      const chunks = splitTextIntoChunks(line); // Split based on mode
-
-      chunks.forEach((chunkText) => {
-        let div = document.createElement("div");
-        div.classList.add("chorus", "slide", "initial-chorus");
-        div.innerHTML = replaceLineBreaks(chunkText);
-        slides.push(div);
-      });
-    });
-  }
-
-  // --- 2. Verses Loop ---
-  if (verses.length > 0) {
-    verses.forEach((verse, verseIndex) => {
-      verse.forEach((line, lineIndex) => {
-        const chunks = splitTextIntoChunks(line); // Split based on mode
-
-        chunks.forEach((chunkText, chunkIndex) => {
-          // Logic: Only show number on the FIRST chunk of the verse line
-          let showNumber = lineIndex === 0 && chunkIndex === 0;
-          let verseNumber = showNumber ? verseIndex + 1 : "";
-
-          let arabicNumber = verseNumber
-            ? new Intl.NumberFormat("ar-EG").format(verseNumber)
-            : "";
-
-          let div = document.createElement("div");
-          div.classList.add("verse", "slide");
-          div.dataset.verseNumber = verseNumber;
-
-          div.innerHTML = `<span class="verseNumber">${arabicNumber}</span><div>${replaceLineBreaks(
-            chunkText
-          )}</div>`;
-          slides.push(div);
-        });
-      });
-
-      // --- 3. Chorus after Verse ---
-      if (chorus && chorus.length > 0) {
-        chorus.forEach((chorusLine, chorusIndex) => {
-          const chunks = splitTextIntoChunks(chorusLine); // Split based on mode
-
-          chunks.forEach((chunkText, chunkIndex) => {
-            // Logic: Only show 'ق' on the FIRST chunk of the first chorus line
-            let showSymbol = chorusIndex === 0 && chunkIndex === 0;
-            let chorusSymbol = showSymbol ? "ق" : "";
-
-            let div = document.createElement("div");
-            div.classList.add("chorus", "slide");
-            div.dataset.verseNumber = verseIndex + 1;
-            div.innerHTML = `<span class="chorusSymbol">${chorusSymbol}</span> ${replaceLineBreaks(
-              chunkText
-            )}`;
-            slides.push(div);
-          });
-        });
-      }
-
-      // Add empty slide after last known verse
-      if (verseIndex === lastKnownVerse - 1) {
-        let emptySlide = document.createElement("div");
-        emptySlide.classList.add("verse", "slide", "lastKnownVerse");
-        emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;
-        slides.push(emptySlide);
-      }
-    });
-  }
-
-  // create empty div at the end
-  let emptySlide = document.createElement("div");
-  emptySlide.classList.add("verse", "slide");
-  emptySlide.innerHTML = `<span class="verseNumber"></span><div></div>`;
-  slides.push(emptySlide);
+  const slides = buildSongSlides(song).map((slide) => {
+    const div = document.createElement("div");
+    div.classList.add(slide.kind, "slide");
+    if (slide.initial) div.classList.add("initial-chorus");
+    if (slide.lastKnownVerse) div.classList.add("lastKnownVerse");
+    if (slide.verseNumber !== undefined) div.dataset.verseNumber = slide.verseNumber;
+    div.innerHTML = slide.blank ? '<span class="verseNumber"></span><div></div>' : slide.html;
+    return div;
+  });
 
   // Animate slides one by one
   slides.forEach((slide, index) => {
