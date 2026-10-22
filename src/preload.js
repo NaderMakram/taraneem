@@ -108,6 +108,12 @@ function getSongsData() {
 
 
 contextBridge.exposeInMainWorld("myCustomAPI", {
+  getDisplayState: () => ipcRenderer.invoke("get-display-state"),
+  onDisplayState: (callback) => {
+    const listener = (_event, state) => callback(state);
+    ipcRenderer.on("display-state", listener);
+    return () => ipcRenderer.removeListener("display-state", listener);
+  },
   // Converted to getters for lazy loading
   getBibleDBIndexed: () => getBibleData().bibleDBIndexed,
   getBibleVerses: () => getBibleData().bibleVerses,
