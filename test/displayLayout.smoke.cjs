@@ -50,11 +50,15 @@ app.whenReady().then(async () => {
       const style = getComputedStyle(notice.querySelector('.toast-message'));
       return { initial, dismissed, stillDismissed, external, returned,
         withinWindow: bounds.left >= 0 && bounds.right <= innerWidth,
-        color: style.color, text: notice.textContent };
+        color: style.color, text: notice.textContent, shortcutLabel: notice.querySelector('.windows-logo').getAttribute('aria-label') };
     })()`);
     assert.ok(state.initial && state.dismissed && state.stillDismissed && state.external && state.returned && state.withinWindow);
     assert.equal(state.color, 'rgb(25, 25, 25)');
-    assert.match(state.text, /Windows \+ P/);
+    assert.match(state.text, /للعرض على شاشة خارجية اضغط/);
+    assert.match(state.text, /\+ P/);
+    assert.match(state.text, /Extend/);
+    assert.ok(!state.text.includes('توسيع'));
+    assert.equal(state.shortcutLabel, 'Windows');
     const output = fs.mkdtempSync(path.join(os.tmpdir(), 'taraneem-monitor-'));
     fs.writeFileSync(path.join(output, 'notice-960.png'), (await mainWindow.webContents.capturePage()).toPNG());
     mainWindow.setContentSize(600, 800);

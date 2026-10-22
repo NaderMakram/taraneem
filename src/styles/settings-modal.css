@@ -270,6 +270,9 @@ button.delete-local-song:hover {
 .single-monitor-notice[hidden] { display: none; }
 .single-monitor-notice .toast-content { border-radius: 16px; }
 .single-monitor-notice .toast-message { color: #191919; line-height: 1.6; }
+.monitor-shortcut { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; vertical-align: middle; }
+.windows-logo { flex-shrink: 0; width: 1em; height: 1em; transform: none; }
+.monitor-notice-close svg { width: 18px; height: 18px; transform: none; }
 .monitor-notice-close {
   display: inline-flex;
   align-items: center;
