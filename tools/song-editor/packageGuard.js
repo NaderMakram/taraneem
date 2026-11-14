@@ -15,7 +15,8 @@ function verifyPackagedApp(appOutDir) {
   const archive = appArchive(appOutDir);
   if (!fs.existsSync(archive)) throw new Error(`Cannot inspect packaged app: ${archive}`);
   asar.uncache(archive);
-  const entries = asar.listPackage(archive);
+  // ASAR listings use the build host's path separators, including backslashes on Windows.
+  const entries = asar.listPackage(archive).map((entry) => entry.replace(/\\/g, "/"));
   const privateEntries = entries.filter((entry) => entry === "/tools/song-editor" || entry.startsWith("/tools/song-editor/"));
   const unpacked = path.join(path.dirname(archive), "app.asar.unpacked", "tools", "song-editor");
   const loose = path.join(path.dirname(archive), "app", "tools", "song-editor");
