@@ -10,7 +10,14 @@ const { verifyPackagedApp } = require("../tools/song-editor/packageGuard");
 
 async function packageFixture(t, files, pathStyle) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "taraneem-package-test-"));
-  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  // ASAR creation may still be closing its output stream when the test ends.
+  // Asynchronous retries let Windows release the file before removing the fixture.
+  t.after(() => fs.promises.rm(directory, {
+    recursive: true,
+    force: true,
+    maxRetries: 10,
+    retryDelay: 100,
+  }));
   const input = path.join(directory, "input");
   const output = path.join(directory, "app-out");
   const resources = path.join(output, "resources");
